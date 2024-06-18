@@ -1,0 +1,10 @@
+export { Home } from "./Home";
+export { About } from "./About";
+export { Game } from "./Game";
+export { Login } from "./Login";
+export { PageNotFound } from "./PageNotFound";
+export { Ranking } from "./Ranking";
+export { Register } from "./Register";
+export { Rules } from "./Rules";
+export { UserDetail } from "./UserDetail";
+export { Users } from "./Users";
