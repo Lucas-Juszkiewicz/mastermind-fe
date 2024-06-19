@@ -16,7 +16,18 @@ export const Header = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box
+      // width="100%"
+      // // maxWidth={900}
+      // display="flex"
+      // justifyContent="space-between"
+      // alignItems="center"
+      sx={{
+        flexGrow: 1,
+        p: 0,
+        mb: 2,
+      }}
+    >
       <AppBar position="static">
         <Toolbar>
           <Menu />

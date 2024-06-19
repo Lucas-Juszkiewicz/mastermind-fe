@@ -101,7 +101,7 @@ export const Menu = () => {
                   placement === "bottom-start" ? "left top" : "left bottom",
               }}
             >
-              <Paper>
+              <Paper sx={{ backgroundColor: "#d7dae0" }}>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList
                     autoFocusItem={open}
