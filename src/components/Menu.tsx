@@ -9,6 +9,8 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Link } from "react-router-dom";
+import Typography from "@mui/material/Typography";
 
 export const Menu = () => {
   const [open, setOpen] = React.useState(false);
@@ -48,23 +50,40 @@ export const Menu = () => {
     prevOpen.current = open;
   }, [open]);
 
-  //   const handleClick = () => {
-  //     anchorRef.current.focus();
-  //   }
-
   return (
     <Stack direction="row" spacing={2}>
       <div>
         <IconButton
-          size="large"
+          // size="large"
           edge="start"
-          color="inherit"
+          // color="inherit"
           aria-label="menu"
-          sx={{ mr: 2 }}
+          sx={{
+            mr: 2,
+          }}
           onClick={handleToggle}
           ref={anchorRef}
         >
-          <MenuIcon />
+          <Typography
+            sx={{
+              display: {
+                xs: "none",
+                sm: "block",
+              },
+              color: "#ffca28",
+              fontFamily: "teko, sans-serif",
+              fontSize: { xs: "1rem", sm: "1.8rem", md: "2.3rem" },
+            }}
+          >
+            Menu
+          </Typography>
+          <MenuIcon
+            sx={{
+              color: "#ffca28",
+              fontSize: { xs: "1.5rem", sm: "1.5rem", md: "2.3rem" },
+              display: { xs: "block", sm: "none" },
+            }}
+          />
         </IconButton>
         <Popper
           open={open}
@@ -90,9 +109,40 @@ export const Menu = () => {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem component={Link} to="/game" onClick={handleClose}>
+                      Game
+                    </MenuItem>
+                    <MenuItem component={Link} to="/home" onClick={handleClose}>
+                      Home
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/ranking"
+                      onClick={handleClose}
+                    >
+                      Ranking
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/rules"
+                      onClick={handleClose}
+                    >
+                      Rules
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/users"
+                      onClick={handleClose}
+                    >
+                      Users
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/logout"
+                      onClick={handleClose}
+                    >
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
