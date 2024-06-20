@@ -1,10 +1,34 @@
 import { Typography, Box, TextField, Button, Paper } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 
 export const Login = () => {
+  const [isSignup, setIsSignup] = useState(false);
+  const [inputs, setInputs] = useState({
+    nick: "",
+    email: "",
+    password: "",
+    id: null,
+  });
+
+  const handleOnChange = (e: any) => {
+    setInputs((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
+
+  const resetState = () => {
+    setIsSignup(!isSignup);
+    setInputs({ nick: "", email: "", password: "", id: null });
+  };
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <Paper
           elevation={3}
           sx={{
@@ -29,22 +53,30 @@ export const Login = () => {
               lineHeight: 1.5,
             }}
           >
-            Login
+            {isSignup ? "Registration" : "Login"}
           </Typography>
+          {isSignup && (
+            <TextField
+              onChange={handleOnChange}
+              name="nick"
+              value={inputs.nick}
+              margin="normal"
+              type={"text"}
+              variant="outlined"
+              placeholder="Nick"
+              sx={{
+                bgcolor: "#ffffff",
+                width: "300px",
+                "& .MuiOutlinedInput-root": {
+                  height: "50px",
+                },
+              }}
+            />
+          )}
           <TextField
-            margin="normal"
-            type={"text"}
-            variant="outlined"
-            placeholder="Nick"
-            sx={{
-              bgcolor: "#ffffff",
-              width: "300px",
-              "& .MuiOutlinedInput-root": {
-                height: "50px",
-              },
-            }}
-          />
-          <TextField
+            onChange={handleOnChange}
+            name="email"
+            value={inputs.email}
             margin="normal"
             type={"email"}
             variant="outlined"
@@ -58,6 +90,9 @@ export const Login = () => {
             }}
           />
           <TextField
+            onChange={handleOnChange}
+            name="password"
+            value={inputs.password}
             margin="normal"
             type={"password"}
             variant="outlined"
@@ -70,7 +105,14 @@ export const Login = () => {
               },
             }}
           />
+          <TextField
+            style={{ display: "none" }}
+            onChange={handleOnChange}
+            name="id"
+            value={inputs.id}
+          ></TextField>
           <Button
+            type="submit"
             variant="contained"
             sx={{
               fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
@@ -102,8 +144,9 @@ export const Login = () => {
               borderRadius: "6px",
               ":hover": { backgroundColor: "#f9a825" },
             }}
+            onClick={resetState}
           >
-            Click to Register
+            {isSignup ? "Click to Login" : "Click to Register"}
           </Button>
         </Paper>
       </form>
