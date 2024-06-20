@@ -1,5 +1,8 @@
 import { Typography, Box, TextField, Button, Paper } from "@mui/material";
+import LoginIcon from "@mui/icons-material/Login";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import React, { useState } from "react";
+import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 
 export const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
@@ -129,11 +132,18 @@ export const Login = () => {
             OK
           </Button>
           <Button
+            endIcon={
+              isSignup ? (
+                <LoginOutlined style={{ fontSize: 28 }} />
+              ) : (
+                <HowToRegOutlined style={{ fontSize: 28 }} />
+              )
+            }
             variant="contained"
             sx={{
               fontSize: { xs: "1.4rem", sm: "1.6rem", md: "1.8rem" },
               lineHeight: 1,
-              width: "220px",
+              width: "250px",
               height: "50px",
               color: "#3f51b5",
               backgroundColor: "#ffc107",
@@ -146,7 +156,7 @@ export const Login = () => {
             }}
             onClick={resetState}
           >
-            {isSignup ? "Click to Login" : "Click to Register"}
+            {isSignup ? "Click to Login " : "Click to Register"}
           </Button>
         </Paper>
       </form>
