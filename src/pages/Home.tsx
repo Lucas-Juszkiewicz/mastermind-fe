@@ -11,7 +11,7 @@ export const Home = () => {
         p: "56px",
         maxWidth: "800px", // Set a maximum width for better readability
         backgroundColor: "#f3f4f6", // Light background color
-        borderRadius: "8px", // Rounded corners
+        borderRadius: "6px", // Rounded corners
         border: "1px solid #ddd",
       }}
     >
