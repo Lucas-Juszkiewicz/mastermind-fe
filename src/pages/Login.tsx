@@ -3,6 +3,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import React, { useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
+import axios from "axios";
 
 export const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
@@ -20,8 +21,20 @@ export const Login = () => {
     }));
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        isSignup
+          ? "http://localhost:8080/users/save"
+          : "http://localhost:8080/users/login",
+        inputs
+      );
+      console.log(response.data); // Handle the response as needed
+    } catch (error) {
+      console.error("There was an error!", error);
+    }
   };
 
   const resetState = () => {
