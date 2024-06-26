@@ -5,16 +5,27 @@ import React, { useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
 import { ErrorMessageCard } from "../components/ErrorMessageCard";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [error, setErrorMessage] = useState<AxiosError | null>(null);
+
+  const [openErrorCard, setOpenErrorCard] = React.useState(false);
+  const handleClose = () => {
+    setOpenErrorCard(false);
+  };
+  const handleOpen = () => {
+    setOpenErrorCard(true);
+  };
+
   const [inputs, setInputs] = useState({
     nick: "",
     email: "",
     password: "",
     id: null,
   });
+  const navigate = useNavigate();
 
   const handleOnChange = (e: any) => {
     setInputs((prevState) => ({
@@ -33,12 +44,14 @@ export const Login = () => {
           : "http://localhost:8080/users/login",
         inputs
       );
-      console.log(response.data); // Handle the response as needed
+      console.log(response.data);
+      const userId = response.data.id;
+      navigate(`/user/${userId}`);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.message);
         setErrorMessage(error);
       }
+      handleOpen();
     }
   };
 
@@ -78,6 +91,12 @@ export const Login = () => {
           </Typography>
           {isSignup && (
             <TextField
+              inputProps={{
+                style: {
+                  paddingTop: 7,
+                  paddingBottom: 7,
+                },
+              }}
               onChange={handleOnChange}
               name="nick"
               value={inputs.nick}
@@ -95,6 +114,12 @@ export const Login = () => {
             />
           )}
           <TextField
+            inputProps={{
+              style: {
+                paddingTop: 7,
+                paddingBottom: 7,
+              },
+            }}
             onChange={handleOnChange}
             name="email"
             value={inputs.email}
@@ -111,6 +136,12 @@ export const Login = () => {
             }}
           />
           <TextField
+            inputProps={{
+              style: {
+                paddingTop: 7,
+                paddingBottom: 7,
+              },
+            }}
             onChange={handleOnChange}
             name="password"
             value={inputs.password}
@@ -178,7 +209,13 @@ export const Login = () => {
           </Button>
         </Paper>
       </form>
-      {error && <ErrorMessageCard error={error} openErrorCard={true} />}
+      {openErrorCard && (
+        <ErrorMessageCard
+          error={error}
+          openErrorCard={openErrorCard}
+          handleClose={handleClose}
+        />
+      )}
     </div>
   );
 };

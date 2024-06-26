@@ -92,6 +92,7 @@ export const Menu = () => {
           placement="bottom-start"
           transition
           disablePortal
+          style={{ zIndex: 1500 }}
         >
           {({ TransitionProps, placement }) => (
             <Grow
@@ -101,7 +102,11 @@ export const Menu = () => {
                   placement === "bottom-start" ? "left top" : "left bottom",
               }}
             >
-              <Paper sx={{ backgroundColor: "#f3f4f6" }}>
+              <Paper
+                sx={{
+                  backgroundColor: "#f3f4f6",
+                }}
+              >
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList
                     autoFocusItem={open}
