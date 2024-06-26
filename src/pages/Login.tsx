@@ -3,10 +3,12 @@ import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import React, { useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { ErrorMessageCard } from "../components/ErrorMessageCard";
 
 export const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
+  const [error, setErrorMessage] = useState<AxiosError | null>(null);
   const [inputs, setInputs] = useState({
     nick: "",
     email: "",
@@ -33,7 +35,10 @@ export const Login = () => {
       );
       console.log(response.data); // Handle the response as needed
     } catch (error) {
-      console.error("There was an error!", error);
+      if (axios.isAxiosError(error)) {
+        console.log(error.message);
+        setErrorMessage(error);
+      }
     }
   };
 
@@ -173,6 +178,7 @@ export const Login = () => {
           </Button>
         </Paper>
       </form>
+      {error && <ErrorMessageCard error={error} openErrorCard={true} />}
     </div>
   );
 };
