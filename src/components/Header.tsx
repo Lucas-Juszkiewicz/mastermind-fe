@@ -16,8 +16,19 @@ export const Header = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box
+      sx={{
+        flexGrow: 1,
+        p: 0,
+        mb: 2,
+      }}
+    >
+      <AppBar
+        position="static"
+        sx={{
+          borderRadius: "6px",
+        }}
+      >
         <Toolbar>
           <Menu />
           <Typography
