@@ -24,7 +24,7 @@ export const AllRoutes = () => {
         <Route path="/about" element={<About />}></Route>
         <Route path="/ranking" element={<Ranking />}></Route>
         <Route path="/users" element={<Users />}></Route>
-        <Route path="/user/:id" element={<UserDetail />}></Route>
+        <Route path="/user/:userId" element={<UserDetail />}></Route>
         <Route path="/notfound" element={<PageNotFound />}></Route>
       </Routes>
     </>

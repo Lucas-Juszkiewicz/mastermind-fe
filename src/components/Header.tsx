@@ -39,6 +39,7 @@ export const Header = () => {
               fontFamily: "Permanent Marker, sans-serif",
               fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
               textAlign: "center",
+              letterSpacing: "0.015em",
             }}
           >
             MasterMind

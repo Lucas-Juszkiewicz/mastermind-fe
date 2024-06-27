@@ -15,14 +15,7 @@ export const Home = () => {
         border: "1px solid #ddd",
       }}
     >
-      <Typography
-        variant="h1"
-        sx={{
-          fontSize: { xs: "1rem", sm: "1.5rem", md: "2rem" }, // Responsive font size
-          lineHeight: 1.5, // Adjust line height for readability
-          // marginBottom: 2, // Space after the heading
-        }}
-      >
+      <Typography variant="body2">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
         maiores, ducimus aspernatur dolores adipisci eaque incidunt dolore
         veritatis, sunt inventore suscipit nemo, libero ab optio aliquid!
