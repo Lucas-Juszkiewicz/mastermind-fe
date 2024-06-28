@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import { AvatarImg, LinearDeterminate } from "../components";
 import Box from "@mui/material/Box";
-import avatar from "../assets/0_9.png";
+import avatar from "../assets/0_8.png";
 import Typography from "@mui/material/Typography";
 
 interface UserData {
@@ -46,6 +46,11 @@ export const UserDetail = () => {
     return <LinearDeterminate />; // Render loading state until userData is fetched
   }
 
+  const isLongText = userData.nick.split(" ")[0].length > 8;
+  const fontSize = isLongText
+    ? { xs: "1.5rem", sm: "2.8rem", md: "2.8rem" }
+    : { xs: "2.5rem", sm: "3.5rem", md: "3.5rem" };
+
   return (
     <Paper
       elevation={3}
@@ -56,8 +61,8 @@ export const UserDetail = () => {
           sm: "50px", // marginTop for small screens and above
         },
         marginBottom: {
-          xs: "20px", // marginTop for extra-small screens
-          sm: "20px", // marginTop for small screens and above
+          xs: "20px", // marginBottom for extra-small screens
+          sm: "20px", // marginBottom for small screens and above
         },
         p: "56px",
         maxWidth: "700px", // Set a maximum width for better readability
@@ -69,9 +74,7 @@ export const UserDetail = () => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          // justifyContent: "center",
-          // alignItems: "center",
+          flexDirection: { xs: "column", sm: "column", md: "row" },
           height: {
             xs: "67vh", // height for extra-small screens
             sm: "75vh", // height for small screens
@@ -81,51 +84,49 @@ export const UserDetail = () => {
           },
         }}
       >
+        {/* Avatar column */}
         <AvatarImg avatar={avatar} />
-        <Typography
-          variant="h5"
-          align="center"
+
+        {/* User data column */}
+        <Box
           sx={{
-            fontFamily: "Permanent Marker, sans-serif",
-            color: "#3f51b5",
-            ml: {
-              xs: "100px",
-              sm: "60px",
-              md: "25px",
-              lg: "50px",
-              xl: "50px",
-            },
-            mt: {
-              xs: "-120px",
-              sm: "-170px",
-              md: "-200px",
-              lg: "-170px",
-              xl: "-170px",
-            },
-            fontSize: { xs: "2.5rem", sm: "3.5rem", md: "3.5rem" },
-            lineHeight: 1.2,
-            letterSpacing: "0.05em",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            ml: 4, // Margin left to create space between avatar and user data
           }}
         >
-          {userData.nick}
-          {/* Lucky Luke */}
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            mt: "15px",
-            ml: {
-              xs: "100px",
-              sm: "230px",
-              md: "240px",
-              lg: "250px",
-              xl: "260px",
-            },
-          }}
-        >
-          Total points: 750{userData.total}
-        </Typography>
+          <Typography
+            variant="h5"
+            align="center"
+            sx={{
+              fontFamily: "Permanent Marker, sans-serif",
+              color: "#3f51b5",
+              fontSize: fontSize,
+              lineHeight: 1.2,
+              letterSpacing: "0.05em",
+              mb: 5, // Margin bottom to create space between nickname and next text
+              marginTop: { xs: "20px", sm: "-200px", md: "-310px" },
+            }}
+          >
+            {userData.nick}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            Total points: {userData.total || 750}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            Country: {userData.country}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            Email: {userData.email}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            Registration: {userData.registrationDate}
+          </Typography>
+        </Box>
       </Box>
     </Paper>
   );
 };
+
+export default UserDetail;

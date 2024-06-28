@@ -19,11 +19,11 @@ const Theme = createTheme({
       color: "#ffc107",
       fontFamily: "Permanent Marker, sans-serif", // Custom font family
     },
-    body2: {
+    body1: {
       fontSize: "1.9rem",
       lineHeight: 1.2,
     },
-    body1: {
+    body2: {
       fontSize: "1.8rem",
       lineHeight: 1.2,
       fontFamily: "Ubuntu Sans Mono",

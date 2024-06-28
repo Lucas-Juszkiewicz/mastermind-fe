@@ -32,14 +32,14 @@ export const AvatarImg: React.FC<AvatarImgProps> = ({ avatar }) => {
           xs: "120px",
           sm: "180px",
           md: "220px",
-          lg: "200px",
+          lg: "250px",
           xl: "300px",
         },
         height: {
           xs: "120px",
           sm: "180px",
           md: "220px",
-          lg: "200px",
+          lg: "600px",
           xl: "300px",
         },
       }}
