@@ -92,7 +92,7 @@ export const ErrorMessageCard: React.FC<ErrorMessageCardProps> = ({
             </Typography>
           </CardMedia>
           <CardContent>
-            <Typography variant="body2" align="center" paddingTop={2.5}>
+            <Typography variant="body1" align="center" paddingTop={2.5}>
               {errorMessage}
             </Typography>
           </CardContent>

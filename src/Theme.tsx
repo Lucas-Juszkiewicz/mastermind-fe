@@ -26,7 +26,7 @@ const Theme = createTheme({
     body2: {
       fontSize: "1.8rem",
       lineHeight: 1.2,
-      fontFamily: "Ubuntu Sans Mono",
+      fontFamily: ".lato-regular",
       "@media (max-width:600px)": {
         fontSize: "1.5rem",
       },

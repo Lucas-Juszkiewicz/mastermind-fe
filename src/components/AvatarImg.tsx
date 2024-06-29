@@ -12,35 +12,42 @@ export const AvatarImg: React.FC<AvatarImgProps> = ({ avatar }) => {
       src={avatar}
       alt="avatar"
       sx={{
+        alignSelf: {
+          xs: "center",
+          sm: "center",
+          md: "flex-start",
+          lg: "flex-start",
+          xl: "flex-start",
+        },
         marginLeft: {
-          xs: "-40px",
-          sm: "-35px",
+          xs: "0px",
+          sm: "0px",
           md: "-25px",
           lg: "-20px",
           xl: "-25px",
         },
         marginTop: {
-          xs: "-40px",
-          sm: "-35px",
-          md: "-25px",
+          xs: "0px",
+          sm: "8px",
+          md: "-15px",
           lg: "-25px",
           xl: "-25px",
         },
         objectFit: "cover",
         borderRadius: "10px",
         width: {
-          xs: "120px",
-          sm: "180px",
-          md: "220px",
+          xs: "300px",
+          sm: "500px",
+          md: "290px",
           lg: "250px",
-          xl: "300px",
+          xl: "320px",
         },
         height: {
           xs: "120px",
           sm: "180px",
-          md: "220px",
+          md: "980px",
           lg: "600px",
-          xl: "300px",
+          xl: "1000px",
         },
       }}
     />

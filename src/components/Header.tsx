@@ -27,6 +27,13 @@ export const Header = () => {
         position="static"
         sx={{
           borderRadius: "6px",
+          height: {
+            xs: "60px",
+            sm: "70px",
+            md: "80px",
+            lg: "56px",
+            xl: "60px",
+          },
         }}
       >
         <Toolbar>
@@ -37,9 +44,17 @@ export const Header = () => {
             sx={{
               flexGrow: 1,
               fontFamily: "Permanent Marker, sans-serif",
-              fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
+              fontSize: {
+                xs: "1.6rem",
+                sm: "2rem",
+                md: "3rem",
+                lg: "2.5rem",
+                xl: "3rem",
+              },
               textAlign: "center",
               letterSpacing: "0.015em",
+              paddingTop: "0px",
+              paddingBottom: "10px",
             }}
           >
             MasterMind
@@ -49,7 +64,21 @@ export const Header = () => {
             sx={{
               fontFamily: "teko, sans-serif",
               color: "#ffca28",
-              fontSize: { xs: "1.3rem", sm: "1.5rem", md: "2rem" },
+              fontSize: {
+                xs: "1.3rem",
+                sm: "1.5rem",
+                md: "2.8rem",
+                lg: "2rem",
+                xl: "2.5rem",
+              },
+              paddingTop: "0px",
+              paddingBottom: {
+                xs: "0px",
+                sm: "0px",
+                md: "0px",
+                lg: "3px",
+                xl: "0px",
+              },
             }}
           >
             Login

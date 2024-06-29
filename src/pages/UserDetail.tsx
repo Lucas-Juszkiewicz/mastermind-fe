@@ -4,8 +4,9 @@ import { useParams } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import { AvatarImg, LinearDeterminate } from "../components";
 import Box from "@mui/material/Box";
-import avatar from "../assets/0_8.png";
+import avatar from "../assets/0_4.png";
 import Typography from "@mui/material/Typography";
+import { format } from "date-fns";
 
 interface UserData {
   id: number;
@@ -51,6 +52,11 @@ export const UserDetail = () => {
     ? { xs: "1.5rem", sm: "2.8rem", md: "2.8rem" }
     : { xs: "2.5rem", sm: "3.5rem", md: "3.5rem" };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, "dd.MM.yyy HH:mm"); // Adjust the format as needed
+  };
+
   return (
     <Paper
       elevation={3}
@@ -64,8 +70,8 @@ export const UserDetail = () => {
           xs: "20px", // marginBottom for extra-small screens
           sm: "20px", // marginBottom for small screens and above
         },
-        p: "56px",
-        maxWidth: "700px", // Set a maximum width for better readability
+        p: { xs: "20px", sm: "20px", md: "56px" },
+        maxWidth: "800px", // Set a maximum width for better readability
         backgroundColor: "#f3f4f6", // Light background color
         borderRadius: "6px", // Rounded corners
         border: "1px solid #ddd",
@@ -106,23 +112,43 @@ export const UserDetail = () => {
               lineHeight: 1.2,
               letterSpacing: "0.05em",
               mb: 5, // Margin bottom to create space between nickname and next text
-              marginTop: { xs: "20px", sm: "-200px", md: "-310px" },
+              marginTop: {
+                xs: "20px",
+                sm: "20px",
+                md: "-150px",
+                lg: "-330px",
+                xl: "-580px",
+              },
             }}
           >
             {userData.nick}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            Total points: {userData.total || 750}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            Country: {userData.country}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            Email: {userData.email}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            Registration: {userData.registrationDate}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              <strong>Total points:</strong>
+            </Typography>
+            <Typography variant="body2">{userData.total || 750}</Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              <strong>Country:</strong>
+            </Typography>
+            <Typography variant="body2">{userData.country}</Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              <strong>Email:</strong>
+            </Typography>
+            <Typography variant="body2">{userData.email}</Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              <strong>Registration:</strong>
+            </Typography>
+            <Typography variant="body2">
+              {formatDate(userData.registrationDate)}
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Paper>

@@ -72,7 +72,13 @@ export const Menu = () => {
               },
               color: "#ffca28",
               fontFamily: "teko, sans-serif",
-              fontSize: { xs: "1rem", sm: "1.8rem", md: "2.3rem" },
+              fontSize: {
+                xs: "1rem",
+                sm: "1.8rem",
+                md: "3.3rem",
+                lg: "2.35rem",
+                xl: "2.9rem",
+              },
             }}
           >
             Menu
