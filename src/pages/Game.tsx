@@ -21,7 +21,7 @@ export const Game = () => {
       elevation={3}
       sx={{
         margin: "20px auto", // Center the Paper with margin
-        p: "20px",
+        py: "20px",
         maxWidth: "800px", // Set a maximum width for better readability
         backgroundColor: "#f3f4f6", // Light background color
         borderRadius: "6px", // Rounded corners
@@ -31,8 +31,8 @@ export const Game = () => {
       <Box sx={{ flexGrow: 1 }}>
         <Grid
           container
-          rowSpacing={2}
-          columnSpacing={{ xs: 1, sm: 2, md: 1 }}
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 1, md: 1 }}
         ></Grid>
         {renderRounds()}
       </Box>
