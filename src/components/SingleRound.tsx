@@ -4,7 +4,15 @@ import { RoundedElement } from "../components";
 import Grid from "@mui/material/Grid";
 import { useMediaQuery } from "@mui/material";
 
-export const SingleRound = () => {
+interface SingleRoundProps {
+  active?: boolean;
+  response?: number[];
+}
+
+export const SingleRound: React.FC<SingleRoundProps> = ({
+  active,
+  response,
+}) => {
   // Define breakpoints for different sizes
   const isSmallScreen = useMediaQuery((theme: any) =>
     theme.breakpoints.down("sm")
@@ -16,6 +24,7 @@ export const SingleRound = () => {
   // Set sizes based on screen size
   const blueSize = isSmallScreen ? 27 : isMediumScreen ? 25 : 30;
   const greenSize = isSmallScreen ? 13 : isMediumScreen ? 18 : 20;
+  const activeSize = isSmallScreen ? 32 : isMediumScreen ? 30 : 35;
 
   return (
     <Box
@@ -38,7 +47,14 @@ export const SingleRound = () => {
         marginRight={1.2}
       >
         {Array.from({ length: 8 }).map((_, index) => (
-          <RoundedElement key={index} color="blue" size={blueSize} hover />
+          <RoundedElement
+            key={index}
+            color="#e8eaf6"
+            size={blueSize}
+            activeSize={activeSize}
+            active={active}
+            index={index}
+          />
         ))}
       </Box>
 
@@ -46,7 +62,7 @@ export const SingleRound = () => {
       <Box display="flex" flexDirection="column" alignItems="center" gap={0}>
         <Box display="flex" justifyContent="center" gap={0}>
           {Array.from({ length: 4 }).map((_, index) => (
-            <RoundedElement key={index} color="green" size={greenSize} />
+            <RoundedElement key={index} color="#c5cae9" size={greenSize} />
           ))}
         </Box>
         <Box
@@ -58,7 +74,7 @@ export const SingleRound = () => {
           paddingTop={0.1}
         >
           {Array.from({ length: 4 }).map((_, index) => (
-            <RoundedElement key={index} color="green" size={greenSize} />
+            <RoundedElement key={index} color="#c5cae9" size={greenSize} />
           ))}
         </Box>
       </Box>

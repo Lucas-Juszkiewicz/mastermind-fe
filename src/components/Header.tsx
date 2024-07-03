@@ -28,7 +28,7 @@ export const Header = () => {
         sx={{
           borderRadius: "6px",
           height: {
-            xs: "60px",
+            xs: "50px",
             sm: "70px",
             md: "80px",
             lg: "56px",
@@ -65,7 +65,7 @@ export const Header = () => {
               fontFamily: "teko, sans-serif",
               color: "#ffca28",
               fontSize: {
-                xs: "1.3rem",
+                xs: "1.5rem",
                 sm: "1.5rem",
                 md: "2.8rem",
                 lg: "2rem",

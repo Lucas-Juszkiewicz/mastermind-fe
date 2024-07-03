@@ -86,7 +86,7 @@ export const Menu = () => {
           <MenuIcon
             sx={{
               color: "#ffca28",
-              fontSize: { xs: "1.5rem", sm: "1.5rem", md: "2.3rem" },
+              fontSize: { xs: "1.8rem", sm: "1.5rem", md: "2.3rem" },
               display: { xs: "block", sm: "none" },
             }}
           />

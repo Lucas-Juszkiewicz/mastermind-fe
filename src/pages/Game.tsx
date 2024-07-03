@@ -1,15 +1,54 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { SingleRound } from "../components";
+import { GameWinPopup, SingleRound } from "../components";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
+interface GameData {
+  id: number;
+  userId: number;
+  startTime: string;
+  finishTime: string;
+  round: number;
+  response: number[];
+  sequenceJson: string;
+  guesses: number[][];
+  guessesJson: string;
+}
 
 export const Game = () => {
+  const { userId } = useParams();
+  const [gameData, setGameData] = useState<GameData | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/gameinprogress/start/${userId}`
+        );
+        setGameData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          // setErrorMessage(error);
+        }
+        // handleOpen();
+      }
+    };
+    fetchUserData();
+  }, [userId]);
+
   const renderRounds = () => {
     const rounds = [];
     for (let i = 0; i < 12; i++) {
       rounds.push(
         <Grid key={i}>
-          <SingleRound />
+          <SingleRound
+            response={gameData ? gameData.response : []}
+            active={gameData && i == (gameData.round - 11) * -1 ? true : false}
+          />
         </Grid>
       );
     }
