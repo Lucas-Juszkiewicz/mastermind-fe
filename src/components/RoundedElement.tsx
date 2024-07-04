@@ -1,33 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Fade, Menu, Typography, darken } from "@mui/material";
+import { IndeterminateCheckBoxRounded } from "@mui/icons-material";
 
 interface RoundedElementProps {
   color: string;
   size: number;
   active?: boolean;
   activeSize?: number;
-  index?: number;
+  fatherIndex?: number;
+  sendGuess?: Function;
+  previousGuess?: number | null | undefined;
 }
 
 const numbers = [
-  { number: 10, color: "#9c27b0", hoverColor: "#7b1fa2" }, // purple
-  { number: 9, color: "#2196f3", hoverColor: "#1976d2" }, // blue
-  { number: 8, color: "#3f51b5", hoverColor: "#303f9f" }, // indigo
-  { number: 7, color: "#673ab7", hoverColor: "#512da8" }, // deep purple
-  { number: 6, color: "#e91e63", hoverColor: "#c2185b" }, // pink
-  { number: 5, color: "#ff9800", hoverColor: "#f57c00" }, // orange
-  { number: 4, color: "#00bcd4", hoverColor: "#0097a7" }, // cyan
-  { number: 3, color: "#4caf50", hoverColor: "#388e3c" }, // green
-  { number: 2, color: "#ff5722", hoverColor: "#e64a19" }, // deep orange
-  { number: 1, color: "#ffeb3b", hoverColor: "#fdd835" }, // yellow
+  { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
+  { number: 2, color: "#ff5722", hoverColor: "#ff7043" }, // deep orange
+  { number: 3, color: "#4caf50", hoverColor: "#66bb6a" }, // green
+  { number: 4, color: "#00bcd4", hoverColor: "#4dd0e1" }, // cyan
+  { number: 5, color: "#ff9800", hoverColor: "#ffb74d" }, // orange
+  { number: 6, color: "#e91e63", hoverColor: "#ec407a" }, // pink
+  { number: 7, color: "#84ffff", hoverColor: "#a7d7f1" }, // deep purple
+  { number: 8, color: "#ffff8d", hoverColor: "#fff176" }, // indigo
+  { number: 9, color: "#2196f3", hoverColor: "#64b5f6" }, // blue
+  { number: 10, color: "#b388ff", hoverColor: "#d1c4e9" }, // purple
 ];
 
 export const RoundedElement: React.FC<RoundedElementProps> = ({
   color,
   size,
   active,
-  index,
+  fatherIndex,
+  sendGuess,
+  previousGuess,
 }) => {
+  const positionX =
+    fatherIndex !== undefined ? getValueBasedOnIndex(fatherIndex) : 0;
+
+  interface DotValue {
+    number: number;
+    color: string;
+    hoverColor: string;
+  }
+  const blank = {
+    number: 0,
+    color: "#e8eaf6",
+    hoverColor: "#dfe2ed",
+  };
+  const [dotValue, setDotValue] = useState<DotValue>(blank);
+
   // function getValueBasedOnIndex(index: number): number {
   //   console.log(index);
   //   switch (index) {
@@ -52,31 +72,58 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
   //   }
   // }
 
-  function getValueBasedOnIndex(index: number): string {
-    console.log(index);
+  function getValueBasedOnIndex(index: number): object {
     switch (index) {
       case 0:
-        return "1%";
+        return { xs: "0%", sm: "1%", md: "1%", lg: "1%", xl: "0.5%" };
       case 1:
-        return "-2%";
+        return { xs: "-5%", sm: "-2%", md: "-2.5%", lg: "-2%", xl: "-1%" };
       case 2:
-        return "-4.5%";
+        return {
+          xs: "-6%",
+          sm: "-60%",
+          md: "-6%",
+          lg: "-4.5%",
+          xl: "-2.25%",
+        };
       case 3:
-        return "-7.2%";
+        return {
+          xs: "-6.5%",
+          sm: "-7.2%",
+          md: "-9.5%",
+          lg: "-7.2%",
+          xl: "-3.6%",
+        };
       case 4:
-        return "-10%";
+        return { xs: "-6.5%", sm: "-10%", md: "-12.5%", lg: "-10%", xl: "-5%" };
       case 5:
-        return "-12.7%";
+        return {
+          xs: "-6.5%",
+          sm: "-12.7%",
+          md: "-16%",
+          lg: "-12.7%",
+          xl: "-6.35%",
+        };
       case 6:
-        return "-15.5%";
+        return {
+          xs: "-6.5%",
+          sm: "-15.5%",
+          md: "-19.5%",
+          lg: "-15.5%",
+          xl: "-7.75%",
+        };
       case 7:
-        return "-18.1%";
+        return {
+          xs: "-6.5%",
+          sm: "-18.1%",
+          md: "-22.8%",
+          lg: "-18.1%",
+          xl: "-9.05%",
+        };
       default:
-        return "0%"; // Default case if index is out of specified range
+        return { xs: "0%", sm: "1%", md: "1%", lg: "1%", xl: "0.5%" };
     }
   }
-
-  const positionX = index !== undefined ? getValueBasedOnIndex(index) : 0;
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -86,6 +133,23 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  let guess: (number | undefined)[] = new Array(8);
+
+  const colorToUse =
+    previousGuess !== undefined &&
+    previousGuess !== null &&
+    numbers[previousGuess - 1] !== undefined &&
+    numbers[previousGuess - 1] !== null
+      ? numbers[previousGuess - 1].color
+      : color;
+  const numberToUse =
+    previousGuess !== undefined &&
+    previousGuess !== null &&
+    numbers[previousGuess - 1] !== undefined
+      ? numbers[previousGuess - 1].number
+      : "";
+
   return (
     <>
       {active ? (
@@ -101,8 +165,10 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
               width: size,
               height: size,
               borderRadius: "50%",
-              backgroundColor: color,
-              display: "inline-block",
+              backgroundColor: dotValue.color,
+              display: "inline-block flex",
+              justifyContent: "center", // Center horizontally
+              alignItems: "center", // Center vertically
               margin: 0.1,
               marginRight: 0.5,
               boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.35)",
@@ -115,7 +181,11 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
                 backgroundColor: darken(color, 0.1),
               },
             }}
-          />
+          >
+            <Typography paddingTop={0.6}>
+              {dotValue.number === 0 ? "" : dotValue.number}
+            </Typography>
+          </Box>
           <Menu
             id="fade-menu"
             MenuListProps={{
@@ -126,35 +196,48 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
             onClose={handleClose}
             TransitionComponent={Fade}
             sx={{
-              // position: "absolute",
-              top: -100, // Adjust based on your layout
-              // left: positionX,
+              top: -100,
               left: positionX,
-              zIndex: 1, // Ensure menu appears above other elements
+              zIndex: 1,
               "& .MuiPaper-root": {
-                borderRadius: "20px", // Rounded corners for the menu
-                padding: "8px", // Optional: padding inside the menu
+                borderRadius: "20px",
+                padding: "8px",
                 background:
-                  "radial-gradient(circle, rgba(103, 58, 183, 0.6), rgba(103, 58, 183, 0.1)), #3f51b5", // Gradient layered over semi-transparent color
+                  "radial-gradient(circle, rgba(63, 81, 181, 0.8), rgba(26, 35, 126, 0.2)), #3f51b5",
               },
             }}
           >
-            {numbers.map((item) => (
-              // <MenuItem onClick={handleClose}>{item.number}</MenuItem>
+            {numbers.map((item, menuIndex) => (
               <Box
-                onClick={handleClose}
+                key={menuIndex}
+                onClick={() => {
+                  handleClose();
+                  setDotValue(item);
+                  guess[fatherIndex !== undefined ? fatherIndex : 0] =
+                    item.number;
+                  sendGuess && sendGuess(guess);
+                }}
                 sx={{
                   width: size,
                   height: size,
                   borderRadius: "50%",
-                  backgroundColor: color,
-                  display: "inline-block",
+                  backgroundColor: item.color,
+                  display: "inline-block flex",
+                  justifyContent: "center", // Center horizontally
+                  alignItems: "center", // Center vertically
                   margin: 0.1,
                   marginRight: 0.5,
                   boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.35)",
+                  transition: "background-color 0.3s, transform 0.3s", // Smooth transition for background color and transform
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: item.hoverColor,
+                    boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.5)",
+                    transform: "scale(1.2)", // Scale up on hover
+                  },
                 }}
               >
-                <Typography textAlign={"center"}>{item.number}</Typography>
+                <Typography paddingTop={0.85}>{item.number}</Typography>
               </Box>
             ))}
           </Menu>
@@ -165,13 +248,18 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
             width: size,
             height: size,
             borderRadius: "50%",
-            backgroundColor: color,
-            display: "inline-block",
+            backgroundColor: colorToUse,
+            display: "inline-block flex",
+            justifyContent: "center", // Center horizontally
+            alignItems: "center", // Center vertically
             margin: 0.1,
             marginRight: 0.5,
             boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.35)",
           }}
-        />
+        >
+          {" "}
+          <Typography paddingTop={0.6}>{numberToUse}</Typography>
+        </Box>
       )}
     </>
   );

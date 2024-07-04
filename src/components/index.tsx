@@ -7,3 +7,4 @@ export { AvatarImg } from "./AvatarImg";
 export { RoundedElement } from "./RoundedElement";
 export { SingleRound } from "./SingleRound";
 export { GameWinPopup } from "./GameWinPopup";
+export { SendGuessButton } from "./SendGuessButton";

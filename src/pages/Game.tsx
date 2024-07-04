@@ -21,6 +21,8 @@ interface GameData {
 export const Game = () => {
   const { userId } = useParams();
   const [gameData, setGameData] = useState<GameData | null>(null);
+  const [round, setRound] = useState<number>(0);
+  const [previousGuesses, setPreviousGuesses] = useState<number[][]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,7 +31,7 @@ export const Game = () => {
           `http://localhost:8080/gameinprogress/start/${userId}`
         );
         setGameData(response.data);
-        console.log(response.data);
+        setRound(response.data.round);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           // setErrorMessage(error);
@@ -47,7 +49,12 @@ export const Game = () => {
         <Grid key={i}>
           <SingleRound
             response={gameData ? gameData.response : []}
-            active={gameData && i == (gameData.round - 11) * -1 ? true : false}
+            active={gameData && i == (round - 11) * -1 ? true : false}
+            id={gameData?.id ?? 0}
+            round={gameData?.round ?? 0}
+            setRound={setRound}
+            setPreviousGuesses={setPreviousGuesses}
+            previousGuesses={previousGuesses[(i - 11) * -1]}
           />
         </Grid>
       );
