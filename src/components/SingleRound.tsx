@@ -6,49 +6,24 @@ import { green } from "@mui/material/colors";
 
 interface SingleRoundProps {
   active?: boolean;
-  response?: number[];
   id: number;
   round: number;
-  setRound: Function;
-  setPreviousGuesses: Function;
+  setGameData: Function;
   previousGuesses: number[];
+  greenYellowProviderForSingleRound: (string | undefined)[];
 }
 
 export const SingleRound: React.FC<SingleRoundProps> = ({
   active,
-  response,
   id,
   round,
-  setRound,
-  setPreviousGuesses,
   previousGuesses,
+  greenYellowProviderForSingleRound,
+  setGameData,
 }) => {
-  const [resp, setResp] = useState<number[]>([0, 0]);
-  let colorProvider = new Array(8).fill(undefined);
   useEffect(() => {
     setGuess(new Array(8).fill(undefined));
-    if (resp) {
-      console.log("Resp: " + resp);
-      colorProvider.map((item) => (item = undefined));
-      for (let i = 0; i < resp[0]; i++) {
-        colorProvider[i] = "#64dd17";
-      }
-      for (let i = 0; i < resp[1]; i++) {
-        if (colorProvider[i] != "#64dd17") {
-          colorProvider = [...colorProvider];
-          colorProvider[i] = "#1a237e";
-        }
-      }
-      for (let i = 0; i < colorProvider.length; i++) {
-        if (colorProvider[i] === undefined || null) {
-          colorProvider = [...colorProvider];
-          colorProvider[i] = "#c5cae9";
-        }
-      }
-    }
-    console.log(colorProvider);
-  }, [round, resp]);
-
+  }, [round]);
   // Define breakpoints for different sizes
   const isSmallScreen = useMediaQuery((theme: any) =>
     theme.breakpoints.down("sm")
@@ -77,7 +52,6 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
     }
 
     setGuess(updatedGuess);
-    console.log("updatedGuess: ", updatedGuess);
   };
 
   return (
@@ -102,6 +76,7 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
       >
         {Array.from({ length: 8 }).map((_, index) => (
           <RoundedElement
+            isThisResponse={false}
             key={index}
             color="#e8eaf6"
             size={blueSize}
@@ -110,6 +85,7 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
             fatherIndex={index}
             sendGuess={sendGuess}
             previousGuess={previousGuesses ? previousGuesses[index] : undefined}
+            colorGreenYellow=""
           />
         ))}
       </Box>
@@ -119,17 +95,19 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
           id={id}
           guess={guess}
           round={round}
-          setRound={setRound}
-          setResp={setResp}
-          setPreviousGuesses={setPreviousGuesses}
+          setGameData={setGameData}
         ></SendGuessButton>
       ) : (
         <Box display="flex" flexDirection="column" alignItems="center" gap={0}>
           <Box display="flex" justifyContent="center" gap={0}>
             {Array.from({ length: 4 }).map((_, index) => (
               <RoundedElement
+                isThisResponse={true}
                 key={index}
-                color={colorProvider[index]}
+                color=""
+                colorGreenYellow={
+                  greenYellowProviderForSingleRound[index] || "#c5cae9"
+                }
                 size={greenSize}
               />
             ))}
@@ -144,8 +122,12 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
           >
             {Array.from({ length: 4 }).map((_, index) => (
               <RoundedElement
+                isThisResponse={true}
                 key={index}
-                color={colorProvider[index + 4]}
+                color=""
+                colorGreenYellow={
+                  greenYellowProviderForSingleRound[index + 4] || "#c5cae9"
+                }
                 size={greenSize}
               />
             ))}

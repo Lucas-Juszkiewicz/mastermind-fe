@@ -10,6 +10,8 @@ interface RoundedElementProps {
   fatherIndex?: number;
   sendGuess?: Function;
   previousGuess?: number | null | undefined;
+  colorGreenYellow: string;
+  isThisResponse: Boolean;
 }
 
 const numbers = [
@@ -32,6 +34,8 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
   fatherIndex,
   sendGuess,
   previousGuess,
+  colorGreenYellow,
+  isThisResponse,
 }) => {
   const positionX =
     fatherIndex !== undefined ? getValueBasedOnIndex(fatherIndex) : 0;
@@ -75,13 +79,13 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
   function getValueBasedOnIndex(index: number): object {
     switch (index) {
       case 0:
-        return { xs: "0%", sm: "1%", md: "1%", lg: "1%", xl: "0.5%" };
+        return { xs: "2%", sm: "1%", md: "1%", lg: "1%", xl: "0.5%" };
       case 1:
-        return { xs: "-5%", sm: "-2%", md: "-2.5%", lg: "-2%", xl: "-1%" };
+        return { xs: "-5%", sm: "-3%", md: "-2.5%", lg: "-2%", xl: "-1%" };
       case 2:
         return {
           xs: "-6%",
-          sm: "-60%",
+          sm: "-8%",
           md: "-6%",
           lg: "-4.5%",
           xl: "-2.25%",
@@ -89,17 +93,17 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
       case 3:
         return {
           xs: "-6.5%",
-          sm: "-7.2%",
+          sm: "-13%",
           md: "-9.5%",
           lg: "-7.2%",
           xl: "-3.6%",
         };
       case 4:
-        return { xs: "-6.5%", sm: "-10%", md: "-12.5%", lg: "-10%", xl: "-5%" };
+        return { xs: "-6.5%", sm: "-18%", md: "-12.5%", lg: "-10%", xl: "-5%" };
       case 5:
         return {
           xs: "-6.5%",
-          sm: "-12.7%",
+          sm: "-22%",
           md: "-16%",
           lg: "-12.7%",
           xl: "-6.35%",
@@ -107,7 +111,7 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
       case 6:
         return {
           xs: "-6.5%",
-          sm: "-15.5%",
+          sm: "-23%",
           md: "-19.5%",
           lg: "-15.5%",
           xl: "-7.75%",
@@ -115,7 +119,7 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
       case 7:
         return {
           xs: "-6.5%",
-          sm: "-18.1%",
+          sm: "-23%",
           md: "-22.8%",
           lg: "-18.1%",
           xl: "-9.05%",
@@ -149,7 +153,7 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
     numbers[previousGuess - 1] !== undefined
       ? numbers[previousGuess - 1].number
       : "";
-
+  console.log("colorGreenYellow: " + colorGreenYellow);
   return (
     <>
       {active ? (
@@ -248,7 +252,7 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
             width: size,
             height: size,
             borderRadius: "50%",
-            backgroundColor: colorToUse,
+            backgroundColor: isThisResponse ? colorGreenYellow : colorToUse,
             display: "inline-block flex",
             justifyContent: "center", // Center horizontally
             alignItems: "center", // Center vertically

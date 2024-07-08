@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import React from "react";
@@ -5,17 +6,13 @@ interface SendGuessButtonProps {
   id: Number;
   guess: (number | undefined)[];
   round: Number;
-  setRound: Function;
-  setResp: Function;
-  setPreviousGuesses: Function;
+  setGameData: Function;
 }
 export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   id,
   guess,
   round,
-  setRound,
-  setResp,
-  setPreviousGuesses,
+  setGameData,
 }) => {
   const GameInProgressDTO = {
     id: id,
@@ -28,9 +25,7 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         `http://localhost:8080/gameinprogress/check`,
         GameInProgressDTO
       );
-      setRound(response.data.round);
-      setResp(response.data.response);
-      setPreviousGuesses(response.data.previousGuesses);
+      setGameData(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // setErrorMessage(error);
@@ -45,6 +40,22 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         disabled={!guess.every((item) => item !== undefined || null)}
         onClick={sendGuess}
         variant="contained"
+        sx={{
+          height: {
+            xs: 40,
+            sm: 45,
+            md: 50,
+            lg: 50,
+            xl: 80,
+          },
+          width: {
+            xs: 70,
+            sm: 93,
+            md: 102,
+            lg: 100,
+            xl: 100,
+          },
+        }}
       >
         Check
       </Button>

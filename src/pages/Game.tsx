@@ -16,13 +16,20 @@ interface GameData {
   sequenceJson: string;
   guesses: number[][];
   guessesJson: string;
+  previousResponses: number[][];
+  previousGuesses: number[][];
 }
 
 export const Game = () => {
   const { userId } = useParams();
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [round, setRound] = useState<number>(0);
-  const [previousGuesses, setPreviousGuesses] = useState<number[][]>([]);
+  const [previousGuesses, setPreviousGuesses] = useState<number[][] | null>([]);
+  const [previousResponses, setPreviousResponses] = useState<number[][] | null>(
+    []
+  );
+  const [greenYellowProviderForAllRounds, setGreenYellowProviderForAllRounds] =
+    useState<string[][]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,21 +49,64 @@ export const Game = () => {
     fetchUserData();
   }, [userId]);
 
+  useEffect(() => {
+    if (gameData) {
+      setRound(gameData.round);
+      setPreviousGuesses(gameData.previousGuesses);
+      setPreviousResponses(gameData.previousResponses);
+    }
+  }, [gameData]);
+
+  useEffect(() => {
+    const updatedGreenYellowProviderForAllRounds: string[][] = [];
+
+    for (let i = 0; i < 12; i++) {
+      let greenYellowProvider = Array(8).fill("");
+
+      let previousResponse = previousResponses && previousResponses[i];
+      if (previousResponse) {
+        for (let j = 0; j < previousResponse[0]; j++) {
+          greenYellowProvider[j] = "#64dd17";
+        }
+        for (let j = 0; j < previousResponse[1]; j++) {
+          greenYellowProvider[previousResponse[0] + j] = "#ffc107";
+        }
+        for (let j = 0; j < greenYellowProvider.length; j++) {
+          if (greenYellowProvider[j] === "") {
+            greenYellowProvider[j] = "#c5cae9";
+          }
+        }
+      }
+      updatedGreenYellowProviderForAllRounds.push(greenYellowProvider);
+    }
+
+    setGreenYellowProviderForAllRounds(updatedGreenYellowProviderForAllRounds);
+  }, [round, previousResponses]);
+
   const renderRounds = () => {
     const rounds = [];
     for (let i = 0; i < 12; i++) {
       rounds.push(
         <Grid key={i}>
           <SingleRound
-            response={gameData ? gameData.response : []}
             active={gameData && i == (round - 11) * -1 ? true : false}
             id={gameData?.id ?? 0}
             round={gameData?.round ?? 0}
-            setRound={setRound}
-            setPreviousGuesses={setPreviousGuesses}
-            previousGuesses={previousGuesses[(i - 11) * -1]}
+            setGameData={setGameData}
+            previousGuesses={
+              previousGuesses
+                ? previousGuesses[(i - 11) * -1] ?? [0, 0]
+                : [0, 0]
+            }
+            greenYellowProviderForSingleRound={
+              greenYellowProviderForAllRounds[(i - 11) * -1] ?? []
+            }
           />
         </Grid>
+      );
+      console.log(
+        "greenYellowProviderForSingleRound: " +
+          greenYellowProviderForAllRounds[(i - 11) * -1]
       );
     }
     return rounds;
