@@ -3,8 +3,6 @@ import { createTheme } from "@mui/material/styles";
 const Theme = createTheme({
   palette: {
     primary: {
-      // main: "#ffc107",
-      // main: "#283593",
       main: "#3f51b5",
     },
     secondary: {
@@ -18,11 +16,23 @@ const Theme = createTheme({
       fontSize: "1.5rem",
     },
     h6: {
-      // color: "#283593",
-      // color: "#ffc107",
       color: "#ffc107",
-      // fontSize: "2.5rem",
       fontFamily: "Permanent Marker, sans-serif", // Custom font family
+    },
+    body1: {
+      fontSize: "1.9rem",
+      lineHeight: 1.2,
+    },
+    body2: {
+      fontSize: "1.8rem",
+      lineHeight: 1.2,
+      fontFamily: ".lato-regular",
+      "@media (max-width:600px)": {
+        fontSize: "1.5rem",
+      },
+      "@media (max-width:400px)": {
+        fontSize: "1.3rem",
+      },
     },
   },
 });

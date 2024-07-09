@@ -4,7 +4,7 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import React, { useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
-import { ErrorMessageCard } from "../components/ErrorMessageCard";
+import { ErrorMessageCard } from "../components";
 import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
