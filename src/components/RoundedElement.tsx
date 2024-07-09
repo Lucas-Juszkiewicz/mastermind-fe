@@ -12,6 +12,9 @@ interface RoundedElementProps {
   previousGuess?: number | null | undefined;
   colorGreenYellow: string;
   isThisResponse: Boolean;
+  answer?: Boolean;
+  answerColor?: string;
+  answerNumber?: number;
 }
 
 const numbers = [
@@ -36,6 +39,9 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
   previousGuess,
   colorGreenYellow,
   isThisResponse,
+  answer,
+  answerColor,
+  answerNumber,
 }) => {
   const positionX =
     fatherIndex !== undefined ? getValueBasedOnIndex(fatherIndex) : 0;
@@ -51,7 +57,6 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
     hoverColor: "#dfe2ed",
   };
   const [dotValue, setDotValue] = useState<DotValue>(blank);
-
   // function getValueBasedOnIndex(index: number): number {
   //   console.log(index);
   //   switch (index) {
@@ -146,14 +151,19 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
     numbers[previousGuess - 1] !== undefined &&
     numbers[previousGuess - 1] !== null
       ? numbers[previousGuess - 1].color
+      : answerColor
+      ? answerColor
       : color;
+
   const numberToUse =
     previousGuess !== undefined &&
     previousGuess !== null &&
     numbers[previousGuess - 1] !== undefined
       ? numbers[previousGuess - 1].number
+      : answerNumber
+      ? answerNumber
       : "";
-  console.log("colorGreenYellow: " + colorGreenYellow);
+
   return (
     <>
       {active ? (

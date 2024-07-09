@@ -1,10 +1,11 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { GameWinPopup, SingleRound } from "../components";
+import { AnswerAndClock, SingleRound } from "../components";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { StartCard } from "../components/StartCard";
 
 interface GameData {
   id: number;
@@ -14,6 +15,7 @@ interface GameData {
   round: number;
   response: number[];
   sequenceJson: string;
+  sequence: number[];
   guesses: number[][];
   guessesJson: string;
   previousResponses: number[][];
@@ -30,6 +32,10 @@ export const Game = () => {
   );
   const [greenYellowProviderForAllRounds, setGreenYellowProviderForAllRounds] =
     useState<string[][]>([]);
+
+  const [isClockStart, setIsClockStart] = useState<boolean>(false);
+  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true);
+  const [finishZero, setFinishZero] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -104,10 +110,6 @@ export const Game = () => {
           />
         </Grid>
       );
-      console.log(
-        "greenYellowProviderForSingleRound: " +
-          greenYellowProviderForAllRounds[(i - 11) * -1]
-      );
     }
     return rounds;
   };
@@ -130,6 +132,18 @@ export const Game = () => {
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 1, md: 1 }}
         ></Grid>
+        {isStartCardOpen && (
+          <StartCard
+            isStartCardOpen={isStartCardOpen}
+            setIsStartCardOpen={setIsStartCardOpen}
+            setIsClockStart={setIsClockStart}
+          />
+        )}
+        <AnswerAndClock
+          clockStart={isClockStart}
+          setFinishZero={setFinishZero}
+          gameData={gameData ? gameData : undefined}
+        />
         {renderRounds()}
       </Box>
     </Paper>
