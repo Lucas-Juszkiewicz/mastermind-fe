@@ -20,6 +20,7 @@ interface GameData {
   guessesJson: string;
   previousResponses: number[][];
   previousGuesses: number[][];
+  finalMessage: string;
 }
 
 export const Game = () => {
@@ -107,6 +108,7 @@ export const Game = () => {
             greenYellowProviderForSingleRound={
               greenYellowProviderForAllRounds[(i - 11) * -1] ?? []
             }
+            finishZero={finishZero}
           />
         </Grid>
       );
@@ -143,6 +145,7 @@ export const Game = () => {
           clockStart={isClockStart}
           setFinishZero={setFinishZero}
           gameData={gameData ? gameData : undefined}
+          setGameData={setGameData}
         />
         {renderRounds()}
       </Box>

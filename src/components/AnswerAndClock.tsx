@@ -3,6 +3,7 @@ import { RoundedElement } from "./RoundedElement";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
+import axios from "axios";
 
 const numbers = [
   { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
@@ -36,14 +37,16 @@ interface AnswerAndClockProps {
   clockStart: boolean;
   setFinishZero: Function;
   gameData: GameData | undefined;
+  setGameData: Function;
 }
 
 export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   clockStart,
   setFinishZero,
   gameData,
+  setGameData,
 }) => {
-  const [countdown, setCountdown] = useState(1200); // Set initial countdown value
+  const [countdown, setCountdown] = useState(15); // Set initial countdown value
   const [showAnswer, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -101,9 +104,24 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
 
   useEffect(() => {
     if (countdown == 0) {
+      const sendFinishZero = async () => {
+        try {
+          const response = await axios.post(
+            `http://localhost:8080/gameinprogress/finishzero/${gameData?.id}`
+          );
+          setGameData(response.data);
+          setShowAnswerNumber(response.data.sequence);
+          console.log(response.data);
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            // setErrorMessage(error);
+          }
+          // handleOpen();
+        }
+      };
+      sendFinishZero();
       setFinishZero(true);
       setShowAnswerColor(setColor());
-      setShowAnswerNumber(gameData?.sequence);
     }
   }, [countdown]);
 

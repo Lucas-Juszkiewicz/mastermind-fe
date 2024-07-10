@@ -26,6 +26,7 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         GameInProgressDTO
       );
       setGameData(response.data);
+      console.log(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // setErrorMessage(error);
