@@ -96,7 +96,7 @@ export const StartCard: React.FC<StartCardProps> = ({
                 borderRadius: "6px",
               }}
             >
-              OK
+              START
             </Button>
           </CardActions>
         </Card>

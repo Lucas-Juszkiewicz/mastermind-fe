@@ -31,6 +31,23 @@ interface GameData {
   guessesJson: string;
   previousResponses: number[][];
   previousGuesses: number[][];
+  finalMessage: string;
+}
+
+interface FinishZeroResponse {
+  id: number;
+  user: {
+    id: number;
+  };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  isSuccess: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
 }
 
 interface AnswerAndClockProps {
@@ -46,8 +63,10 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   gameData,
   setGameData,
 }) => {
-  const [countdown, setCountdown] = useState(15); // Set initial countdown value
-  const [showAnswer, setShowAnswerColor] = useState<string[]>(
+  const [finishZeroResponse, setFinishZeroResponse] =
+    useState<FinishZeroResponse | null>(null);
+  const [countdown, setCountdown] = useState(25); // Set initial countdown value
+  const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
   const [showAnswerNumber, setShowAnswerNumber] = useState<
@@ -68,7 +87,6 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
         });
       }, 1000);
     }
-    setColor();
     return () => clearInterval(interval);
   }, [clockStart]);
 
@@ -90,28 +108,16 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   // Set sizes based on screen size
   const blueSize = isSmallScreen ? 27 : isMediumScreen ? 25 : 30;
 
-  const setColor = () => {
-    const answer: string[] = [];
-    gameData?.sequence.map((num) => {
-      numbers.map((color) => {
-        if (num == color.number) {
-          answer.push(color.color);
-        }
-      });
-    });
-    return answer;
-  };
-
   useEffect(() => {
     if (countdown == 0) {
       const sendFinishZero = async () => {
         try {
-          const response = await axios.post(
+          const finishZeroResponse = await axios.get(
             `http://localhost:8080/gameinprogress/finishzero/${gameData?.id}`
           );
-          setGameData(response.data);
-          setShowAnswerNumber(response.data.sequence);
-          console.log(response.data);
+          setFinishZeroResponse(finishZeroResponse.data);
+          setShowAnswerNumber(finishZeroResponse.data.sequence);
+          setShowAnswerColor(setColor(finishZeroResponse.data.sequence));
         } catch (error) {
           if (axios.isAxiosError(error)) {
             // setErrorMessage(error);
@@ -121,9 +127,21 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
       };
       sendFinishZero();
       setFinishZero(true);
-      setShowAnswerColor(setColor());
     }
   }, [countdown]);
+
+  const setColor = (sequence: number[]) => {
+    const answer: string[] = [];
+
+    sequence.map((num) => {
+      numbers.map((color) => {
+        if (num == color.number) {
+          answer.push(color.color);
+        }
+      });
+    });
+    return answer;
+  };
 
   return (
     <Box
@@ -142,7 +160,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
           isThisResponse={false}
           key={index}
           color=""
-          answerColor={showAnswer[index]}
+          answerColor={showAnswerColor[index]}
           answerNumber={showAnswerNumber ? showAnswerNumber[index] : undefined}
           size={blueSize}
           active={false}
