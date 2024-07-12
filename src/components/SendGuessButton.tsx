@@ -41,23 +41,8 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         GameInProgressDTO
       );
       setGameData(response.data);
-      console.log(response.data);
 
-      const isItVictory = () => {
-        let isItVictory = true;
-        {
-          guess.map((guessItem) => {
-            response.data.sequence.map((responseItem: number) => {
-              if (guessItem != responseItem) {
-                isItVictory = false;
-              }
-            });
-          });
-        }
-        return isItVictory;
-      };
-
-      if (isItVictory()) {
+      if (response.data.finalMessage === "win") {
         fetchFinishVictory(id);
       }
     } catch (error) {

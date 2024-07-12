@@ -4,6 +4,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import axios from "axios";
+import { count } from "console";
 
 const numbers = [
   { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
@@ -34,38 +35,26 @@ interface GameData {
   finalMessage: string;
 }
 
-interface Game {
-  id: number;
-  user: {
-    id: number;
-  };
-  duration: number;
-  round: number;
-  attempts: number;
-  date: string;
-  points: number;
-  isSuccess: boolean;
-  sequence: number[];
-  guesses: number[][];
-  responses: number[][];
-}
-
 interface AnswerAndClockProps {
-  clockStart: boolean;
+  isClockStart: boolean;
   setFinishZero: Function;
   gameData: GameData | undefined;
   setGameData: Function;
   setFinishZeroResponse: Function;
+  setIsFinishCardOpen: Function;
+  isClockFinish: boolean;
 }
 
 export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
-  clockStart,
+  isClockStart,
   setFinishZero,
   gameData,
   setGameData,
   setFinishZeroResponse,
+  setIsFinishCardOpen,
+  isClockFinish,
 }) => {
-  const [countdown, setCountdown] = useState(25); // Set initial countdown value
+  const [countdown, setCountdown] = useState(50); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -74,10 +63,10 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   >(new Array(7).fill(undefined));
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    if (!isClockStart) return; // Do nothing if clockStart is false
 
-    if (clockStart) {
-      interval = setInterval(() => {
+    if (!isClockFinish) {
+      const interval = setInterval(() => {
         setCountdown((prevCountdown) => {
           if (prevCountdown <= 1) {
             clearInterval(interval);
@@ -86,9 +75,10 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
           return prevCountdown - 1;
         });
       }, 1000);
+
+      return () => clearInterval(interval); // Cleanup interval on component unmount or clockStart change
     }
-    return () => clearInterval(interval);
-  }, [clockStart]);
+  }, [isClockStart, isClockFinish]);
 
   // Helper function to format time as mm:ss
   const formatTime = (seconds: number): string => {
@@ -127,6 +117,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
       };
       sendFinishZero();
       setFinishZero(true);
+      setIsFinishCardOpen(true);
     }
   }, [countdown]);
 
