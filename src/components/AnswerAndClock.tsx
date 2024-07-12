@@ -34,7 +34,7 @@ interface GameData {
   finalMessage: string;
 }
 
-interface FinishZeroResponse {
+interface Game {
   id: number;
   user: {
     id: number;
@@ -55,6 +55,7 @@ interface AnswerAndClockProps {
   setFinishZero: Function;
   gameData: GameData | undefined;
   setGameData: Function;
+  setFinishZeroResponse: Function;
 }
 
 export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
@@ -62,9 +63,8 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   setFinishZero,
   gameData,
   setGameData,
+  setFinishZeroResponse,
 }) => {
-  const [finishZeroResponse, setFinishZeroResponse] =
-    useState<FinishZeroResponse | null>(null);
   const [countdown, setCountdown] = useState(25); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
@@ -113,7 +113,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
       const sendFinishZero = async () => {
         try {
           const finishZeroResponse = await axios.get(
-            `http://localhost:8080/gameinprogress/finishzero/${gameData?.id}`
+            `http://localhost:8080/game/finishzero/${gameData?.id}`
           );
           setFinishZeroResponse(finishZeroResponse.data);
           setShowAnswerNumber(finishZeroResponse.data.sequence);

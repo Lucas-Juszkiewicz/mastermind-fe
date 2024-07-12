@@ -7,6 +7,22 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { StartCard } from "../components/StartCard";
 
+interface Game {
+  id: number;
+  user: {
+    id: number;
+  };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  isSuccess: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
+}
+
 interface GameData {
   id: number;
   userId: number;
@@ -37,6 +53,10 @@ export const Game = () => {
   const [isClockStart, setIsClockStart] = useState<boolean>(false);
   const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true);
   const [finishZero, setFinishZero] = useState<boolean>(false);
+  const [finishVictory, setFinishVictory] = useState<Game>();
+  const [finishZeroResponse, setFinishZeroResponse] = useState<Game | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -109,6 +129,7 @@ export const Game = () => {
               greenYellowProviderForAllRounds[(i - 11) * -1] ?? []
             }
             finishZero={finishZero}
+            setFinishVictory={setFinishVictory}
           />
         </Grid>
       );
@@ -146,6 +167,7 @@ export const Game = () => {
           setFinishZero={setFinishZero}
           gameData={gameData ? gameData : undefined}
           setGameData={setGameData}
+          setFinishZeroResponse={setFinishZeroResponse}
         />
         {renderRounds()}
       </Box>

@@ -1,22 +1,37 @@
-import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import React from "react";
 interface SendGuessButtonProps {
-  id: Number;
+  id: number;
   guess: (number | undefined)[];
   round: Number;
   setGameData: Function;
+  setFinishVictory: Function;
 }
+
 export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   id,
   guess,
   round,
   setGameData,
+  setFinishVictory,
 }) => {
   const GameInProgressDTO = {
     id: id,
     guess: guess,
+  };
+
+  const fetchFinishVictory = async (gameId: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/game/finishvictory/${gameId}`
+      );
+      setFinishVictory(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // setErrorMessage(error);
+      }
+      // handleOpen();
+    }
   };
 
   const sendGuess = async () => {
@@ -27,6 +42,24 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
       );
       setGameData(response.data);
       console.log(response.data);
+
+      const isItVictory = () => {
+        let isItVictory = true;
+        {
+          guess.map((guessItem) => {
+            response.data.sequence.map((responseItem: number) => {
+              if (guessItem != responseItem) {
+                isItVictory = false;
+              }
+            });
+          });
+        }
+        return isItVictory;
+      };
+
+      if (isItVictory()) {
+        fetchFinishVictory(id);
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // setErrorMessage(error);
