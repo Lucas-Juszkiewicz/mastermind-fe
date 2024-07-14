@@ -55,7 +55,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   setIsFinishCardOpen,
   isClockFinish,
 }) => {
-  const [countdown, setCountdown] = useState(50); // Set initial countdown value
+  const [countdown, setCountdown] = useState(500); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );

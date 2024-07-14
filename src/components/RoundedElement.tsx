@@ -57,38 +57,59 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
     hoverColor: "#dfe2ed",
   };
   const [dotValue, setDotValue] = useState<DotValue>(blank);
-  // function getValueBasedOnIndex(index: number): number {
+  // function getValueBasedOnIndex(index: number): object {
   //   console.log(index);
   //   switch (index) {
   //     case 0:
-  //       return 8;
+  //       return {
+  //         xs: "-5px",
+  //         sm: "-10px",
+  //         md: "-10px",
+  //         lg: "-10px",
+  //         xl: "-10px",
+  //       };
   //     case 1:
-  //       return -22;
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" };
   //     case 2:
-  //       return -60;
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" };
   //     case 3:
-  //       return -95;
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" };
   //     case 4:
-  //       return -127;
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" };
   //     case 5:
-  //       return -163;
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" };
   //     case 6:
-  //       return -197;
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" };
   //     case 7:
-  //       return -232;
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" };
   //     default:
-  //       return 0; // Default case if index is out of specified range
+  //       return { xs: "2px", sm: "1px", md: "1px", lg: "1px", xl: "0.5px" }; // Default case if index is out of specified range
   //   }
   // }
 
   function getValueBasedOnIndex(index: number): object {
     switch (index) {
       case 0:
-        return { xs: "2%", sm: "1%", md: "1%", lg: "1%", xl: "0.5%" };
+        return {
+          verySmall: "0%",
+          xs: "0%",
+          sm: "0%",
+          md: "0%",
+          lg: "0.5%",
+          xl: "0.5%",
+        };
       case 1:
-        return { xs: "-5%", sm: "-3%", md: "-2.5%", lg: "-2%", xl: "-1%" };
+        return {
+          verySmall: "-1%",
+          xs: "-6%",
+          sm: "-3%",
+          md: "-2.5%",
+          lg: "-2%",
+          xl: "-1%",
+        };
       case 2:
         return {
+          verySmall: "-2%",
           xs: "-6%",
           sm: "-8%",
           md: "-6%",
@@ -97,16 +118,25 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
         };
       case 3:
         return {
-          xs: "-6.5%",
+          verySmall: "-2.5%",
+          xs: "-6%",
           sm: "-13%",
           md: "-9.5%",
           lg: "-7.2%",
           xl: "-3.6%",
         };
       case 4:
-        return { xs: "-6.5%", sm: "-18%", md: "-12.5%", lg: "-10%", xl: "-5%" };
+        return {
+          verySmall: "-2.5%",
+          xs: "-6%",
+          sm: "-18%",
+          md: "-12.5%",
+          lg: "-10%",
+          xl: "-5%",
+        };
       case 5:
         return {
+          verySmall: "-2.2%",
           xs: "-6.5%",
           sm: "-22%",
           md: "-16%",
@@ -115,7 +145,8 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
         };
       case 6:
         return {
-          xs: "-6.5%",
+          verySmall: "-2.2%",
+          xs: "-6.6%",
           sm: "-23%",
           md: "-19.5%",
           lg: "-15.5%",
@@ -123,14 +154,22 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
         };
       case 7:
         return {
-          xs: "-6.5%",
+          verySmall: "-2.2%",
+          xs: "-6.7%",
           sm: "-23%",
           md: "-22.8%",
           lg: "-18.1%",
           xl: "-9.05%",
         };
       default:
-        return { xs: "0%", sm: "1%", md: "1%", lg: "1%", xl: "0.5%" };
+        return {
+          verySmall: "0%",
+          xs: "22%",
+          sm: "1%",
+          md: "1%",
+          lg: "1%",
+          xl: "0.5%",
+        };
     }
   }
 
@@ -210,7 +249,14 @@ export const RoundedElement: React.FC<RoundedElementProps> = ({
             onClose={handleClose}
             TransitionComponent={Fade}
             sx={{
-              top: -100,
+              top: {
+                verySmall: -55,
+                xs: -90,
+                sm: -90,
+                md: -90,
+                lg: -85,
+                xl: -100,
+              },
               left: positionX,
               zIndex: 1,
               "& .MuiPaper-root": {

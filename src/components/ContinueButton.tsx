@@ -11,6 +11,7 @@ export const ContinueButton = () => {
         to="/game"
         variant="contained"
         sx={{
+          left: 5,
           padding: {
             xs: "1px",
             sm: "1px",
@@ -41,8 +42,8 @@ export const ContinueButton = () => {
           sx={{
             fontSize: {
               xs: 18,
-              sm: 18,
-              md: 20,
+              sm: 24,
+              md: 24,
               lg: 26,
               xl: 24,
             },
@@ -63,12 +64,11 @@ export const ContinueButton = () => {
             color: "#ffc107",
             pt: {
               xs: 2.5,
-              sm: 93,
-              md: 102,
+              sm: 2.5,
+              md: 2.5,
               lg: 1.7,
               xl: 1.7,
             },
-            pb: "auto",
             margin: 0,
             textAlign: "center",
           }}
