@@ -159,8 +159,8 @@ export const Game = () => {
     <Paper
       elevation={3}
       sx={{
-        margin: "20px auto", // Center the Paper with margin
-        py: "20px",
+        margin: "10px auto", // Center the Paper with margin
+        py: "15px",
         maxWidth: "800px", // Set a maximum width for better readability
         backgroundColor: "#f3f4f6", // Light background color
         borderRadius: "6px", // Rounded corners

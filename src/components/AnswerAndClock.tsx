@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Typography } from "@mui/material";
 import axios from "axios";
 import { count } from "console";
+import { ContinueButton } from "./ContinueButton";
 
 const numbers = [
   { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
@@ -117,7 +118,6 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
       };
       sendFinishZero();
       setFinishZero(true);
-      setIsFinishCardOpen(true);
     }
   }, [countdown]);
 
@@ -166,11 +166,16 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
         justifyContent="center"
         width="37px"
         gap={0}
+        marginTop={1}
         marginLeft={{ xs: 3, sm: 3, md: 4, lg: 5 }}
       >
-        <Typography color={countdown < 60 ? "red" : "#1a237e"}>
-          {formatTime(countdown)}
-        </Typography>
+        {isClockFinish ? (
+          <ContinueButton />
+        ) : (
+          <Typography color={countdown < 60 ? "red" : "#1a237e"}>
+            {formatTime(countdown)}
+          </Typography>
+        )}
       </Box>
     </Box>
   );

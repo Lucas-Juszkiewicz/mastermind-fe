@@ -65,7 +65,7 @@ export const Header = () => {
               fontFamily: "teko, sans-serif",
               color: "#ffca28",
               fontSize: {
-                xs: "1.5rem",
+                xs: "1.55rem",
                 sm: "1.5rem",
                 md: "2.8rem",
                 lg: "2rem",

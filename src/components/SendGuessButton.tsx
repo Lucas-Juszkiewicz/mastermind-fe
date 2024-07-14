@@ -65,7 +65,7 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
             sm: 45,
             md: 50,
             lg: 50,
-            xl: 80,
+            xl: 50,
           },
           width: {
             xs: 70,

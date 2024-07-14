@@ -71,7 +71,7 @@ export const FinishCard: React.FC<FinishCardProps> = ({
         mountOnEnter
         unmountOnExit
       >
-        <Card sx={{ maxWidth: 345, borderRadius: "6px", position: "relative" }}>
+        <Card sx={{ maxWidth: 350, borderRadius: "6px", position: "relative" }}>
           <CardMedia
             sx={{ height: 170, position: "relative" }}
             image={finishGame?.success ? success_img : error2_img}
@@ -93,7 +93,7 @@ export const FinishCard: React.FC<FinishCardProps> = ({
                 px: "60px",
                 py: "20px",
                 borderRadius: "6px",
-                fontSize: { xs: "1.8rem", sm: "1.8rem", md: "2.3rem" },
+                fontSize: { xs: "1.8rem", sm: "1.8rem", md: "1.9rem" },
                 lineHeight: 1.2,
                 whiteSpace: "nowrap",
                 letterSpacing: "0.15em",
@@ -103,7 +103,20 @@ export const FinishCard: React.FC<FinishCardProps> = ({
             </Typography>
           </CardMedia>
           <CardContent>
-            <Typography variant="body1" align="center" paddingTop={2.5}>
+            <Typography
+              variant="body1"
+              align="center"
+              paddingTop={0.5}
+              paddingBottom={2}
+              sx={{
+                fontSize: {
+                  xs: "2rem",
+                  sm: "1.8rem",
+                  md: "2.3rem",
+                  lg: "2.4rem",
+                },
+              }}
+            >
               {success ? cardMessageVictory : cardMessageFail}
             </Typography>
 
@@ -112,26 +125,109 @@ export const FinishCard: React.FC<FinishCardProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                ml: 4, // Margin left to create space between avatar and user data
+                ml: 4,
+                mt: 1,
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Typography variant="body2" sx={{ mr: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mr: 1,
+                    fontSize: {
+                      xs: "1.6rem",
+                      sm: "1.6rem",
+                      md: "1.8rem",
+                      lg: "1.8rem",
+                    },
+                  }}
+                >
                   <strong>Points:</strong>
                 </Typography>
-                <Typography variant="body2">{points || 0}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mr: 1,
+                    fontSize: {
+                      xs: "1.6rem",
+                      sm: "1.6rem",
+                      md: "1.8rem",
+                      lg: "1.8rem",
+                    },
+                  }}
+                >
+                  {Math.round(points) || 0}
+                </Typography>
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Typography variant="body2" sx={{ mr: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 1,
+                  fontSize: {
+                    xs: "1.6rem",
+                    sm: "1.6rem",
+                    md: "1.8rem",
+                    lg: "1.8rem",
+                  },
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mr: 1,
+                    fontSize: {
+                      xs: "1.6rem",
+                      sm: "1.6rem",
+                      md: "1.8rem",
+                      lg: "1.8rem",
+                    },
+                  }}
+                >
                   <strong>Attempts:</strong>
                 </Typography>
-                <Typography variant="body2">{attempts}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mr: 1,
+                    fontSize: {
+                      xs: "1.6rem",
+                      sm: "1.6rem",
+                      md: "1.8rem",
+                      lg: "1.8rem",
+                    },
+                  }}
+                >
+                  {attempts}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Typography variant="body2" sx={{ mr: 1 }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mr: 1,
+                    fontSize: {
+                      xs: "1.6rem",
+                      sm: "1.6rem",
+                      md: "1.8rem",
+                      lg: "1.8rem",
+                    },
+                  }}
+                >
                   <strong>Duration:</strong>
                 </Typography>
-                <Typography variant="body2">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    mr: 1,
+                    fontSize: {
+                      xs: "1.6rem",
+                      sm: "1.6rem",
+                      md: "1.8rem",
+                      lg: "1.8rem",
+                    },
+                  }}
+                >
                   {duration ? formatTime(duration) : "0"}
                 </Typography>
               </Box>
