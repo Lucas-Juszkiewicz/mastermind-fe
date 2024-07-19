@@ -13,7 +13,6 @@ interface UserData {
   nick: string;
   email: string;
   country?: string; // Optional field
-  password: string;
   games?: number; // Optional field
   total?: number; // Optional field
   img?: ArrayBuffer | null; // Optional field for byte array (blob), can be null or ArrayBuffer
