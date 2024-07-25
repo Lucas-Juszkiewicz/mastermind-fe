@@ -13,7 +13,7 @@ interface UserData {
   nick: string;
   email: string;
   country?: string; // Optional field
-  games?: number; // Optional field
+  // games?: number; // Optional field
   total?: number; // Optional field
   img?: ArrayBuffer | null; // Optional field for byte array (blob), can be null or ArrayBuffer
   avatar: number;
@@ -28,7 +28,7 @@ export const UserDetail = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/users/get/${userId}`
+          `http://localhost:8081/users/get/${userId}`
         );
         setUserData(response.data);
         console.log(response.data);
