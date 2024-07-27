@@ -17,7 +17,8 @@ export const AllRoutes = () => {
     <>
       <Routes>
         <Route path="/" element={<Home />}></Route>
-        <Route path="/game/:userId" element={<Game />}></Route>
+        {/* <Route path="/game/:userId" element={<Game />}></Route> */}
+        <Route path="/game" element={<Game />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/rules" element={<Rules />}></Route>

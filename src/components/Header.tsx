@@ -12,7 +12,7 @@ import "../App.css";
 export const Header = () => {
   const navigate = useNavigate();
   const handleLogin = () => {
-    navigate("/login");
+    navigate("/register");
   };
 
   return (
