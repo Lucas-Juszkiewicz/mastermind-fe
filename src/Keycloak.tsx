@@ -8,7 +8,7 @@ const keycloak = new Keycloak({
 
 export const redirectToKeycloak = () => {
   const clientId = "mastermind";
-  const redirectUri = encodeURIComponent("http://localhost:3000/");
+  const redirectUri = encodeURIComponent("http://localhost:3000/login");
   const responseType = "code";
   const scope = encodeURIComponent("openid profile");
   const state = "abcd"; // You can generate a random state for security

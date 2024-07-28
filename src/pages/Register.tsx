@@ -40,7 +40,12 @@ export const Register = () => {
     try {
       const response = await axios.post(
         "http://localhost:8081/users/save",
-        inputs
+        inputs,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       console.log(response.data);
       const userId = response.data.id;

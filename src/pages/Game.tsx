@@ -63,6 +63,11 @@ export const Game = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        if (!keycloak.token) {
+          throw new Error("No token available");
+        } else {
+          console.log("UWAGA" + keycloak.token);
+        }
         const response = await axios.get(
           `http://localhost:8081/gameinprogress/start`,
           {
