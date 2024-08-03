@@ -20,6 +20,7 @@ export const AllRoutes = () => {
         {/* <Route path="/game/:userId" element={<Game />}></Route> */}
         <Route path="/game" element={<Game />}></Route>
         <Route path="/login" element={<Login />}></Route>
+        <Route path="/home" element={<Home />}></Route>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/rules" element={<Rules />}></Route>
         <Route path="/about" element={<About />}></Route>

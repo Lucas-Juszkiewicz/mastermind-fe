@@ -40,16 +40,11 @@ export const Register = () => {
     try {
       const response = await axios.post(
         "http://localhost:8081/users/save",
-        inputs,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        inputs
       );
       console.log(response.data);
       const userId = response.data.id;
-      redirectToKeycloak();
+      // redirectToKeycloak();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error);

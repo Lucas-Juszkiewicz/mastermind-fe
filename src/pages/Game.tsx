@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { StartCard } from "../components/StartCard";
 import { FinishCard } from "../components/FinishCard";
 import keycloak from "../Keycloak";
+import { useKeycloak } from "@react-keycloak/web";
 
 interface Game {
   id: number;
@@ -60,19 +61,21 @@ export const Game = () => {
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
 
+  const { keycloak } = useKeycloak();
+
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!keycloak.token) {
+        throw new Error("No token available");
+      } else {
+        console.log("UWAGA" + keycloak.token);
+      }
+
       try {
-        if (!keycloak.token) {
-          throw new Error("No token available");
-        } else {
-          console.log("UWAGA" + keycloak.token);
-        }
         const response = await axios.get(
           `http://localhost:8081/gameinprogress/start`,
           {
             headers: {
-              accept: "application/json",
               authorization: `Bearer ${keycloak.token}`,
             },
           }
@@ -80,9 +83,6 @@ export const Game = () => {
         setGameData(response.data);
         setRound(response.data.round);
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          // setErrorMessage(error);
-        }
         try {
           const profile = await keycloak.loadUserProfile();
           console.log("Retrieved user profile:", profile);
