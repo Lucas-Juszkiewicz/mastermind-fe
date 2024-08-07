@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import avatar from "../assets/0_4.png";
 import Typography from "@mui/material/Typography";
 import { format } from "date-fns";
+import { user } from "../Keycloak";
 
 interface UserData {
   id: number;
@@ -21,14 +22,22 @@ interface UserData {
 }
 
 export const UserDetail = () => {
-  const { userId } = useParams();
+  // const { userId } = useParams();
   const [userData, setUserData] = useState<UserData | null>(null);
+
+  const config = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      authorization: "Bearer " + user.token,
+    },
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/users/get/${userId}`
+          `http://localhost:8081/users/get/${user.id}`,
+          config
         );
         setUserData(response.data);
         console.log(response.data);
@@ -40,7 +49,7 @@ export const UserDetail = () => {
       }
     };
     fetchUserData();
-  }, [userId]);
+  }, []);
 
   if (!userData) {
     return <LinearDeterminate />; // Render loading state until userData is fetched

@@ -1,7 +1,5 @@
 import { Typography, Box, TextField, Button, Paper } from "@mui/material";
-import LoginIcon from "@mui/icons-material/Login";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
 import { ErrorMessageCard } from "../components";
@@ -44,7 +42,7 @@ export const Register = () => {
       );
       console.log(response.data);
       const userId = response.data.id;
-      // redirectToKeycloak();
+      redirectToKeycloak();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error);

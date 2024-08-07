@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import axios from "axios";
+import { user } from "../Keycloak";
 interface SendGuessButtonProps {
   id: number;
   guess: (number | undefined)[];
@@ -20,10 +21,25 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
     guess: guess,
   };
 
+  const configFetchFinishVictory = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      authorization: "Bearer " + user.token,
+    },
+  };
+
+  const configSendGuess = {
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + user.token,
+    },
+  };
+
   const fetchFinishVictory = async (gameId: number) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/game/finishvictory/${gameId}`
+        `http://localhost:8081/game/finishvictory/${gameId}`,
+        configFetchFinishVictory
       );
       setFinishVictory(response.data);
     } catch (error) {
@@ -37,11 +53,11 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   const sendGuess = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/gameinprogress/check`,
-        GameInProgressDTO
+        `http://localhost:8081/gameinprogress/check`,
+        GameInProgressDTO,
+        configSendGuess
       );
       setGameData(response.data);
-
       if (response.data.finalMessage === "win") {
         fetchFinishVictory(id);
       }

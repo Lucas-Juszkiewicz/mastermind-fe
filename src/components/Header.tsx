@@ -1,12 +1,10 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import Logo from "../assets/logo.png";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Menu } from "./Menu";
-import { useState } from "react";
 import "../App.css";
 
 export const Header = () => {
