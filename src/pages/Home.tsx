@@ -1,7 +1,7 @@
 import { Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import axios from "axios";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getToken } from "../Keycloak";
 
 interface User {
@@ -13,6 +13,7 @@ interface User {
 
 export const Home = () => {
   // const { user, setUser } = useContext(UserContext);
+  const [authCode, setAuthCode] = useState<string>("");
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const authCode: string | null = urlParams.get("code"),
@@ -27,6 +28,7 @@ export const Home = () => {
     } else {
       console.log("State: " + state + "Auth code: " + authCode);
       if (authCode != null) {
+        setAuthCode(authCode);
         getToken(authCode);
       }
     }

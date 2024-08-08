@@ -11,6 +11,7 @@ import {
   UserDetail,
   PageNotFound,
 } from "../pages";
+import { PreStarter } from "../pages/PreStarter";
 
 export const AllRoutes = () => {
   return (
@@ -19,6 +20,7 @@ export const AllRoutes = () => {
         <Route path="/" element={<Home />}></Route>
         {/* <Route path="/game/:userId" element={<Game />}></Route> */}
         <Route path="/game" element={<Game />}></Route>
+        <Route path="/preStarter" element={<PreStarter />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/home" element={<Home />}></Route>
         <Route path="/register" element={<Register />}></Route>

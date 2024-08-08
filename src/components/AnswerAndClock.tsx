@@ -56,7 +56,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   setIsFinishCardOpen,
   isClockFinish,
 }) => {
-  const [countdown, setCountdown] = useState(500); // Set initial countdown value
+  const [countdown, setCountdown] = useState(15); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -112,7 +112,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
       const sendFinishZero = async () => {
         try {
           const finishZeroResponse = await axios.get(
-            `http://localhost:8080/game/finishzero/${gameData?.id}`,
+            `http://localhost:8081/game/finishzero/${gameData?.id}`,
             config
           );
           setFinishZeroResponse(finishZeroResponse.data);

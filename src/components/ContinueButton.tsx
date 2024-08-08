@@ -1,14 +1,17 @@
 import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const ContinueButton = () => {
+  const navigate = useNavigate();
+  const handleOnClick = () => {
+    navigate("/preStarter");
+  };
+
   return (
     <div>
       <Button
-        // onClick={setIsFinishCardOpen(true)}
-        component={Link}
-        to="/game"
+        onClick={handleOnClick}
         variant="contained"
         sx={{
           left: 5,
