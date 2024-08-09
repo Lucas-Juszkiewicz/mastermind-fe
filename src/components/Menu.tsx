@@ -72,15 +72,22 @@ export const Menu = () => {
               },
               color: "#ffca28",
               fontFamily: "teko, sans-serif",
-              fontSize: { xs: "1rem", sm: "1.8rem", md: "2.3rem" },
+              fontSize: {
+                xs: "1rem",
+                sm: "1.8rem",
+                md: "3.3rem",
+                lg: "2.35rem",
+                xl: "2.9rem",
+              },
             }}
           >
             Menu
           </Typography>
           <MenuIcon
             sx={{
+              pb: "10px",
               color: "#ffca28",
-              fontSize: { xs: "1.5rem", sm: "1.5rem", md: "2.3rem" },
+              fontSize: { xs: "1.8rem", sm: "1.5rem", md: "2.3rem" },
               display: { xs: "block", sm: "none" },
             }}
           />
@@ -92,6 +99,7 @@ export const Menu = () => {
           placement="bottom-start"
           transition
           disablePortal
+          style={{ zIndex: 1500 }}
         >
           {({ TransitionProps, placement }) => (
             <Grow
@@ -101,7 +109,11 @@ export const Menu = () => {
                   placement === "bottom-start" ? "left top" : "left bottom",
               }}
             >
-              <Paper sx={{ backgroundColor: "#d7dae0" }}>
+              <Paper
+                sx={{
+                  backgroundColor: "#f3f4f6",
+                }}
+              >
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList
                     autoFocusItem={open}

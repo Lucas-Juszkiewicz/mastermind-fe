@@ -1,8 +1,38 @@
 import { Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { getToken } from "../Keycloak";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  token: string;
+}
 
 export const Home = () => {
+  // const { user, setUser } = useContext(UserContext);
+  const [authCode, setAuthCode] = useState<string>("");
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode: string | null = urlParams.get("code"),
+      state = urlParams.get("state"),
+      error = urlParams.get("error"),
+      errorDescription = urlParams.get("error_description");
+
+    if (error) {
+      console.log(
+        "Name of error: " + error + "Description: " + errorDescription
+      );
+    } else {
+      console.log("State: " + state + "Auth code: " + authCode);
+      if (authCode != null) {
+        setAuthCode(authCode);
+        getToken(authCode);
+      }
+    }
+  }, []);
   return (
     <Paper
       elevation={3}
@@ -11,18 +41,11 @@ export const Home = () => {
         p: "56px",
         maxWidth: "800px", // Set a maximum width for better readability
         backgroundColor: "#f3f4f6", // Light background color
-        borderRadius: "8px", // Rounded corners
+        borderRadius: "6px", // Rounded corners
         border: "1px solid #ddd",
       }}
     >
-      <Typography
-        variant="h1"
-        sx={{
-          fontSize: { xs: "1rem", sm: "1.5rem", md: "2rem" }, // Responsive font size
-          lineHeight: 1.5, // Adjust line height for readability
-          // marginBottom: 2, // Space after the heading
-        }}
-      >
+      <Typography variant="body2">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
         maiores, ducimus aspernatur dolores adipisci eaque incidunt dolore
         veritatis, sunt inventore suscipit nemo, libero ab optio aliquid!
