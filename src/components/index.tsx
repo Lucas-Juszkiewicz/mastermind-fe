@@ -8,3 +8,5 @@ export { RoundedElement } from "./RoundedElement";
 export { SingleRound } from "./SingleRound";
 export { GameWinPopup } from "./GameWinPopup";
 export { SendGuessButton } from "./SendGuessButton";
+export { AnswerAndClock } from "./AnswerAndClock";
+export { ContinueButton } from "./ContinueButton";

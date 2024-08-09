@@ -1,10 +1,28 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
-import { GameWinPopup, SingleRound } from "../components";
+import { AnswerAndClock, SingleRound } from "../components";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { StartCard } from "../components/StartCard";
+import { FinishCard } from "../components/FinishCard";
+
+interface Game {
+  id: number;
+  user: {
+    id: number;
+  };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  success: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
+}
 
 interface GameData {
   id: number;
@@ -14,10 +32,12 @@ interface GameData {
   round: number;
   response: number[];
   sequenceJson: string;
+  sequence: number[];
   guesses: number[][];
   guessesJson: string;
   previousResponses: number[][];
   previousGuesses: number[][];
+  finalMessage: string;
 }
 
 export const Game = () => {
@@ -30,6 +50,14 @@ export const Game = () => {
   );
   const [greenYellowProviderForAllRounds, setGreenYellowProviderForAllRounds] =
     useState<string[][]>([]);
+
+  const [isClockStart, setIsClockStart] = useState<boolean>(false);
+  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true);
+  const [finishZero, setFinishZero] = useState<boolean>(false);
+  const [finishVictory, setFinishVictory] = useState<Game>();
+  const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
+  const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
+  const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -46,8 +74,10 @@ export const Game = () => {
         // handleOpen();
       }
     };
-    fetchUserData();
-  }, [userId]);
+    if (isClockStart) {
+      fetchUserData();
+    }
+  }, [isClockStart]);
 
   useEffect(() => {
     if (gameData) {
@@ -83,13 +113,28 @@ export const Game = () => {
     setGreenYellowProviderForAllRounds(updatedGreenYellowProviderForAllRounds);
   }, [round, previousResponses]);
 
+  useEffect(() => {
+    if (finishVictory != undefined || finishZeroResponse != null) {
+      setIsClockFinish(true);
+      setIsFinishCardOpen(true);
+    }
+    console.log("FinishVictory in game: " + finishVictory?.success);
+    console.log("FinishZero in game: " + finishZeroResponse?.success);
+  }, [finishVictory, finishZeroResponse]);
+
   const renderRounds = () => {
     const rounds = [];
     for (let i = 0; i < 12; i++) {
       rounds.push(
         <Grid key={i}>
           <SingleRound
-            active={gameData && i == (round - 11) * -1 ? true : false}
+            active={
+              !finishVictory && !finishZero
+                ? gameData && i == (round - 11) * -1
+                  ? true
+                  : false
+                : false
+            }
             id={gameData?.id ?? 0}
             round={gameData?.round ?? 0}
             setGameData={setGameData}
@@ -101,12 +146,10 @@ export const Game = () => {
             greenYellowProviderForSingleRound={
               greenYellowProviderForAllRounds[(i - 11) * -1] ?? []
             }
+            finishZero={finishZero}
+            setFinishVictory={setFinishVictory}
           />
         </Grid>
-      );
-      console.log(
-        "greenYellowProviderForSingleRound: " +
-          greenYellowProviderForAllRounds[(i - 11) * -1]
       );
     }
     return rounds;
@@ -116,8 +159,8 @@ export const Game = () => {
     <Paper
       elevation={3}
       sx={{
-        margin: "20px auto", // Center the Paper with margin
-        py: "20px",
+        margin: "10px auto", // Center the Paper with margin
+        py: "15px",
         maxWidth: "800px", // Set a maximum width for better readability
         backgroundColor: "#f3f4f6", // Light background color
         borderRadius: "6px", // Rounded corners
@@ -130,6 +173,25 @@ export const Game = () => {
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 1, md: 1 }}
         ></Grid>
+        <StartCard
+          isStartCardOpen={isStartCardOpen}
+          setIsStartCardOpen={setIsStartCardOpen}
+          setIsClockStart={setIsClockStart}
+        />
+        <FinishCard
+          isFinishCardOpen={isFinishCardOpen}
+          setIsFinishCardOpen={setIsFinishCardOpen}
+          finishGame={finishZeroResponse ? finishZeroResponse : finishVictory}
+        />
+        <AnswerAndClock
+          isClockStart={isClockStart}
+          setFinishZero={setFinishZero}
+          gameData={gameData ? gameData : undefined}
+          setGameData={setGameData}
+          setFinishZeroResponse={setFinishZeroResponse}
+          setIsFinishCardOpen={setIsFinishCardOpen}
+          isClockFinish={isClockFinish}
+        />
         {renderRounds()}
       </Box>
     </Paper>

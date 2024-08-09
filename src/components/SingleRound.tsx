@@ -11,6 +11,8 @@ interface SingleRoundProps {
   setGameData: Function;
   previousGuesses: number[];
   greenYellowProviderForSingleRound: (string | undefined)[];
+  finishZero: boolean;
+  setFinishVictory: Function;
 }
 
 export const SingleRound: React.FC<SingleRoundProps> = ({
@@ -20,6 +22,8 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
   previousGuesses,
   greenYellowProviderForSingleRound,
   setGameData,
+  finishZero,
+  setFinishVictory,
 }) => {
   useEffect(() => {
     setGuess(new Array(8).fill(undefined));
@@ -96,6 +100,7 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
           guess={guess}
           round={round}
           setGameData={setGameData}
+          setFinishVictory={setFinishVictory}
         ></SendGuessButton>
       ) : (
         <Box display="flex" flexDirection="column" alignItems="center" gap={0}>

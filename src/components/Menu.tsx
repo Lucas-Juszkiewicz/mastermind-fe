@@ -85,6 +85,7 @@ export const Menu = () => {
           </Typography>
           <MenuIcon
             sx={{
+              pb: "10px",
               color: "#ffca28",
               fontSize: { xs: "1.8rem", sm: "1.5rem", md: "2.3rem" },
               display: { xs: "block", sm: "none" },

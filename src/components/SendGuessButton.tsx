@@ -1,22 +1,37 @@
-import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import React from "react";
 interface SendGuessButtonProps {
-  id: Number;
+  id: number;
   guess: (number | undefined)[];
   round: Number;
   setGameData: Function;
+  setFinishVictory: Function;
 }
+
 export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   id,
   guess,
   round,
   setGameData,
+  setFinishVictory,
 }) => {
   const GameInProgressDTO = {
     id: id,
     guess: guess,
+  };
+
+  const fetchFinishVictory = async (gameId: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/game/finishvictory/${gameId}`
+      );
+      setFinishVictory(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // setErrorMessage(error);
+      }
+      // handleOpen();
+    }
   };
 
   const sendGuess = async () => {
@@ -26,6 +41,10 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         GameInProgressDTO
       );
       setGameData(response.data);
+
+      if (response.data.finalMessage === "win") {
+        fetchFinishVictory(id);
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // setErrorMessage(error);
@@ -46,7 +65,7 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
             sm: 45,
             md: 50,
             lg: 50,
-            xl: 80,
+            xl: 50,
           },
           width: {
             xs: 70,

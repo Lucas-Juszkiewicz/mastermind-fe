@@ -40,8 +40,8 @@ export const Login = () => {
     try {
       const response = await axios.post(
         isSignup
-          ? "http://localhost:8080/users/save"
-          : "http://localhost:8080/users/login",
+          ? "http://localhost:8081/users/save"
+          : "http://localhost:8081/users/login",
         inputs
       );
       console.log(response.data);
