@@ -37,6 +37,22 @@ interface GameData {
   finalMessage: string;
 }
 
+interface Game {
+  id: number;
+  user: {
+    id: number;
+  };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  success: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
+}
+
 interface AnswerAndClockProps {
   isClockStart: boolean;
   setFinishZero: Function;
@@ -45,6 +61,7 @@ interface AnswerAndClockProps {
   setFinishZeroResponse: Function;
   setIsFinishCardOpen: Function;
   isClockFinish: boolean;
+  finishVictory: Game | undefined;
 }
 
 export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
@@ -55,8 +72,9 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   setFinishZeroResponse,
   setIsFinishCardOpen,
   isClockFinish,
+  finishVictory
 }) => {
-  const [countdown, setCountdown] = useState(15); // Set initial countdown value
+  const [countdown, setCountdown] = useState(5); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -142,6 +160,13 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
     });
     return answer;
   };
+
+  useEffect(() => {
+if(finishVictory){
+  setShowAnswerNumber(finishVictory.sequence);
+  setShowAnswerColor(setColor(finishVictory.sequence));
+}
+  }, [finishVictory])
 
   return (
     <Box

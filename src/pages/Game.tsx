@@ -63,7 +63,7 @@ export const Game = () => {
   const [isClockStart, setIsClockStart] = useState<boolean>(false);
   const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true);
   const [finishZero, setFinishZero] = useState<boolean>(false);
-  const [finishVictory, setFinishVictory] = useState<Game>();
+  const [finishVictory, setFinishVictory] = useState<Game | undefined>(undefined);
   const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
@@ -75,7 +75,8 @@ export const Game = () => {
 
       const config = {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          // "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
           authorization: "Bearer " + user.token,
         },
       };
@@ -209,6 +210,7 @@ export const Game = () => {
           setFinishZeroResponse={setFinishZeroResponse}
           setIsFinishCardOpen={setIsFinishCardOpen}
           isClockFinish={isClockFinish}
+          finishVictory={finishVictory}
         />
         {renderRounds()}
       </Box>

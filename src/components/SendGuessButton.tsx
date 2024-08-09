@@ -9,6 +9,22 @@ interface SendGuessButtonProps {
   setFinishVictory: Function;
 }
 
+interface GameData {
+  id: number;
+  userId: number;
+  startTime: string;
+  finishTime: string;
+  round: number;
+  response: number[];
+  sequenceJson: string;
+  sequence: number[];
+  guesses: number[][];
+  guessesJson: string;
+  previousResponses: number[][];
+  previousGuesses: number[][];
+  finalMessage: string;
+}
+
 export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   id,
   guess,
@@ -42,6 +58,7 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         configFetchFinishVictory
       );
       setFinishVictory(response.data);
+      console.log("FINISH VICTORY: " + response.data.sequence)
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // setErrorMessage(error);
