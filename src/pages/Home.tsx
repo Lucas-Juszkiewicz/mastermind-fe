@@ -1,8 +1,38 @@
 import { Paper, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { getToken } from "../Keycloak";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  token: string;
+}
 
 export const Home = () => {
+  // const { user, setUser } = useContext(UserContext);
+  const [authCode, setAuthCode] = useState<string>("");
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode: string | null = urlParams.get("code"),
+      state = urlParams.get("state"),
+      error = urlParams.get("error"),
+      errorDescription = urlParams.get("error_description");
+
+    if (error) {
+      console.log(
+        "Name of error: " + error + "Description: " + errorDescription
+      );
+    } else {
+      console.log("State: " + state + "Auth code: " + authCode);
+      if (authCode != null) {
+        setAuthCode(authCode);
+        getToken(authCode);
+      }
+    }
+  }, []);
   return (
     <Paper
       elevation={3}

@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { StartCard } from "../components/StartCard";
 import { FinishCard } from "../components/FinishCard";
+import { useKeycloak } from "@react-keycloak/web";
+import { user } from "../Keycloak";
 
 interface Game {
   id: number;
@@ -40,6 +42,13 @@ interface GameData {
   finalMessage: string;
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  token: string;
+}
+
 export const Game = () => {
   const { userId } = useParams();
   const [gameData, setGameData] = useState<GameData | null>(null);
@@ -61,19 +70,28 @@ export const Game = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      console.log("UserID: " + user.id);
+      console.log("Bearer " + user.token);
+
+      const config = {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          authorization: "Bearer " + user.token,
+        },
+      };
+
       try {
         const response = await axios.get(
-          `http://localhost:8080/gameinprogress/start/${userId}`
+          `http://localhost:8081/gameinprogress/start`,
+          config
         );
         setGameData(response.data);
         setRound(response.data.round);
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          // setErrorMessage(error);
-        }
-        // handleOpen();
+        console.error("Failed to load user profile:", error);
       }
     };
+
     if (isClockStart) {
       fetchUserData();
     }

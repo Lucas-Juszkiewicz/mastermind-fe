@@ -6,6 +6,7 @@ import { Typography } from "@mui/material";
 import axios from "axios";
 import { count } from "console";
 import { ContinueButton } from "./ContinueButton";
+import { user } from "../Keycloak";
 
 const numbers = [
   { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
@@ -55,7 +56,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   setIsFinishCardOpen,
   isClockFinish,
 }) => {
-  const [countdown, setCountdown] = useState(500); // Set initial countdown value
+  const [countdown, setCountdown] = useState(15); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -99,12 +100,20 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   // Set sizes based on screen size
   const blueSize = isSmallScreen ? 27 : isMediumScreen ? 25 : 30;
 
+  const config = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      authorization: "Bearer " + user.token,
+    },
+  };
+
   useEffect(() => {
     if (countdown == 0) {
       const sendFinishZero = async () => {
         try {
           const finishZeroResponse = await axios.get(
-            `http://localhost:8080/game/finishzero/${gameData?.id}`
+            `http://localhost:8081/game/finishzero/${gameData?.id}`,
+            config
           );
           setFinishZeroResponse(finishZeroResponse.data);
           setShowAnswerNumber(finishZeroResponse.data.sequence);

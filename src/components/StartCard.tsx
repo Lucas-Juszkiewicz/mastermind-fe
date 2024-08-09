@@ -23,6 +23,7 @@ export const StartCard: React.FC<StartCardProps> = ({
 }) => {
   return (
     <Backdrop
+      aria-hidden="false"
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       open={isStartCardOpen}
       // onClick={handleClose}
