@@ -32,13 +32,20 @@ export const Register = () => {
     }));
   };
 
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
       const response = await axios.post(
         "http://localhost:8081/users/save",
-        inputs
+        inputs,
+        config
       );
       console.log(response.data);
       const userId = response.data.id;
