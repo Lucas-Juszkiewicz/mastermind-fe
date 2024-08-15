@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Paper from "@mui/material/Paper";
@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import avatar from "../assets/0_4.png";
 import Typography from "@mui/material/Typography";
 import { format } from "date-fns";
-import { user } from "../Keycloak";
+import { UserAuthContext } from '../UserAuthProvider';
 
 interface UserData {
   id: number;
@@ -24,11 +24,16 @@ interface UserData {
 export const UserDetail = () => {
   // const { userId } = useParams();
   const [userData, setUserData] = useState<UserData | null>(null);
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error('useContext must be used within an AuthProvider');
+  }
+  const { userAuth } = userAuthContext;
 
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      authorization: "Bearer " + user.token,
+      authorization: "Bearer " + userAuth.token,
     },
   };
 
@@ -36,7 +41,7 @@ export const UserDetail = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/users/get/${user.id}`,
+          `http://localhost:8081/users/get/${userAuth.id}`,
           config
         );
         setUserData(response.data);

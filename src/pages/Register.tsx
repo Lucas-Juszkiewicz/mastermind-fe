@@ -4,11 +4,11 @@ import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
 import { ErrorMessageCard } from "../components";
 import { useNavigate } from "react-router-dom";
-import { redirectToKeycloak } from "../Keycloak";
+import { useAuthMethods } from "../AuthMethodsProvider";
 
 export const Register = () => {
   const [error, setErrorMessage] = useState<AxiosError | null>(null);
-
+  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
   const [openErrorCard, setOpenErrorCard] = React.useState(false);
   const handleClose = () => {
     setOpenErrorCard(false);

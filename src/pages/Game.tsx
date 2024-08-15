@@ -3,12 +3,12 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import { AnswerAndClock, SingleRound } from "../components";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { StartCard } from "../components/StartCard";
 import { FinishCard } from "../components/FinishCard";
-import { useKeycloak } from "@react-keycloak/web";
-import { user } from "../Keycloak";
+import { UserAuthContext } from '../UserAuthProvider';
+import { useAuthMethods } from "../AuthMethodsProvider";
 
 interface Game {
   id: number;
@@ -50,7 +50,7 @@ interface User {
 }
 
 export const Game = () => {
-  const { userId } = useParams();
+  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [round, setRound] = useState<number>(0);
   const [previousGuesses, setPreviousGuesses] = useState<number[][] | null>([]);
@@ -68,16 +68,25 @@ export const Game = () => {
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
 
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error('useContext must be used within an AuthProvider');
+  }
+  const { userAuth } = userAuthContext;
+
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log("UserID: " + user.id);
-      console.log("Bearer " + user.token);
-
+      console.log("UserID: " + userAuth.id);
+      console.log("Bearer " + userAuth.token);
+if(!isTokenValid(userAuth.tokenExp)){
+  refreshAccessToken();
+  console.log("Refreshed " + userAuth.token);
+}
       const config = {
         headers: {
           // "Content-Type": "application/x-www-form-urlencoded",
           "Content-Type": "application/json",
-          authorization: "Bearer " + user.token,
+          authorization: "Bearer " + userAuth.token,
         },
       };
 

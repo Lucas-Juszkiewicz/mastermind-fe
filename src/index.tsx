@@ -7,6 +7,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import Theme from "./Theme";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./Keycloak";
+import { UserAuthProvider } from "./UserAuthProvider";
+import { AuthMethodsProvider } from "./AuthMethodsProvider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,6 +16,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <ReactKeycloakProvider authClient={keycloak}>
+    <UserAuthProvider>
+      <AuthMethodsProvider>
     {/* <React.StrictMode> */}
     <ThemeProvider theme={Theme}>
       <BrowserRouter>
@@ -21,5 +25,7 @@ root.render(
       </BrowserRouter>
     </ThemeProvider>
     {/* </React.StrictMode> */}
+    </AuthMethodsProvider>
+    </UserAuthProvider>
   </ReactKeycloakProvider>
 );

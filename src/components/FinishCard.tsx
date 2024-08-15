@@ -56,7 +56,7 @@ export const FinishCard: React.FC<FinishCardProps> = ({
   const points = finishGame?.points ?? 0;
   const attempts = finishGame?.attempts ?? 0;
 
-  console.log("Finish card items: " + duration + success + points + attempts);
+  // console.log("Finish card items: " + duration + success + points + attempts);
 
   return (
     <Backdrop

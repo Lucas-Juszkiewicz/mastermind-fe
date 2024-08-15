@@ -1,6 +1,8 @@
 import Button from "@mui/material/Button";
 import axios from "axios";
-import { user } from "../Keycloak";
+import { UserAuthContext } from '../UserAuthProvider';
+import { useContext } from "react";
+
 interface SendGuessButtonProps {
   id: number;
   guess: (number | undefined)[];
@@ -32,6 +34,12 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   setGameData,
   setFinishVictory,
 }) => {
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error('useContext must be used within an AuthProvider');
+  }
+  const { userAuth } = userAuthContext;
+
   const GameInProgressDTO = {
     id: id,
     guess: guess,
@@ -40,14 +48,14 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   const configFetchFinishVictory = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      authorization: "Bearer " + user.token,
+      authorization: "Bearer " + userAuth.token,
     },
   };
 
   const configSendGuess = {
     headers: {
       "Content-Type": "application/json",
-      authorization: "Bearer " + user.token,
+      authorization: "Bearer " + userAuth.token,
     },
   };
 

@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import { RoundedElement } from "./RoundedElement";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Typography } from "@mui/material";
 import axios from "axios";
-import { count } from "console";
+import { useAuthMethods } from "../AuthMethodsProvider";
 import { ContinueButton } from "./ContinueButton";
-import { user } from "../Keycloak";
+import { UserAuthContext } from '../UserAuthProvider';
 
 const numbers = [
   { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
@@ -74,7 +74,13 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   isClockFinish,
   finishVictory
 }) => {
-  const [countdown, setCountdown] = useState(300); // Set initial countdown value
+  const userAuthContext = useContext(UserAuthContext);
+  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
+  if (!userAuthContext) {
+    throw new Error('useContext must be used within an AuthProvider');
+  }
+  const { userAuth } = userAuthContext;
+  const [countdown, setCountdown] = useState(5); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -121,12 +127,16 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      authorization: "Bearer " + user.token,
+      authorization: "Bearer " + userAuth.token,
     },
   };
 
   useEffect(() => {
     if (countdown == 0) {
+      if(!isTokenValid(userAuth.tokenExp)){
+        refreshAccessToken();
+        console.log("Refreshed " + userAuth.token);
+      }
       const sendFinishZero = async () => {
         try {
           const finishZeroResponse = await axios.get(

@@ -1,18 +1,10 @@
 import { Paper, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { getToken } from "../Keycloak";
+import { useEffect, useState } from "react";
+import { useAuthMethods } from "../AuthMethodsProvider";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  token: string;
-}
 
 export const Home = () => {
-  // const { user, setUser } = useContext(UserContext);
+  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
   const [authCode, setAuthCode] = useState<string>("");
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
