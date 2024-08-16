@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 
 interface UserAuth {
     id: string;
@@ -19,6 +19,35 @@ const [userAuth, setUserAuth] = useState<UserAuth>({
     refreshToken: '',
     tokenExp: -1,
   });
+
+  // Decode the token when retrieving it from localStorage
+  useEffect(() => {
+    const storedUserAuth = localStorage.getItem('userAuth');
+    if (storedUserAuth) {
+      const parsedAuth = JSON.parse(storedUserAuth);
+
+      const decodedAuth = {
+        ...parsedAuth,
+        token: atob(parsedAuth.token),
+        refreshToken: atob(parsedAuth.refreshToken),
+      };
+
+      setUserAuth(decodedAuth);
+    }
+  }, []);
+
+  // Encode the token before storing it in localStorage
+  useEffect(() => {
+    if (userAuth.token) {
+      const encodedAuth = {
+        ...userAuth,
+        token: btoa(userAuth.token),
+        refreshToken: btoa(userAuth.refreshToken),
+      };
+
+      localStorage.setItem('userAuth', JSON.stringify(encodedAuth));
+    }
+  }, [userAuth]);
 
   return (
     <UserAuthContext.Provider value={{ userAuth, setUserAuth }}>

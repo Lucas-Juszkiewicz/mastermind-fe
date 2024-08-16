@@ -77,7 +77,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({ childre
         };
         setUserAuth(userAuth);
       }
-        // startCheckingIsTokenValid();
+        startCheckingIsTokenValid();
       } catch (error) {
         console.log("Failed to load token: " + error);
       }
@@ -86,7 +86,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({ childre
       
       const isTokenValid = (tokenExp: number) => {
         const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-        return tokenExp - 10 > currentTime; // Return true if token is still valid
+        return tokenExp - 1 > currentTime; // Return true if token is still valid
       };
       
       const checkTokenValidity = (tokenExp: number) => {
@@ -98,8 +98,9 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({ childre
       };
       
       const startCheckingIsTokenValid = () => {
-        checkTokenValidity(userAuth.tokenExp);
-        const intervalId = setInterval(checkTokenValidity, 30000); // Check every 30 seconds
+        refreshAccessToken();
+        // const intervalId = setInterval(checkTokenValidity, 1500000); // Check every 30 seconds
+        const intervalId = setInterval(checkTokenValidity, 12000); // Check every 30 seconds
         clearInterval(intervalId);
       };
       
@@ -128,19 +129,25 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({ childre
           const token = response.data.access_token;
           const { preferred_username, email, userId, exp } = jwtDecode(token);
           if (exp) {
-          const userAuth = {
+          const userAuth: UserAuth = {
             id: userId,
             nick: preferred_username,
             email: email,
             token: response.data.access_token,
             refreshToken: response.data.refresh_token,
             tokenExp: exp,
-          };
+          }
+          console.log(userAuth.tokenExp)
+          console.log( "Refresh token" + userAuth.refreshToken)
           setUserAuth(userAuth);
-        }
+          console.log("Refreshed UserAuth stored" + userAuth.tokenExp)
+          }else{
+            console.log("Refreshed UserAuth has not been stored")
+          }
           // startCheckingIsTokenValid();
         } catch (error) {
           console.log("Failed to load token: " + error);
+          console.log( "Refresh token" + userAuth.refreshToken)
         }
       };
       
