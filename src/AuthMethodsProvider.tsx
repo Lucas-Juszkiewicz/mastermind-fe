@@ -75,9 +75,13 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({ childre
           refreshToken: response.data.refresh_token,
           tokenExp: exp,
         };
-        setUserAuth(userAuth);
+       setUserAuth(userAuth);
       }
+      if (userAuth.token && userAuth.refreshToken) {
         startCheckingIsTokenValid();
+      }else{
+        startCheckingIsTokenValid(response.data.refresh_token);
+      }
       } catch (error) {
         console.log("Failed to load token: " + error);
       }
@@ -97,19 +101,24 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({ childre
         }
       };
       
-      const startCheckingIsTokenValid = () => {
-        refreshAccessToken();
+      const startCheckingIsTokenValid = (refreshToken?: string) => {
+        if (userAuth.refreshToken){
+          refreshAccessToken();
+        }else {
+          refreshAccessToken(refreshToken);
+        }
+
         // const intervalId = setInterval(checkTokenValidity, 1500000); // Check every 30 seconds
         const intervalId = setInterval(checkTokenValidity, 12000); // Check every 30 seconds
         clearInterval(intervalId);
       };
       
-      const refreshAccessToken = async () => {
+      const refreshAccessToken = async (refreshToken?: string) => {
         const bodyForRefreshToken = {
           grant_type: "refresh_token",
           client_id: "mastermind",
           // client_secret: "6FTAYhfizk346qspsVbkItw4ypXwgC93",
-          refresh_token: userAuth.refreshToken,
+          refresh_token: userAuth.refreshToken ? userAuth.refreshToken : refreshToken,
           // redirect_uri: "http://localhost:3000/home",
           // scope: "read_custom_scope",
         };
@@ -162,7 +171,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({ childre
 export const useAuthMethods = () => {
   const context = useContext(AuthMethodsContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuthMethods must be used within an AuthProvider');
   }
   return context;
 };

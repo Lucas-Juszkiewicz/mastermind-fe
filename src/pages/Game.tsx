@@ -9,6 +9,7 @@ import { StartCard } from "../components/StartCard";
 import { FinishCard } from "../components/FinishCard";
 import { UserAuthContext } from '../UserAuthProvider';
 import { useAuthMethods } from "../AuthMethodsProvider";
+import { useGameData } from "../GameDataProvider";
 
 interface Game {
   id: number;
@@ -51,7 +52,7 @@ interface User {
 
 export const Game = () => {
   const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
-  const [gameData, setGameData] = useState<GameData | null>(null);
+  const { gameData, setGameData } = useGameData();
   const [round, setRound] = useState<number>(0);
   const [previousGuesses, setPreviousGuesses] = useState<number[][] | null>([]);
   const [previousResponses, setPreviousResponses] = useState<number[][] | null>(
@@ -61,7 +62,7 @@ export const Game = () => {
     useState<string[][]>([]);
 
   const [isClockStart, setIsClockStart] = useState<boolean>(false);
-  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true);
+  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true && localStorage.getItem('isGameInProgress')==null);
   const [finishZero, setFinishZero] = useState<boolean>(false);
   const [finishVictory, setFinishVictory] = useState<Game | undefined>(undefined);
   const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
@@ -72,12 +73,20 @@ export const Game = () => {
   if (!userAuthContext) {
     throw new Error('useContext must be used within an AuthProvider');
   }
-  const { userAuth } = userAuthContext;
+  const { userAuth, setUserAuth, fetchGameInProgressAfterRecall } = userAuthContext;
+
+  useEffect(() => {
+    const isGameInProgress = localStorage.getItem("isGameInProgress");
+    if (isGameInProgress) {
+      fetchGameInProgressAfterRecall(userAuth.token);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
       console.log("UserID: " + userAuth.id);
       console.log("Bearer " + userAuth.token);
+      
 if(!isTokenValid(userAuth.tokenExp)){
   refreshAccessToken();
   console.log("Refreshed " + userAuth.token);
@@ -97,12 +106,13 @@ if(!isTokenValid(userAuth.tokenExp)){
         );
         setGameData(response.data);
         setRound(response.data.round);
+        localStorage.setItem('isGameInProgress', 'true');
       } catch (error) {
         console.error("Failed to load user profile:", error);
       }
     };
 
-    if (isClockStart) {
+    if (isClockStart && localStorage.getItem('isGameInProgress')==null) {
       fetchUserData();
     }
   }, [isClockStart]);
@@ -110,8 +120,12 @@ if(!isTokenValid(userAuth.tokenExp)){
   useEffect(() => {
     if (gameData) {
       setRound(gameData.round);
+      console.log(gameData.round)
       setPreviousGuesses(gameData.previousGuesses);
+      console.log(gameData.previousGuesses)
       setPreviousResponses(gameData.previousResponses);
+      console.log(gameData.previousResponses)
+      
     }
   }, [gameData]);
 
@@ -145,6 +159,7 @@ if(!isTokenValid(userAuth.tokenExp)){
     if (finishVictory != undefined || finishZeroResponse != null) {
       setIsClockFinish(true);
       setIsFinishCardOpen(true);
+      localStorage.removeItem('isGameInProgress');
     }
     console.log("FinishVictory in game: " + finishVictory?.success);
     console.log("FinishZero in game: " + finishZeroResponse?.success);
@@ -214,12 +229,13 @@ if(!isTokenValid(userAuth.tokenExp)){
         <AnswerAndClock
           isClockStart={isClockStart}
           setFinishZero={setFinishZero}
-          gameData={gameData ? gameData : undefined}
-          setGameData={setGameData}
           setFinishZeroResponse={setFinishZeroResponse}
           setIsFinishCardOpen={setIsFinishCardOpen}
           isClockFinish={isClockFinish}
           finishVictory={finishVictory}
+          setIsClockStart={setIsClockStart}
+          renderRounds={renderRounds}
+          setPreviousGuesses={setPreviousGuesses}
         />
         {renderRounds()}
       </Box>

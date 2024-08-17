@@ -9,6 +9,7 @@ import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./Keycloak";
 import { UserAuthProvider } from "./UserAuthProvider";
 import { AuthMethodsProvider } from "./AuthMethodsProvider";
+import { GameDataProvider } from "./GameDataProvider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,6 +17,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <ReactKeycloakProvider authClient={keycloak}>
+            <GameDataProvider>
     <UserAuthProvider>
       <AuthMethodsProvider>
     {/* <React.StrictMode> */}
@@ -27,5 +29,6 @@ root.render(
     {/* </React.StrictMode> */}
     </AuthMethodsProvider>
     </UserAuthProvider>
+    </GameDataProvider>
   </ReactKeycloakProvider>
 );

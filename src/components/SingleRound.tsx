@@ -99,7 +99,6 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
           id={id}
           guess={guess}
           round={round}
-          setGameData={setGameData}
           setFinishVictory={setFinishVictory}
         ></SendGuessButton>
       ) : (

@@ -2,12 +2,12 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import { UserAuthContext } from '../UserAuthProvider';
 import { useContext } from "react";
+import { useGameData } from "../GameDataProvider";
 
 interface SendGuessButtonProps {
   id: number;
   guess: (number | undefined)[];
   round: Number;
-  setGameData: Function;
   setFinishVictory: Function;
 }
 
@@ -31,9 +31,9 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   id,
   guess,
   round,
-  setGameData,
   setFinishVictory,
 }) => {
+  const { gameData, setGameData } = useGameData();
   const userAuthContext = useContext(UserAuthContext);
   if (!userAuthContext) {
     throw new Error('useContext must be used within an AuthProvider');

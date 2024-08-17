@@ -7,6 +7,7 @@ import axios from "axios";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { ContinueButton } from "./ContinueButton";
 import { UserAuthContext } from '../UserAuthProvider';
+import { useGameData } from "../GameDataProvider";
 
 const numbers = [
   { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
@@ -56,31 +57,36 @@ interface Game {
 interface AnswerAndClockProps {
   isClockStart: boolean;
   setFinishZero: Function;
-  gameData: GameData | undefined;
-  setGameData: Function;
+  setIsClockStart: Function;
   setFinishZeroResponse: Function;
   setIsFinishCardOpen: Function;
   isClockFinish: boolean;
   finishVictory: Game | undefined;
+  renderRounds: Function;
+  setPreviousGuesses: Function;
 }
 
 export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   isClockStart,
   setFinishZero,
-  gameData,
-  setGameData,
   setFinishZeroResponse,
   setIsFinishCardOpen,
   isClockFinish,
-  finishVictory
+  finishVictory,
+  setIsClockStart,
+  renderRounds,
+  setPreviousGuesses
 }) => {
   const userAuthContext = useContext(UserAuthContext);
   const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
   if (!userAuthContext) {
     throw new Error('useContext must be used within an AuthProvider');
   }
+
+
+  const { gameData, setGameData } = useGameData();
   const { userAuth } = userAuthContext;
-  const [countdown, setCountdown] = useState(5); // Set initial countdown value
+  const [countdown, setCountdown] = useState(60); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -88,10 +94,25 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
     undefined | number[]
   >(new Array(7).fill(undefined));
 
+  useEffect(()=>{
+          if(gameData?.startTime){
+        const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+        const startTime = new Date(gameData.startTime.replace(' ', 'T'));
+        const startTimeInSeconds = Math.floor(startTime.getTime() / 1000);
+        const countdownValue = 60 - (currentTimeInSeconds - startTimeInSeconds)
+        setCountdown(countdownValue)
+        setIsClockStart(true);
+        // renderRounds();
+        console.log("Was thread here?");
+      }
+      console.log("Or there?" + gameData?.startTime);
+  },[gameData])
+
   useEffect(() => {
     if (!isClockStart) return; // Do nothing if clockStart is false
 
     if (!isClockFinish) {
+
       const interval = setInterval(() => {
         setCountdown((prevCountdown) => {
           if (prevCountdown <= 1) {
