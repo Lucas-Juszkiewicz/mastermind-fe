@@ -68,19 +68,37 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
         authorization: "Bearer " + token,
       },
     };
-
     try {
       const response = await axios.get(
         `http://localhost:8081/gameinprogress/get`,
         config
       );
-
       setGameData(response.data);
       console.log(response.data.previousGuesses)
     } catch (error) {
       console.error("Failed to load Game in progress:", error);
     }
   };
+
+ const checkIfGameInProgresExists = async (token: string) => {
+  const config = {
+    headers: {
+      // "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
+      authorization: "Bearer " + token,
+    },
+  };
+  try {
+    const response = await axios.get(
+      `http://localhost:8081/gameinprogress/checkifexists`,
+      config
+    );
+    console.log("doesExists: " + response.data.doesExists)
+    return response.data.doesExists;
+  } catch (error) {
+    console.error("Failed to load Game in progress:", error);
+  }
+};
 
   const refreshAccessToken = async (refreshToken: string) => {
     console.log("Refresh token before: " + userAuth.refreshToken);
@@ -133,7 +151,7 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <UserAuthContext.Provider value={{ userAuth, setUserAuth, fetchGameInProgressAfterRecall }}>
+    <UserAuthContext.Provider value={{ userAuth, setUserAuth, fetchGameInProgressAfterRecall, checkIfGameInProgresExists }}>
       {children}
     </UserAuthContext.Provider>
   );
@@ -144,6 +162,7 @@ const UserAuthContext = createContext<
       userAuth: UserAuth;
       setUserAuth: React.Dispatch<React.SetStateAction<UserAuth>>;
       fetchGameInProgressAfterRecall: (token: string) => Promise<void>;
+      checkIfGameInProgresExists: (token: string) => Promise<boolean>;
     }
   | undefined
 >(undefined);

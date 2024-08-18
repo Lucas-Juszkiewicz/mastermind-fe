@@ -62,7 +62,8 @@ export const Game = () => {
     useState<string[][]>([]);
 
   const [isClockStart, setIsClockStart] = useState<boolean>(false);
-  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true && localStorage.getItem('isGameInProgress')==null);
+  // const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true && localStorage.getItem('isGameInProgress')==null);
+  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(false);
   const [finishZero, setFinishZero] = useState<boolean>(false);
   const [finishVictory, setFinishVictory] = useState<Game | undefined>(undefined);
   const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
@@ -73,12 +74,29 @@ export const Game = () => {
   if (!userAuthContext) {
     throw new Error('useContext must be used within an AuthProvider');
   }
-  const { userAuth, setUserAuth, fetchGameInProgressAfterRecall } = userAuthContext;
+  const { userAuth, setUserAuth, fetchGameInProgressAfterRecall, checkIfGameInProgresExists } = userAuthContext;
 
   useEffect(() => {
     const isGameInProgress = localStorage.getItem("isGameInProgress");
     if (isGameInProgress) {
       fetchGameInProgressAfterRecall(userAuth.token);
+    }else{
+      console.log("isStartCardOpen: " + isStartCardOpen);
+      
+      const checkGameExists = async () => {
+        const isGameInProgressExists = await checkIfGameInProgresExists(userAuth.token);
+        console.log("isGameInProgressExists: " + isGameInProgressExists);
+        setIsStartCardOpen(!isGameInProgressExists);
+        console.log("isStartCardOpen: " + isStartCardOpen);
+        if(isGameInProgressExists){
+          const fetchGameDataHere = async () => {
+            await fetchGameInProgressAfterRecall(userAuth.token);
+            localStorage.setItem('isGameInProgress', 'true');
+          }
+          fetchGameDataHere();
+        }
+      };
+      checkGameExists();
     }
   }, []);
 
