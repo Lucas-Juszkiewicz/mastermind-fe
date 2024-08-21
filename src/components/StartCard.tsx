@@ -9,6 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import success_img from "../assets/success_img.png";
+import { useNavigate } from "react-router-dom";
 
 interface StartCardProps {
   isStartCardOpen: boolean;
@@ -21,6 +22,7 @@ export const StartCard: React.FC<StartCardProps> = ({
   isStartCardOpen,
   setIsClockStart,
 }) => {
+  const navigate = useNavigate();
   return (
     <Backdrop
       aria-hidden="false"
@@ -75,7 +77,9 @@ export const StartCard: React.FC<StartCardProps> = ({
           <CardActions
             sx={{
               display: "flex",
+              flexDirection: "column",
               justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <Button
@@ -98,6 +102,28 @@ export const StartCard: React.FC<StartCardProps> = ({
               }}
             >
               START
+            </Button>
+            <Button
+              variant="contained"
+              size="medium"
+              onClick={() => {
+                setIsStartCardOpen(false);
+                navigate("/home");
+              }}
+              sx={{
+                fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
+                lineHeight: 1.5,
+                width: "110px",
+                height: "40px",
+                color: "#3f51b5",
+                backgroundColor: "#ffc107",
+                fontFamily: "teko, sans-serif",
+                paddingTop: 1.5,
+                margin: 1,
+                borderRadius: "6px",
+              }}
+            >
+              BACK
             </Button>
           </CardActions>
         </Card>
