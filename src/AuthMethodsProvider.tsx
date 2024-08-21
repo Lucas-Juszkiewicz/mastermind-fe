@@ -5,7 +5,7 @@ import { UserAuthContext } from "./UserAuthProvider";
 
 interface AuthMethodsContext {
   redirectToKeycloak: () => void;
-  getToken: (authCode: string) => Promise<void>;
+  getToken: (authCode: string) => Promise<string>;
   isTokenValid: (tokenExp: number) => boolean;
   checkTokenValidity: (tokenExp: number) => void;
   startCheckingIsTokenValid: () => void;
@@ -46,7 +46,8 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
     window.location.href = keycloakUrl;
   };
 
-  const getToken = async (authCode: string) => {
+  const getToken = async (authCode: string): Promise<string> => {
+    let token;
     const configForToken = {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -68,7 +69,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
         configForToken
       );
 
-      const token = response.data.access_token;
+      token = response.data.access_token;
       const { preferred_username, email, userId, exp } = jwtDecode(token);
       if (exp) {
         const userAuth = {
@@ -79,7 +80,8 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
           refreshToken: response.data.refresh_token,
           tokenExp: exp,
         };
-        setUserAuth(userAuth);
+        await setUserAuth(userAuth);
+        console.log("getToken: " + userAuth.token);
       }
       if (userAuth.token && userAuth.refreshToken) {
         startCheckingIsTokenValid();
@@ -89,6 +91,8 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
     } catch (error) {
       console.log("Failed to load token: " + error);
     }
+    console.log("getToken: " + token);
+    return token;
   };
 
   const isTokenValid = (tokenExp: number) => {

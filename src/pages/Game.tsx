@@ -7,7 +7,7 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { StartCard } from "../components/StartCard";
 import { FinishCard } from "../components/FinishCard";
-import { UserAuthContext } from '../UserAuthProvider';
+import { UserAuthContext } from "../UserAuthProvider";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { useGameData } from "../GameDataProvider";
 
@@ -51,7 +51,14 @@ interface User {
 }
 
 export const Game = () => {
-  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
   const { gameData, setGameData } = useGameData();
   const [round, setRound] = useState<number>(0);
   const [previousGuesses, setPreviousGuesses] = useState<number[][] | null>([]);
@@ -65,34 +72,43 @@ export const Game = () => {
   // const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true && localStorage.getItem('isGameInProgress')==null);
   const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(false);
   const [finishZero, setFinishZero] = useState<boolean>(false);
-  const [finishVictory, setFinishVictory] = useState<Game | undefined>(undefined);
+  const [finishVictory, setFinishVictory] = useState<Game | undefined>(
+    undefined
+  );
   const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
 
   const userAuthContext = useContext(UserAuthContext);
   if (!userAuthContext) {
-    throw new Error('useContext must be used within an AuthProvider');
+    throw new Error("useContext must be used within an AuthProvider");
   }
-  const { userAuth, setUserAuth, fetchGameInProgressAfterRecall, checkIfGameInProgresExists } = userAuthContext;
+  const {
+    userAuth,
+    setUserAuth,
+    fetchGameInProgressAfterRecall,
+    checkIfGameInProgresExists,
+  } = userAuthContext;
 
   useEffect(() => {
     const isGameInProgress = localStorage.getItem("isGameInProgress");
     if (isGameInProgress) {
       fetchGameInProgressAfterRecall(userAuth.token);
-    }else{
+    } else {
       console.log("isStartCardOpen: " + isStartCardOpen);
-      
+
       const checkGameExists = async () => {
-        const isGameInProgressExists = await checkIfGameInProgresExists(userAuth.token);
+        const isGameInProgressExists = await checkIfGameInProgresExists(
+          userAuth.token
+        );
         console.log("isGameInProgressExists: " + isGameInProgressExists);
         setIsStartCardOpen(!isGameInProgressExists);
         console.log("isStartCardOpen: " + isStartCardOpen);
-        if(isGameInProgressExists){
+        if (isGameInProgressExists) {
           const fetchGameDataHere = async () => {
             await fetchGameInProgressAfterRecall(userAuth.token);
-            localStorage.setItem('isGameInProgress', 'true');
-          }
+            localStorage.setItem("isGameInProgress", "true");
+          };
           fetchGameDataHere();
         }
       };
@@ -104,11 +120,11 @@ export const Game = () => {
     const fetchUserData = async () => {
       console.log("UserID: " + userAuth.id);
       console.log("Bearer " + userAuth.token);
-      
-if(!isTokenValid(userAuth.tokenExp)){
-  refreshAccessToken();
-  console.log("Refreshed " + userAuth.token);
-}
+
+      if (!isTokenValid(userAuth.tokenExp)) {
+        refreshAccessToken();
+        console.log("Refreshed " + userAuth.token);
+      }
       const config = {
         headers: {
           // "Content-Type": "application/x-www-form-urlencoded",
@@ -116,21 +132,22 @@ if(!isTokenValid(userAuth.tokenExp)){
           authorization: "Bearer " + userAuth.token,
         },
       };
-
-      try {
-        const response = await axios.get(
-          `http://localhost:8081/gameinprogress/start`,
-          config
-        );
-        setGameData(response.data);
-        setRound(response.data.round);
-        localStorage.setItem('isGameInProgress', 'true');
-      } catch (error) {
-        console.error("Failed to load user profile:", error);
+      if (userAuth.token) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8081/gameinprogress/start`,
+            config
+          );
+          setGameData(response.data);
+          setRound(response.data.round);
+          localStorage.setItem("isGameInProgress", "true");
+        } catch (error) {
+          console.error("Failed to load user profile:", error);
+        }
       }
     };
 
-    if (isClockStart && localStorage.getItem('isGameInProgress')==null) {
+    if (isClockStart && localStorage.getItem("isGameInProgress") == null) {
       fetchUserData();
     }
   }, [isClockStart]);
@@ -138,12 +155,11 @@ if(!isTokenValid(userAuth.tokenExp)){
   useEffect(() => {
     if (gameData) {
       setRound(gameData.round);
-      console.log(gameData.round)
+      console.log(gameData.round);
       setPreviousGuesses(gameData.previousGuesses);
-      console.log(gameData.previousGuesses)
+      console.log(gameData.previousGuesses);
       setPreviousResponses(gameData.previousResponses);
-      console.log(gameData.previousResponses)
-      
+      console.log(gameData.previousResponses);
     }
   }, [gameData]);
 
@@ -177,7 +193,7 @@ if(!isTokenValid(userAuth.tokenExp)){
     if (finishVictory != undefined || finishZeroResponse != null) {
       setIsClockFinish(true);
       setIsFinishCardOpen(true);
-      localStorage.removeItem('isGameInProgress');
+      localStorage.removeItem("isGameInProgress");
     }
     console.log("FinishVictory in game: " + finishVictory?.success);
     console.log("FinishZero in game: " + finishZeroResponse?.success);

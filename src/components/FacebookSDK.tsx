@@ -13,7 +13,7 @@ const FacebookSDK = () => {
     window.fbAsyncInit = function () {
       window.FB.init({
         appId: "1179289206656829",
-        // cookie: true,
+        cookie: true,
         xfbml: true,
         version: "v20.0",
       });

@@ -1,30 +1,99 @@
 import { Paper, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAuthMethods } from "../AuthMethodsProvider";
-
+import { UserAuthContext } from "../UserAuthProvider";
+import axios from "axios";
 
 export const Home = () => {
-  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
   const [authCode, setAuthCode] = useState<string>("");
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const authCode: string | null = urlParams.get("code"),
-      state = urlParams.get("state"),
-      error = urlParams.get("error"),
-      errorDescription = urlParams.get("error_description");
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+  const {
+    userAuth,
+    setUserAuth,
+    fetchGameInProgressAfterRecall,
+    checkIfGameInProgresExists,
+  } = userAuthContext;
 
-    if (error) {
-      console.log(
-        "Name of error: " + error + "Description: " + errorDescription
-      );
-    } else {
-      console.log("State: " + state + "Auth code: " + authCode);
-      if (authCode != null) {
-        setAuthCode(authCode);
-        getToken(authCode);
+  useEffect(() => {
+    const fetchTokenAndCheckUser = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const authCode = urlParams.get("code");
+      const error = urlParams.get("error");
+      const errorDescription = urlParams.get("error_description");
+      if (error) {
+        console.log("Error: " + error + ", Description: " + errorDescription);
+        return;
       }
-    }
+
+      if (authCode) {
+        setAuthCode(authCode);
+
+        try {
+          const token = await getToken(authCode);
+          console.log("Retrieved Token: ", token);
+
+          // Now that you have the token, proceed to check the user
+          await checkUser(token);
+        } catch (tokenError) {
+          console.error("Error retrieving token:", tokenError);
+        }
+      }
+    };
+
+    const checkUser = async (tokenFromHere: string) => {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenFromHere}`,
+        },
+      };
+
+      try {
+        const response = await axios.get(
+          `http://localhost:8081/users/checkifexists`,
+          config
+        );
+        console.log("Exists: ", response.data);
+
+        if (response.data) {
+          const storedUserAuth = localStorage.getItem("userAuth");
+          if (storedUserAuth) {
+            const parsedAuth = JSON.parse(storedUserAuth);
+            setUserAuth({
+              id: response.data.id,
+              nick: parsedAuth.nick,
+              email: parsedAuth.email,
+              token: atob(parsedAuth.token),
+              refreshToken: atob(parsedAuth.refreshToken),
+              tokenExp: parsedAuth.tokenExp,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      }
+    };
+
+    fetchTokenAndCheckUser();
   }, []);
+
+  useEffect(() => {
+    if (userAuth.token) {
+      console.log("userAuth Home: " + userAuth.token);
+    }
+  }, [userAuth]);
+
   return (
     <Paper
       elevation={3}
