@@ -8,17 +8,24 @@ import { Menu } from "./Menu";
 import "../App.css";
 import { useContext, useEffect, useState } from "react";
 import { UserAuthContext } from "../UserAuthProvider";
-import { useKeycloak } from "@react-keycloak/web";
+import { useAuthMethods } from "../AuthMethodsProvider";
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { keycloak } = useKeycloak();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+    logOut,
+  } = useAuthMethods();
 
   const handleLogin = () => {
     if (signInButtonText == " Sign in") {
       navigate("/register");
     } else {
-      navigate("/home");
       setUserAuth({
         id: "",
         nick: "",
@@ -27,10 +34,8 @@ export const Header = () => {
         refreshToken: "",
         tokenExp: -1,
       });
-      localStorage.clear();
-      keycloak.logout({
-        redirectUri: "http://localhost:3000/home",
-      });
+      logOut();
+      navigate("/home");
     }
   };
 

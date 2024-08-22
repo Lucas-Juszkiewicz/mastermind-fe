@@ -11,10 +11,24 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import Typography from "@mui/material/Typography";
+import { useAuthMethods } from "../AuthMethodsProvider";
+import { UserAuthContext } from "../UserAuthProvider";
+import { useContext } from "react";
 
 export const Menu = () => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const { nick } = useAuthMethods();
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+  const {
+    userAuth,
+    setUserAuth,
+    fetchGameInProgressAfterRecall,
+    checkIfGameInProgresExists,
+  } = userAuthContext;
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -49,6 +63,11 @@ export const Menu = () => {
 
     prevOpen.current = open;
   }, [open]);
+
+  const userId = userAuth.id;
+
+  const shouldShowThisItem = userId != "" ? true : false;
+  const myAccountButtonText = nick.length < 1 || nick.length > 7 ? "Me" : nick;
 
   return (
     <Stack direction="row" spacing={2}>
@@ -148,13 +167,20 @@ export const Menu = () => {
                     >
                       Users
                     </MenuItem>
-                    <MenuItem
-                      component={Link}
-                      to="/logout"
-                      onClick={handleClose}
-                    >
-                      Logout
-                    </MenuItem>
+                    {shouldShowThisItem && (
+                      <MenuItem
+                        component={Link}
+                        to="/user"
+                        onClick={handleClose}
+                        sx={{
+                          fontFamily: "Permanent Marker, sans-serif",
+                          fontSize: 26,
+                          mt: -1,
+                        }}
+                      >
+                        {myAccountButtonText}
+                      </MenuItem>
+                    )}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

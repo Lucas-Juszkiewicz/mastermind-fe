@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { UserAuthContext } from "../UserAuthProvider";
 import axios from "axios";
+import { GoodbyeCard } from "../components/GoodbyeCard";
 
 export const Home = () => {
   const {
@@ -12,6 +13,9 @@ export const Home = () => {
     isTokenValid,
     checkTokenValidity,
     startCheckingIsTokenValid,
+    isGoodbyCardOpen,
+    setIsGoodbyCardOpen,
+    nick,
   } = useAuthMethods();
   const [authCode, setAuthCode] = useState<string>("");
   const userAuthContext = useContext(UserAuthContext);
@@ -106,6 +110,11 @@ export const Home = () => {
         border: "1px solid #ddd",
       }}
     >
+      <GoodbyeCard
+        isGoodbyeCardOpen={isGoodbyCardOpen}
+        setIsGoodbyeCardOpen={setIsGoodbyCardOpen}
+        nick={nick}
+      />
       <Typography variant="body2">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
         maiores, ducimus aspernatur dolores adipisci eaque incidunt dolore

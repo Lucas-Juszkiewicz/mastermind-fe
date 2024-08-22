@@ -1,6 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { UserAuthContext } from "./UserAuthProvider";
 
 interface AuthMethodsContext {
@@ -10,6 +10,10 @@ interface AuthMethodsContext {
   checkTokenValidity: (tokenExp: number) => void;
   startCheckingIsTokenValid: () => void;
   refreshAccessToken: () => Promise<void>;
+  logOut: () => Promise<void>;
+  isGoodbyCardOpen: boolean;
+  setIsGoodbyCardOpen: (arg0: boolean) => void;
+  nick: string;
 }
 export const AuthMethodsContext = createContext<AuthMethodsContext | undefined>(
   undefined
@@ -46,6 +50,9 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
     window.location.href = keycloakUrl;
   };
 
+  const [isGoodbyCardOpen, setIsGoodbyCardOpen] = useState(false);
+  const [nick, setNick] = useState("");
+
   const getToken = async (authCode: string): Promise<string> => {
     let token;
     const configForToken = {
@@ -81,6 +88,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
           tokenExp: exp,
         };
         await setUserAuth(userAuth);
+        setNick(userAuth.nick);
         console.log("getToken: " + userAuth.token);
       }
       if (userAuth.token && userAuth.refreshToken) {
@@ -169,6 +177,33 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const logOut = async () => {
+    const bodyForLogOut = {
+      client_id: "mastermind",
+      client_secret: "6FTAYhfizk346qspsVbkItw4ypXwgC93",
+      refresh_token: userAuth.refreshToken,
+    };
+    const configForLogOut = {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + userAuth.token,
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/realms/mastermind/protocol/openid-connect/logout",
+        bodyForLogOut,
+        configForLogOut
+      );
+      localStorage.clear();
+      setNick(userAuth.nick);
+      setIsGoodbyCardOpen(true);
+    } catch (error) {
+      console.log("Something gonne wrong: " + error);
+    }
+  };
+
   return (
     <AuthMethodsContext.Provider
       value={{
@@ -178,6 +213,10 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
         isTokenValid,
         checkTokenValidity,
         startCheckingIsTokenValid,
+        logOut,
+        isGoodbyCardOpen,
+        setIsGoodbyCardOpen,
+        nick,
       }}
     >
       {children}
