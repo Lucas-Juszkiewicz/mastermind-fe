@@ -1,5 +1,5 @@
 import { Typography, Box, TextField, Button, Paper } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
 import { ErrorMessageCard } from "../components";
@@ -8,7 +8,14 @@ import { useAuthMethods } from "../AuthMethodsProvider";
 
 export const Register = () => {
   const [error, setErrorMessage] = useState<AxiosError | null>(null);
-  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
   const [openErrorCard, setOpenErrorCard] = React.useState(false);
   const handleClose = () => {
     setOpenErrorCard(false);
@@ -58,8 +65,11 @@ export const Register = () => {
     }
   };
 
-  const resetState = () => {
+  useEffect(() => {
     setInputs({ nick: "", email: "", password: "", id: null });
+  }, []);
+
+  const goToLogin = () => {
     redirectToKeycloak();
   };
 
@@ -199,7 +209,7 @@ export const Register = () => {
               borderRadius: "6px",
               ":hover": { backgroundColor: "#f9a825" },
             }}
-            onClick={resetState}
+            onClick={goToLogin}
           >
             Click to Login
           </Button>

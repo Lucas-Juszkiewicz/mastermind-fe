@@ -23,8 +23,9 @@ export const Header = () => {
   } = useAuthMethods();
 
   const handleLogin = () => {
-    if (signInButtonText == " Sign in") {
-      navigate("/register");
+    if (signInButtonText == " Login") {
+      // navigate("/register");
+      redirectToKeycloak();
     } else {
       setUserAuth({
         id: "",
@@ -45,13 +46,13 @@ export const Header = () => {
   }
   const { userAuth, setUserAuth } = userAuthContext;
 
-  const [signInButtonText, setSignInButtonText] = useState("Sign in");
+  const [signInButtonText, setSignInButtonText] = useState("Login");
 
   useEffect(() => {
     if (userAuth.token !== "") {
-      setSignInButtonText("Sign out");
+      setSignInButtonText("Logout");
     } else {
-      setSignInButtonText(" Sign in");
+      setSignInButtonText(" Login");
     }
   }, [userAuth]);
 

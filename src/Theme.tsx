@@ -41,6 +41,10 @@ const Theme = createTheme({
       color: "#ffc107",
       fontFamily: "Permanent Marker, sans-serif", // Custom font family
     },
+    h5: {
+      fontSize: "2.4rem",
+      lineHeight: 1.2,
+    },
     body1: {
       fontSize: "1.9rem",
       lineHeight: 1.2,

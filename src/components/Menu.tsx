@@ -140,9 +140,15 @@ export const Menu = () => {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem component={Link} to="/game" onClick={handleClose}>
-                      Game
-                    </MenuItem>
+                    {shouldShowThisItem && (
+                      <MenuItem
+                        component={Link}
+                        to="/game"
+                        onClick={handleClose}
+                      >
+                        Game
+                      </MenuItem>
+                    )}
                     <MenuItem component={Link} to="/home" onClick={handleClose}>
                       Home
                     </MenuItem>
