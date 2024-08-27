@@ -78,6 +78,9 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
 
       token = response.data.access_token;
       const { preferred_username, email, userId, exp } = jwtDecode(token);
+      if (!userId) {
+        //get user by nick and get userId
+      }
       if (exp) {
         const userAuth = {
           id: userId,
@@ -87,9 +90,10 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
           refreshToken: response.data.refresh_token,
           tokenExp: exp,
         };
-        await setUserAuth(userAuth);
+        setUserAuth(userAuth);
         setNick(userAuth.nick);
         console.log("getToken: " + userAuth.token);
+        console.log("getToken ID: " + userAuth.id);
       }
       if (userAuth.token && userAuth.refreshToken) {
         startCheckingIsTokenValid();
@@ -110,6 +114,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
 
   const checkTokenValidity = (tokenExp: number) => {
     const valid = isTokenValid(tokenExp);
+    console.log("Valid: " + valid);
 
     if (!valid) {
       refreshAccessToken();
@@ -153,6 +158,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
       );
 
       const token = response.data.access_token;
+      console.log("RefreshToken: " + token);
       const { preferred_username, email, userId, exp } = jwtDecode(token);
       if (exp) {
         const userAuth: UserAuth = {
@@ -163,8 +169,8 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
           refreshToken: response.data.refresh_token,
           tokenExp: exp,
         };
-        console.log(userAuth.tokenExp);
-        console.log("Refresh token" + userAuth.refreshToken);
+        // console.log(userAuth.tokenExp);
+        // console.log("Refresh token" + userAuth.refreshToken);
         setUserAuth(userAuth);
         console.log("Refreshed UserAuth stored" + userAuth.tokenExp);
       } else {

@@ -155,11 +155,11 @@ export const Game = () => {
   useEffect(() => {
     if (gameData) {
       setRound(gameData.round);
-      console.log(gameData.round);
+      // console.log(gameData.round);
       setPreviousGuesses(gameData.previousGuesses);
-      console.log(gameData.previousGuesses);
+      // console.log(gameData.previousGuesses);
       setPreviousResponses(gameData.previousResponses);
-      console.log(gameData.previousResponses);
+      // console.log(gameData.previousResponses);
     }
   }, [gameData]);
 

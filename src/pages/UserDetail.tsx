@@ -7,14 +7,14 @@ import Box from "@mui/material/Box";
 import avatar from "../assets/0_4.png";
 import Typography from "@mui/material/Typography";
 import { format } from "date-fns";
-import { UserAuthContext } from '../UserAuthProvider';
+import { UserAuthContext } from "../UserAuthProvider";
 
 interface UserData {
   id: number;
   nick: string;
   email: string;
   country?: string; // Optional field
-  // games?: number; // Optional field
+  games?: number; // Optional field
   total?: number; // Optional field
   img?: ArrayBuffer | null; // Optional field for byte array (blob), can be null or ArrayBuffer
   avatar: number;
@@ -26,7 +26,7 @@ export const UserDetail = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const userAuthContext = useContext(UserAuthContext);
   if (!userAuthContext) {
-    throw new Error('useContext must be used within an AuthProvider');
+    throw new Error("useContext must be used within an AuthProvider");
   }
   const { userAuth } = userAuthContext;
 

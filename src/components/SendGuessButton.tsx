@@ -1,8 +1,10 @@
 import Button from "@mui/material/Button";
 import axios from "axios";
-import { UserAuthContext } from '../UserAuthProvider';
+import { UserAuthContext } from "../UserAuthProvider";
 import { useContext } from "react";
 import { useGameData } from "../GameDataProvider";
+import { useAuthMethods } from "../AuthMethodsProvider";
+import { useNavigate } from "react-router-dom";
 
 interface SendGuessButtonProps {
   id: number;
@@ -33,10 +35,20 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   round,
   setFinishVictory,
 }) => {
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    logOut,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
   const { gameData, setGameData } = useGameData();
   const userAuthContext = useContext(UserAuthContext);
+  const navigate = useNavigate();
   if (!userAuthContext) {
-    throw new Error('useContext must be used within an AuthProvider');
+    throw new Error("useContext must be used within an AuthProvider");
   }
   const { userAuth } = userAuthContext;
 
@@ -66,16 +78,24 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         configFetchFinishVictory
       );
       setFinishVictory(response.data);
-      console.log("FINISH VICTORY: " + response.data.sequence)
+      console.log("FINISH VICTORY: " + response.data.sequence);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // setErrorMessage(error);
+        console.log(error);
       }
       // handleOpen();
     }
   };
 
   const sendGuess = async () => {
+    checkTokenValidity(userAuth.tokenExp);
+    if (!isTokenValid(userAuth.tokenExp)) {
+      logOut();
+      navigate("/home");
+    } else {
+      console.log("Valid w chuj");
+    }
     try {
       const response = await axios.post(
         `http://localhost:8081/gameinprogress/check`,

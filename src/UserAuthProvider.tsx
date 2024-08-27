@@ -34,6 +34,7 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const decodedAuth = {
         ...parsedAuth,
+        id: parsedAuth.userId,
         token: atob(parsedAuth.token),
         refreshToken: atob(parsedAuth.refreshToken),
       };
@@ -52,6 +53,7 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (userAuth.token) {
       const encodedAuth = {
         ...userAuth,
+        id: userAuth.id,
         token: btoa(userAuth.token),
         refreshToken: btoa(userAuth.refreshToken),
       };

@@ -43,7 +43,7 @@ const Theme = createTheme({
     },
     h5: {
       fontSize: "2.4rem",
-      lineHeight: 1.2,
+      lineHeight: 0.95,
     },
     body1: {
       fontSize: "1.9rem",
@@ -52,7 +52,8 @@ const Theme = createTheme({
     body2: {
       fontSize: "1.8rem",
       lineHeight: 1.2,
-      fontFamily: ".lato-regular",
+      // fontFamily: "lato",
+      fontFamily: "rubik, sans-serif",
       "@media (max-width:600px)": {
         fontSize: "1.5rem",
       },

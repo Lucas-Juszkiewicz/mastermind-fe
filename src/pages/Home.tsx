@@ -159,7 +159,8 @@ export const Home = () => {
         gutterBottom
         sx={{
           textAlign: "center",
-          my: "10px",
+          mt: "30px",
+          mb: "20px",
           mx: {
             xs: "0px",
             md: "40px",
@@ -172,7 +173,7 @@ export const Home = () => {
         variant="body2"
         paragraph
         sx={{
-          my: "10px",
+          my: "-10px",
           mx: {
             xs: "0px",
             md: "80px",

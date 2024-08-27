@@ -6,7 +6,7 @@ import { Typography } from "@mui/material";
 import axios from "axios";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { ContinueButton } from "./ContinueButton";
-import { UserAuthContext } from '../UserAuthProvider';
+import { UserAuthContext } from "../UserAuthProvider";
 import { useGameData } from "../GameDataProvider";
 
 const numbers = [
@@ -75,18 +75,24 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   finishVictory,
   setIsClockStart,
   renderRounds,
-  setPreviousGuesses
+  setPreviousGuesses,
 }) => {
   const userAuthContext = useContext(UserAuthContext);
-  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
   if (!userAuthContext) {
-    throw new Error('useContext must be used within an AuthProvider');
+    throw new Error("useContext must be used within an AuthProvider");
   }
-
 
   const { gameData, setGameData } = useGameData();
   const { userAuth } = userAuthContext;
-  const [countdown, setCountdown] = useState(60); // Set initial countdown value
+  const [countdown, setCountdown] = useState(1200); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
@@ -94,25 +100,24 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
     undefined | number[]
   >(new Array(7).fill(undefined));
 
-  useEffect(()=>{
-          if(gameData?.startTime){
-        const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-        const startTime = new Date(gameData.startTime.replace(' ', 'T'));
-        const startTimeInSeconds = Math.floor(startTime.getTime() / 1000);
-        const countdownValue = 60 - (currentTimeInSeconds - startTimeInSeconds)
-        setCountdown(countdownValue)
-        setIsClockStart(true);
-        // renderRounds();
-        console.log("Was thread here?");
-      }
-      console.log("Or there?" + gameData?.startTime);
-  },[gameData])
+  useEffect(() => {
+    if (gameData?.startTime) {
+      const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+      const startTime = new Date(gameData.startTime.replace(" ", "T"));
+      const startTimeInSeconds = Math.floor(startTime.getTime() / 1000);
+      const countdownValue = 1200 - (currentTimeInSeconds - startTimeInSeconds);
+      setCountdown(countdownValue);
+      setIsClockStart(true);
+      // renderRounds();
+      console.log("Was thread here?");
+    }
+    console.log("Or there?" + gameData?.startTime);
+  }, [gameData]);
 
   useEffect(() => {
     if (!isClockStart) return; // Do nothing if clockStart is false
 
     if (!isClockFinish) {
-
       const interval = setInterval(() => {
         setCountdown((prevCountdown) => {
           if (prevCountdown <= 1) {
@@ -154,7 +159,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
 
   useEffect(() => {
     if (countdown == 0) {
-      if(!isTokenValid(userAuth.tokenExp)){
+      if (!isTokenValid(userAuth.tokenExp)) {
         refreshAccessToken();
         console.log("Refreshed " + userAuth.token);
       }
@@ -193,11 +198,11 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   };
 
   useEffect(() => {
-if(finishVictory){
-  setShowAnswerNumber(finishVictory.sequence);
-  setShowAnswerColor(setColor(finishVictory.sequence));
-}
-  }, [finishVictory])
+    if (finishVictory) {
+      setShowAnswerNumber(finishVictory.sequence);
+      setShowAnswerColor(setColor(finishVictory.sequence));
+    }
+  }, [finishVictory]);
 
   return (
     <Box
