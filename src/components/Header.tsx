@@ -28,7 +28,7 @@ export const Header = () => {
       redirectToKeycloak();
     } else {
       setUserAuth({
-        id: "",
+        userId: "",
         nick: "",
         email: "",
         token: "",

@@ -44,7 +44,7 @@ interface GameData {
 }
 
 interface User {
-  id: string;
+  userId: string;
   name: string;
   email: string;
   token: string;
@@ -118,11 +118,11 @@ export const Game = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log("UserID: " + userAuth.id);
+      console.log("UserID: " + userAuth.userId);
       console.log("Bearer " + userAuth.token);
 
       if (!isTokenValid(userAuth.tokenExp)) {
-        refreshAccessToken();
+        refreshAccessToken(userAuth.refreshToken);
         console.log("Refreshed " + userAuth.token);
       }
       const config = {

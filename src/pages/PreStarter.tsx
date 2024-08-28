@@ -2,21 +2,28 @@ import { Paper } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthMethods } from "../AuthMethodsProvider";
-import { UserAuthContext } from '../UserAuthProvider';
+import { UserAuthContext } from "../UserAuthProvider";
 
 export const PreStarter = () => {
-  const { redirectToKeycloak, getToken, refreshAccessToken, isTokenValid, checkTokenValidity, startCheckingIsTokenValid } = useAuthMethods();
-  
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
+
   const userAuthContext = useContext(UserAuthContext);
   if (!userAuthContext) {
-    throw new Error('useContext must be used within an AuthProvider');
+    throw new Error("useContext must be used within an AuthProvider");
   }
-  
+
   const { userAuth } = userAuthContext;
   const navigate = useNavigate();
   useEffect(() => {
-    if(!isTokenValid(userAuth.tokenExp)){
-      refreshAccessToken();
+    if (!isTokenValid(userAuth.tokenExp)) {
+      refreshAccessToken(userAuth.refreshToken);
     }
     navigate("/game");
   }, []);

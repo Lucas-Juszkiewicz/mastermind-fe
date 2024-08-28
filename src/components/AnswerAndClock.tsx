@@ -160,7 +160,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   useEffect(() => {
     if (countdown == 0) {
       if (!isTokenValid(userAuth.tokenExp)) {
-        refreshAccessToken();
+        refreshAccessToken(userAuth.refreshToken);
         console.log("Refreshed " + userAuth.token);
       }
       const sendFinishZero = async () => {

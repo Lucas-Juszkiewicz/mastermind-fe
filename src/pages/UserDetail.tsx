@@ -39,9 +39,10 @@ export const UserDetail = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      console.log(userAuth);
       try {
         const response = await axios.get(
-          `http://localhost:8081/users/get/${userAuth.id}`,
+          `http://localhost:8081/users/get/${userAuth.userId}`,
           config
         );
         setUserData(response.data);

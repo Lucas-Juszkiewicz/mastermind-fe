@@ -64,7 +64,7 @@ export const Menu = () => {
     prevOpen.current = open;
   }, [open]);
 
-  const userId = userAuth.id;
+  const userId = userAuth.userId;
 
   const shouldShowThisItem = userId != "" ? true : false;
   const myAccountButtonText = nick.length < 1 || nick.length > 7 ? "Me" : nick;

@@ -18,6 +18,7 @@ export const Home = () => {
     startCheckingIsTokenValid,
     isGoodbyCardOpen,
     setIsGoodbyCardOpen,
+    // getUserIdIfNotIncludedIInToken,
     nick,
   } = useAuthMethods();
   const theme = useTheme();
@@ -37,7 +38,10 @@ export const Home = () => {
     setUserAuth,
     fetchGameInProgressAfterRecall,
     checkIfGameInProgresExists,
+    checkUser,
   } = userAuthContext;
+
+  const [tokenHere, setTokenHere] = useState("");
 
   useEffect(() => {
     const fetchTokenAndCheckUser = async () => {
@@ -45,6 +49,7 @@ export const Home = () => {
       const authCode = urlParams.get("code");
       const error = urlParams.get("error");
       const errorDescription = urlParams.get("error_description");
+
       if (error) {
         console.log("Error: " + error + ", Description: " + errorDescription);
         return;
@@ -55,58 +60,23 @@ export const Home = () => {
 
         try {
           const token = await getToken(authCode);
-          console.log("Retrieved Token: ", token);
 
+          setTokenHere(token);
           // Now that you have the token, proceed to check the user
-          await checkUser(token);
         } catch (tokenError) {
           console.error("Error retrieving token:", tokenError);
         }
       }
     };
-
-    const checkUser = async (tokenFromHere: string) => {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenFromHere}`,
-        },
-      };
-
-      try {
-        const response = await axios.get(
-          `http://localhost:8081/users/checkifexists`,
-          config
-        );
-        console.log("Exists: ", response.data);
-
-        if (response.data) {
-          const storedUserAuth = localStorage.getItem("userAuth");
-          if (storedUserAuth) {
-            const parsedAuth = JSON.parse(storedUserAuth);
-            setUserAuth({
-              id: response.data.id,
-              nick: parsedAuth.nick,
-              email: parsedAuth.email,
-              token: atob(parsedAuth.token),
-              refreshToken: atob(parsedAuth.refreshToken),
-              tokenExp: parsedAuth.tokenExp,
-            });
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-      }
-    };
-
     fetchTokenAndCheckUser();
+    // getUserIdIfNotIncludedIInToken(userAuth.nick);
   }, []);
 
   useEffect(() => {
-    if (userAuth.token) {
-      console.log("userAuth Home: " + userAuth.token);
+    if (tokenHere != "") {
+      checkUser(tokenHere);
     }
-  }, [userAuth]);
+  }, [tokenHere]);
 
   return (
     <Paper

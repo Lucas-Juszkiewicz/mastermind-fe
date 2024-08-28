@@ -23,7 +23,7 @@ export const Login = () => {
     nick: "",
     email: "",
     password: "",
-    id: null,
+    userId: null,
   });
   const navigate = useNavigate();
 
@@ -57,7 +57,7 @@ export const Login = () => {
 
   const resetState = () => {
     setIsSignup(!isSignup);
-    setInputs({ nick: "", email: "", password: "", id: null });
+    setInputs({ nick: "", email: "", password: "", userId: null });
   };
 
   return (
@@ -161,7 +161,7 @@ export const Login = () => {
             style={{ display: "none" }}
             onChange={handleOnChange}
             name="id"
-            value={inputs.id}
+            value={inputs.userId}
           ></TextField>
           <Button
             type="submit"

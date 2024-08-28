@@ -28,7 +28,7 @@ export const Register = () => {
     nick: "",
     email: "",
     password: "",
-    id: null,
+    userId: null,
   });
   const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ export const Register = () => {
         config
       );
       console.log(response.data);
-      const userId = response.data.id;
+      const userId = response.data.userId;
       redirectToKeycloak();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -66,7 +66,7 @@ export const Register = () => {
   };
 
   useEffect(() => {
-    setInputs({ nick: "", email: "", password: "", id: null });
+    setInputs({ nick: "", email: "", password: "", userId: null });
   }, []);
 
   const goToLogin = () => {
@@ -173,7 +173,7 @@ export const Register = () => {
             style={{ display: "none" }}
             onChange={handleOnChange}
             name="id"
-            value={inputs.id}
+            value={inputs.userId}
           ></TextField>
           <Button
             type="submit"
