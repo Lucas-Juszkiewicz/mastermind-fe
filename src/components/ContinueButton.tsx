@@ -32,11 +32,11 @@ export const ContinueButton = () => {
     navigate("/preStarter");
     checkTokenValidity(userAuth.tokenExp);
     if (!isTokenValid(userAuth.tokenExp)) {
-      logOut();
+      logOut(true);
       navigate("/preStarter");
       navigate("/home");
     } else {
-      console.log("Valid w chuj");
+      // console.log("Valid w chuj");
       navigate("/preStarter");
     }
   };

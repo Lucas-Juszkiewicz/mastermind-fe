@@ -7,6 +7,7 @@ import { GoodbyeCard } from "../components/GoodbyeCard";
 import { useTheme } from "@mui/material/styles";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { AutomaticLogoutCard } from "../components/AutomaticLogoutCard";
 
 export const Home = () => {
   const {
@@ -18,6 +19,8 @@ export const Home = () => {
     startCheckingIsTokenValid,
     isGoodbyCardOpen,
     setIsGoodbyCardOpen,
+    isAutomaticLogoutCardOpen,
+    setIsAutomaticLogoutCardOpen,
     // getUserIdIfNotIncludedIInToken,
     nick,
   } = useAuthMethods();
@@ -97,6 +100,11 @@ export const Home = () => {
       <GoodbyeCard
         isGoodbyeCardOpen={isGoodbyCardOpen}
         setIsGoodbyeCardOpen={setIsGoodbyCardOpen}
+        nick={nick}
+      />
+      <AutomaticLogoutCard
+        isAutomaticLogoutCardOpen={isAutomaticLogoutCardOpen}
+        setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
         nick={nick}
       />
 

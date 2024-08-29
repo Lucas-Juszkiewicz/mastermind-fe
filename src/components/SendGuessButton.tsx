@@ -91,11 +91,10 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   const sendGuess = async () => {
     checkTokenValidity(userAuth.tokenExp);
     if (!isTokenValid(userAuth.tokenExp)) {
-      logOut();
+      logOut(true);
       navigate("/home");
-    } else {
-      console.log("Valid w chuj");
     }
+
     try {
       const response = await axios.post(
         `http://localhost:8081/gameinprogress/check`,

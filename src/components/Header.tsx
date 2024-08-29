@@ -35,7 +35,7 @@ export const Header = () => {
         refreshToken: "",
         tokenExp: -1,
       });
-      logOut();
+      logOut(false);
       navigate("/home");
     }
   };

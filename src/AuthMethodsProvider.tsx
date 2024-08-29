@@ -16,9 +16,11 @@ interface AuthMethodsContext {
   checkTokenValidity: (tokenExp: number) => void;
   startCheckingIsTokenValid: () => void;
   refreshAccessToken: (refreshToken: string) => Promise<void>;
-  logOut: () => Promise<void>;
+  logOut: (isItAutomaticLogoout: boolean) => Promise<void>;
   isGoodbyCardOpen: boolean;
   setIsGoodbyCardOpen: (arg0: boolean) => void;
+  isAutomaticLogoutCardOpen: boolean;
+  setIsAutomaticLogoutCardOpen: (arg0: boolean) => void;
   nick: string;
   // getUserIdIfNotIncludedIInToken: (nick: string) => void;
 }
@@ -59,6 +61,8 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const [isGoodbyCardOpen, setIsGoodbyCardOpen] = useState(false);
+  const [isAutomaticLogoutCardOpen, setIsAutomaticLogoutCardOpen] =
+    useState(false);
   const [nick, setNick] = useState("");
   const [token, setToken] = useState("");
   const [refreshToken, setRefreshToken] = useState("");
@@ -186,8 +190,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const startCheckingIsTokenValid = (refreshToken?: string) => {
-    // const intervalId = setInterval(checkTokenValidity, 1500000); // Check every 30 seconds
-    const intervalId = setInterval(checkTokenValidity, 12000); // Check every 30 seconds
+    const intervalId = setInterval(checkTokenValidity, 300000); // Check every 5 min
     clearInterval(intervalId);
   };
 
@@ -238,7 +241,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const logOut = async () => {
+  const logOut = async (isItAutomaticLogoout: boolean) => {
     const bodyForLogOut = {
       client_id: "mastermind",
       client_secret: "6FTAYhfizk346qspsVbkItw4ypXwgC93",
@@ -259,7 +262,19 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
       );
       localStorage.clear();
       setNick(userAuth.nick);
-      setIsGoodbyCardOpen(true);
+      setUserAuth({
+        userId: "",
+        nick: "",
+        email: "",
+        token: "",
+        refreshToken: "",
+        tokenExp: -1,
+      });
+      if (isItAutomaticLogoout) {
+        setIsAutomaticLogoutCardOpen(true);
+      } else {
+        setIsGoodbyCardOpen(true);
+      }
     } catch (error) {
       console.log("Something gonne wrong: " + error);
     }
@@ -277,6 +292,8 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
         logOut,
         isGoodbyCardOpen,
         setIsGoodbyCardOpen,
+        isAutomaticLogoutCardOpen,
+        setIsAutomaticLogoutCardOpen,
         nick,
         // getUserIdIfNotIncludedIInToken,
       }}

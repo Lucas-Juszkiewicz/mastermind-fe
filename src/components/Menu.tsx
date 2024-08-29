@@ -9,17 +9,30 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { UserAuthContext } from "../UserAuthProvider";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 export const Menu = () => {
   const [open, setOpen] = React.useState(false);
+  const [shouldShowThisItem, setShouldShowThisItem] = React.useState(false);
+  const [shouldShowNewGameButton, setShouldShowNewGameButton] =
+    React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
   const { nick } = useAuthMethods();
   const userAuthContext = useContext(UserAuthContext);
+  const navigate = useNavigate();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+    logOut,
+  } = useAuthMethods();
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
   }
@@ -33,6 +46,10 @@ export const Menu = () => {
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
+
+  const location = useLocation();
+
+  const isNotOnGamePage = location.pathname !== "/game";
 
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (
@@ -64,9 +81,39 @@ export const Menu = () => {
     prevOpen.current = open;
   }, [open]);
 
+  // zrobić useState do shouldShowThisItem i dodać zależność na podstawie byćia w trakcie gry. jeśli gra jest w trakcie to 'New game'
+
   const userId = userAuth.userId;
 
-  const shouldShowThisItem = userId != "" ? true : false;
+  // const shouldShowThisItem = userId != "" ? true : false;
+  const handleOnClick = () => {
+    navigate("/preStarter");
+    checkTokenValidity(userAuth.tokenExp);
+    if (!isTokenValid(userAuth.tokenExp)) {
+      logOut(true);
+      navigate("/preStarter");
+      navigate("/home");
+    } else {
+      // console.log("Valid w chuj");
+      navigate("/preStarter");
+    }
+  };
+
+  useEffect(() => {
+    if (userId != "") {
+      setShouldShowThisItem(true);
+    } else {
+      setShouldShowThisItem(false);
+    }
+  }, [userAuth]);
+
+  useEffect(() => {
+    if (localStorage.getItem("isGameInProgress")) {
+      setShouldShowNewGameButton(true);
+    } else {
+      setShouldShowNewGameButton(false);
+    }
+  }, [open]);
   const myAccountButtonText = nick.length < 1 || nick.length > 7 ? "Me" : nick;
 
   return (
@@ -140,7 +187,7 @@ export const Menu = () => {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    {shouldShowThisItem && (
+                    {shouldShowThisItem && isNotOnGamePage ? (
                       <MenuItem
                         component={Link}
                         to="/game"
@@ -148,7 +195,19 @@ export const Menu = () => {
                       >
                         Game
                       </MenuItem>
-                    )}
+                    ) : null}{" "}
+                    {shouldShowThisItem && shouldShowNewGameButton ? (
+                      <MenuItem
+                        // component={Link}
+                        // to="/game"
+                        onClick={(event) => {
+                          handleClose(event);
+                          handleOnClick();
+                        }}
+                      >
+                        New Game
+                      </MenuItem>
+                    ) : null}
                     <MenuItem component={Link} to="/home" onClick={handleClose}>
                       Home
                     </MenuItem>
