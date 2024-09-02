@@ -75,12 +75,6 @@ export const Home = () => {
     // getUserIdIfNotIncludedIInToken(userAuth.nick);
   }, []);
 
-  useEffect(() => {
-    if (tokenHere != "") {
-      checkUser(tokenHere);
-    }
-  }, [tokenHere]);
-
   return (
     <Paper
       elevation={3}

@@ -150,7 +150,10 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
   //   }
   // };
 
-  const checkUser = async (tokenFromHere: string) => {
+  const checkUser = async (
+    tokenFromHere: string,
+    refreshToken: string
+  ): Promise<string | null> => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -164,8 +167,23 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
         config
       );
       console.log("Exists: ", response.data);
+      const { preferred_username, email, exp } = jwtDecode(tokenFromHere);
+
+      if (exp) {
+        setUserAuth({
+          userId: response.data.id,
+          nick: preferred_username,
+          email: email,
+          token: tokenFromHere,
+          refreshToken: refreshToken,
+          tokenExp: exp,
+        });
+      }
+
+      return response.data.userId;
     } catch (err) {
       console.error("Error fetching user data:", err);
+      return null;
     }
   };
 
@@ -190,7 +208,10 @@ const UserAuthContext = createContext<
       setUserAuth: React.Dispatch<React.SetStateAction<UserAuth>>;
       fetchGameInProgressAfterRecall: (token: string) => Promise<void>;
       checkIfGameInProgresExists: (token: string) => Promise<boolean>;
-      checkUser: (tokenFromHere: string) => Promise<void>;
+      checkUser: (
+        tokenFromHere: string,
+        refreshToken: string
+      ) => Promise<string | null>;
     }
   | undefined
 >(undefined);

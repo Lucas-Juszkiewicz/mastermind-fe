@@ -44,7 +44,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
   }
-  const { userAuth, setUserAuth } = userAuthContext;
+  const { userAuth, setUserAuth, checkUser } = userAuthContext;
   let userAuthObject = userAuth;
 
   const redirectToKeycloak = () => {
@@ -102,60 +102,72 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
-    if (token != "") {
-      const { preferred_username, email, userId, exp } = jwtDecode(token);
-      console.log(exp);
-      if (exp) {
-        userAuthObject = {
-          userId: userId,
-          nick: preferred_username,
-          email: email,
-          token: token,
-          refreshToken: refreshToken,
-          tokenExp: exp,
-        };
-        setUserAuth(userAuthObject);
-        setNick(userAuthObject.nick);
+    const processToken = async () => {
+      if (token !== "") {
+        const { preferred_username, email, userId, exp } = jwtDecode(token);
+        console.log(exp);
+        setNick(preferred_username);
+        let userIdFromToken = userId;
 
-        // Here I need to obtain id if it's undefined
-        if (userAuthObject.userId == undefined) {
-          getUserIdIfNotIncludedIInToken(userAuthObject);
+        // Fetch userId from the database if it's not present in the token
+        if (!userId) {
+          await checkUser(token, refreshToken);
+        } else {
+          if (exp) {
+            setUserAuth({
+              userId: userIdFromToken,
+              nick: preferred_username,
+              email: email,
+              token: token,
+              refreshToken: refreshToken,
+              tokenExp: exp,
+            });
+
+            // If userId is still undefined, handle it here
+            // if (!userAuthObject.userId) {
+            //   getUserIdIfNotIncludedInToken(userAuthObject);
+            // }
+          }
         }
+
+        startCheckingIsTokenValid(refreshToken);
+        console.log(userAuth);
       }
-      startCheckingIsTokenValid(refreshToken);
-      console.log(userAuth);
-    }
+    };
+
+    // Call the async function
+    processToken();
   }, [token]);
 
-  const getUserIdIfNotIncludedIInToken = async (userAuthObject: UserAuth) => {
-    //get user by nick and get userId
-    const config = {
-      headers: {
-        // "Content-Type": "application/x-www-form-urlencoded",
-        "Content-Type": "application/json",
-        authorization: `Bearer ${userAuthObject.token}`,
-      },
-    };
-    console.log("userAuthObject token " + userAuthObject.token);
-    console.log("userAuthObject nick " + userAuthObject.nick);
-    console.log("userAuthObject userAuth " + JSON.stringify(userAuth));
-    try {
-      const responseWithId: AxiosResponse<UserAuth> = await axios.get(
-        `http://localhost:8081/users/${userAuthObject.nick}`,
-        config
-      );
-      setResponseWithId(responseWithId);
-    } catch (error) {
-      console.log("Failed to obtain ID alternatively: " + error);
-    }
-  };
+  // const getUserIdIfNotIncludedInToken = async (userAuthObject: UserAuth) => {
+  //   //get user by nick and get userId
+  //   const config = {
+  //     headers: {
+  //       // "Content-Type": "application/x-www-form-urlencoded",
+  //       "Content-Type": "application/json",
+  //       authorization: `Bearer ${userAuthObject.token}`,
+  //     },
+  //   };
+  //   console.log("userAuthObject token " + userAuthObject.token);
+  //   console.log("userAuthObject nick " + userAuthObject.nick);
+  //   console.log("userAuthObject userAuth " + JSON.stringify(userAuth));
+  //   try {
+  //     const responseWithId: AxiosResponse<UserAuth> = await axios.get(
+  //       `http://localhost:8081/users/${userAuthObject.nick}`,
+  //       config
+  //     );
+  //     setResponseWithId(responseWithId);
+  //   } catch (error) {
+  //     console.log("Failed to obtain ID alternatively: " + error);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (responseWithId != undefined) {
-      setUserIdObtainedAlternatively(responseWithId.data.userId);
-      console.log("!!!!!!!!!!!!!!!!!!!!!!! " + responseWithId.data.userId);
-    }
-  }, [responseWithId]);
+  // useEffect(() => {
+  //   if (responseWithId != undefined) {
+  //     setUserIdObtainedAlternatively(responseWithId.data.userId);
+  //     console.log("!!!!!!!!!!!!!!!!!!!!!!! " + responseWithId.data.userId);
+  //   }
+  // }, [responseWithId]);
 
   useEffect(() => {
     if (
