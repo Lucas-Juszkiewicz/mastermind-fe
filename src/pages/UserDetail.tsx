@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { UserAuthContext } from "../UserAuthProvider";
 import Button from "@mui/material/Button";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   id: number;
@@ -24,6 +25,7 @@ interface UserData {
 }
 
 export const UserDetail = () => {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const userAuthContext = useContext(UserAuthContext);
   if (!userAuthContext) {
@@ -68,7 +70,19 @@ export const UserDetail = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return format(date, "dd.MM.yyy HH:mm");
+    return format(date, "dd.MM.yyy");
+  };
+
+  let average;
+  if (userData.numberOfGames != null && userData.total != undefined) {
+    average = userData.total / userData.numberOfGames;
+    average.toFixed();
+  } else {
+    average = 0;
+  }
+
+  const handleEditDetails = () => {
+    navigate("/editDetails");
   };
 
   return (
@@ -142,7 +156,21 @@ export const UserDetail = () => {
             <Typography variant="body2" sx={{ mr: 1 }}>
               <strong>Total points:</strong>
             </Typography>
-            <Typography variant="body2">{userData.total || 750}</Typography>
+            <Typography variant="body2">{userData.total}</Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              <strong>Number of games played:</strong>
+            </Typography>
+            <Typography variant="body2">
+              {userData.numberOfGames ? userData.numberOfGames : 0}
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              <strong>Average:</strong>
+            </Typography>
+            <Typography variant="body2">{average}</Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
             <Typography variant="body2" sx={{ mr: 1 }}>
@@ -150,7 +178,15 @@ export const UserDetail = () => {
             </Typography>
             <Typography variant="body2">{userData.country}</Typography>
           </Box>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: userData.email.length > 21 ? "column" : "row",
+              alignItems: userData.email.length > 21 ? "flex-start" : "center",
+              // alignItems: "center",
+              mb: 1,
+            }}
+          >
             <Typography variant="body2" sx={{ mr: 1 }}>
               <strong>Email:</strong>
             </Typography>
@@ -168,7 +204,7 @@ export const UserDetail = () => {
             variant="contained"
             startIcon={<ManageAccountsIcon />}
             sx={{
-              mt: 35, // Push the button to the bottom
+              mt: 30, // Push the button to the bottom
               alignSelf: { xs: "center", md: "flex-end" }, // Center the button on small screens, align right on larger
               backgroundColor: "#3f51b5",
               color: "#ffc107",
@@ -176,6 +212,7 @@ export const UserDetail = () => {
                 backgroundColor: "#3f52c6",
               },
             }}
+            onClick={handleEditDetails}
           >
             Edit details
           </Button>

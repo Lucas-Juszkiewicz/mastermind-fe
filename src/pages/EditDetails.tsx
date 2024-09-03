@@ -1,13 +1,14 @@
 import { Typography, Box, TextField, Button, Paper } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
 import { ErrorMessageCard } from "../components";
 import { useNavigate } from "react-router-dom";
+import { UserAuthContext } from "../UserAuthProvider";
 
-export const Login = () => {
+export const EditDetails = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [error, setErrorMessage] = useState<AxiosError | null>(null);
 
@@ -19,11 +20,21 @@ export const Login = () => {
     setOpenErrorCard(true);
   };
 
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+  const {
+    userAuth,
+    setUserAuth,
+    fetchGameInProgressAfterRecall,
+    checkIfGameInProgresExists,
+    checkUser,
+  } = userAuthContext;
+
   const [inputs, setInputs] = useState({
-    nick: "",
+    country: "",
     email: "",
-    password: "",
-    userId: null,
   });
   const navigate = useNavigate();
 
@@ -38,15 +49,13 @@ export const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        isSignup
-          ? "http://localhost:8081/users/save"
-          : "http://localhost:8081/users/login",
+      const response = await axios.put(
+        `http://localhost:8081/users/update/${userAuth.userId}`,
         inputs
       );
       console.log(response.data);
       const userId = response.data.id;
-      navigate(`/user/${userId}`);
+      navigate(`/user`);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error);
@@ -56,8 +65,8 @@ export const Login = () => {
   };
 
   const resetState = () => {
-    setIsSignup(!isSignup);
-    setInputs({ nick: "", email: "", password: "", userId: null });
+    setInputs({ country: "", email: "" });
+    navigate("/user");
   };
 
   return (
@@ -70,7 +79,7 @@ export const Login = () => {
             flexDirection: "column",
             alignItems: "center",
             margin: "auto", // Center the Paper with margin
-            marginTop: "60px",
+            marginTop: "30px",
             px: "50px",
             pt: "25px",
             pb: "50px",
@@ -83,36 +92,34 @@ export const Login = () => {
           <Typography
             variant="h1"
             sx={{
-              fontSize: { xs: "2.5rem", sm: "2.5rem", md: "3rem" },
+              fontSize: { xs: "2.7rem", sm: "2.7rem", md: "3rem" },
               lineHeight: 1.5,
             }}
           >
-            {isSignup ? "Registration" : "Login"}
+            Edit Details
           </Typography>
-          {isSignup && (
-            <TextField
-              inputProps={{
-                style: {
-                  paddingTop: 7,
-                  paddingBottom: 7,
-                },
-              }}
-              onChange={handleOnChange}
-              name="nick"
-              value={inputs.nick}
-              margin="normal"
-              type={"text"}
-              variant="outlined"
-              placeholder="Nick"
-              sx={{
-                bgcolor: "#ffffff",
-                width: "300px",
-                "& .MuiOutlinedInput-root": {
-                  height: "50px",
-                },
-              }}
-            />
-          )}
+          <TextField
+            inputProps={{
+              style: {
+                paddingTop: 7,
+                paddingBottom: 7,
+              },
+            }}
+            onChange={handleOnChange}
+            name="country"
+            value={inputs.country}
+            margin="normal"
+            type={"text"}
+            variant="outlined"
+            placeholder="Country"
+            sx={{
+              bgcolor: "#ffffff",
+              width: "300px",
+              "& .MuiOutlinedInput-root": {
+                height: "50px",
+              },
+            }}
+          />
           <TextField
             inputProps={{
               style: {
@@ -135,77 +142,64 @@ export const Login = () => {
               },
             }}
           />
-          <TextField
-            inputProps={{
-              style: {
-                paddingTop: 7,
-                paddingBottom: 7,
-              },
-            }}
-            onChange={handleOnChange}
-            name="password"
-            value={inputs.password}
-            margin="normal"
-            type={"password"}
-            variant="outlined"
-            placeholder="Password"
+          <Box
             sx={{
-              bgcolor: "#ffffff",
-              width: "300px",
-              "& .MuiOutlinedInput-root": {
-                height: "50px",
-              },
+              display: "flex", // Ensure buttons are aligned horizontally
+              justifyContent: "center", // Center buttons within the container
+              gap: 1, // Add some space between the buttons
+              mt: 2, // Add some margin on top of the buttons for spacing
             }}
-          />
-          <TextField
-            style={{ display: "none" }}
-            onChange={handleOnChange}
-            name="id"
-            value={inputs.userId}
-          ></TextField>
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
+                lineHeight: 1.5,
+                width: "125px",
+                height: "45px",
+                color: "#ffc107",
+                fontFamily: "teko, sans-serif",
+                paddingTop: 1.5,
+                borderRadius: "6px",
+              }}
+            >
+              OK
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                fontSize: { xs: "1.8rem", sm: "1.6rem", md: "1.8rem" },
+                lineHeight: 1.5,
+                width: "125px",
+                height: "45px",
+                color: "#3f51b5",
+                backgroundColor: "#ffc107",
+                fontFamily: "teko, sans-serif",
+                paddingTop: 1.5,
+                borderRadius: "6px",
+                ":hover": { backgroundColor: "#f9a825" },
+              }}
+              onClick={resetState}
+            >
+              back
+            </Button>
+          </Box>
           <Button
-            type="submit"
             variant="contained"
             sx={{
               fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
               lineHeight: 1.5,
-              width: "125px",
+              width: "250px",
               height: "50px",
               color: "#ffc107",
               fontFamily: "teko, sans-serif",
               paddingTop: 1.5,
-              margin: 1,
+              mt: 25,
               borderRadius: "6px",
             }}
           >
-            OK
-          </Button>
-          <Button
-            endIcon={
-              isSignup ? (
-                <LoginOutlined style={{ fontSize: 28 }} />
-              ) : (
-                <HowToRegOutlined style={{ fontSize: 28 }} />
-              )
-            }
-            variant="contained"
-            sx={{
-              fontSize: { xs: "1.4rem", sm: "1.6rem", md: "1.8rem" },
-              lineHeight: 1,
-              width: "250px",
-              height: "50px",
-              color: "#3f51b5",
-              backgroundColor: "#ffc107",
-              fontFamily: "teko, sans-serif",
-              paddingTop: 1.5,
-              margin: 1,
-              mb: 0,
-              borderRadius: "6px",
-              ":hover": { backgroundColor: "#f9a825" },
-            }}
-            onClick={resetState}
-          >
-            {isSignup ? "Click to Login " : "Click to Register"}
+            change password
           </Button>
         </Paper>
       </form>
