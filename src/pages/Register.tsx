@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuthMethods } from "../AuthMethodsProvider";
 
 export const Register = () => {
-  const [error, setErrorMessage] = useState<AxiosError | null>(null);
   const {
     redirectToKeycloak,
     getToken,
@@ -16,6 +15,7 @@ export const Register = () => {
     checkTokenValidity,
     startCheckingIsTokenValid,
   } = useAuthMethods();
+  const [error, setErrorMessage] = useState<AxiosError | null>(null);
   const [openErrorCard, setOpenErrorCard] = React.useState(false);
   const handleClose = () => {
     setOpenErrorCard(false);

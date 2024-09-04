@@ -1,36 +1,17 @@
 import { Typography, Box, TextField, Button, Paper } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
-import { ErrorMessageCard } from "../components";
+import { ErrorMessageCard, ConfirmationCard } from "../components";
 import { useNavigate } from "react-router-dom";
 import { UserAuthContext } from "../UserAuthProvider";
 
 export const EditDetails = () => {
-  const [isSignup, setIsSignup] = useState(false);
-  const [error, setErrorMessage] = useState<AxiosError | null>(null);
-
-  const [openErrorCard, setOpenErrorCard] = React.useState(false);
-  const handleClose = () => {
-    setOpenErrorCard(false);
-  };
-  const handleOpen = () => {
-    setOpenErrorCard(true);
-  };
-
-  const userAuthContext = useContext(UserAuthContext);
-  if (!userAuthContext) {
-    throw new Error("useContext must be used within an AuthProvider");
-  }
-  const {
-    userAuth,
-    setUserAuth,
-    fetchGameInProgressAfterRecall,
-    checkIfGameInProgresExists,
-    checkUser,
-  } = userAuthContext;
+  const [isConfirmationCardOpen, setIsConfirmationCardOpen] =
+    useState<boolean>(false);
+  const [postTrigger, setPostTrigger] = useState<boolean>(false);
 
   const [inputs, setInputs] = useState({
     country: "",
@@ -45,24 +26,16 @@ export const EditDetails = () => {
     }));
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
-
-    try {
-      const response = await axios.put(
-        `http://localhost:8081/users/update/${userAuth.userId}`,
-        inputs
-      );
-      console.log(response.data);
-      const userId = response.data.id;
-      navigate(`/user`);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(error);
-      }
-      handleOpen();
-    }
+    setIsConfirmationCardOpen(true);
   };
+
+  useEffect(() => {
+    if (postTrigger) {
+      handleSubmit({ preventDefault: () => {} } as any);
+    }
+  }, [postTrigger]);
 
   const resetState = () => {
     setInputs({ country: "", email: "" });
@@ -89,6 +62,12 @@ export const EditDetails = () => {
             border: "1px solid #ddd",
           }}
         >
+          <ConfirmationCard
+            isConfirmationCardOpen={isConfirmationCardOpen}
+            setIsConfirmationCardOpen={setIsConfirmationCardOpen}
+            setPostTrigger={setPostTrigger}
+            inputs={inputs}
+          />
           <Typography
             variant="h1"
             sx={{
@@ -203,13 +182,6 @@ export const EditDetails = () => {
           </Button>
         </Paper>
       </form>
-      {openErrorCard && (
-        <ErrorMessageCard
-          error={error}
-          openErrorCard={openErrorCard}
-          handleClose={handleClose}
-        />
-      )}
     </div>
   );
 };

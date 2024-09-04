@@ -82,6 +82,7 @@ export const UserDetail = () => {
   }
 
   const handleEditDetails = () => {
+    localStorage.setItem("userData", JSON.stringify(userData));
     navigate("/editDetails");
   };
 

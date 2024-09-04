@@ -7,6 +7,7 @@ interface UserAuth {
   userId: string;
   nick: string;
   email: string;
+  country: string;
   token: string;
   refreshToken: string;
   tokenExp: number;
@@ -21,6 +22,7 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
     userId: "",
     nick: "",
     email: "",
+    country: "",
     token: "",
     refreshToken: "",
     tokenExp: -1,
@@ -174,6 +176,7 @@ const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({
           userId: response.data.id,
           nick: preferred_username,
           email: email,
+          country: response.data.country,
           token: tokenFromHere,
           refreshToken: refreshToken,
           tokenExp: exp,

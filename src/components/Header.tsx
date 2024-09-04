@@ -31,6 +31,7 @@ export const Header = () => {
         userId: "",
         nick: "",
         email: "",
+        country: "",
         token: "",
         refreshToken: "",
         tokenExp: -1,

@@ -10,3 +10,4 @@ export { GameWinPopup } from "./GameWinPopup";
 export { SendGuessButton } from "./SendGuessButton";
 export { AnswerAndClock } from "./AnswerAndClock";
 export { ContinueButton } from "./ContinueButton";
+export { ConfirmationCard } from "./ConfirmationCard";
