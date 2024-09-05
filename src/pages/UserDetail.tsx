@@ -3,7 +3,7 @@ import axios from "axios";
 import Paper from "@mui/material/Paper";
 import { AvatarImg, LinearDeterminate } from "../components";
 import Box from "@mui/material/Box";
-import avatar from "../assets/0_4.png";
+
 import Typography from "@mui/material/Typography";
 import { format } from "date-fns";
 import { UserAuthContext } from "../UserAuthProvider";
@@ -18,7 +18,7 @@ interface UserData {
   country?: string;
   games?: number;
   total?: number;
-  img?: ArrayBuffer | null;
+  imgAsString?: String | null;
   avatar: number;
   registrationDate: string;
   numberOfGames: number;
@@ -40,6 +40,8 @@ export const UserDetail = () => {
     },
   };
 
+  const [avatar, setAvatar] = useState<String>("");
+
   useEffect(() => {
     const fetchUserData = async () => {
       console.log(userAuth);
@@ -49,6 +51,13 @@ export const UserDetail = () => {
           config
         );
         setUserData(response.data);
+
+        if (response.data.imgAsString) {
+          // Get the Base64 image string from the response
+          const imageUrl = `data:image/jpeg;base64,${response.data.imgAsString}`;
+
+          setAvatar(imageUrl);
+        }
         console.log(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {

@@ -1,13 +1,29 @@
 import { Paper, Typography, TextField, Box, Button } from "@mui/material";
-import React, { useState } from "react";
-import { ConfirmationCard } from "../components";
+import React, { useContext, useState } from "react";
+import { ConfirmationCard, ErrorMessageCard } from "../components";
 import { useNavigate } from "react-router-dom";
 import UploadIcon from "@mui/icons-material/Upload";
 import PhotoSizeSelectActualIcon from "@mui/icons-material/PhotoSizeSelectActual";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { UserAuthContext } from "../UserAuthProvider";
 
 export const ChangeAvatar = () => {
+  const [error, setErrorMessage] = useState<AxiosError | null>(null);
+
+  const [openErrorCard, setOpenErrorCard] = useState(false);
+  const handleClose = () => {
+    setOpenErrorCard(false);
+  };
+  const handleOpen = () => {
+    setOpenErrorCard(true);
+  };
+
   const navigate = useNavigate();
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+  const { userAuth, setUserAuth } = userAuthContext;
 
   const [file, setFile] = useState<File | null>(null); // Type added for TS
 
@@ -32,17 +48,24 @@ export const ChangeAvatar = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/upload-avatar",
+        `http://localhost:8081/users/uploadAvatar/${userAuth.userId}`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            authorization: "Bearer " + userAuth.token,
           },
         }
       );
+
+      setUserAuth(response.data);
+
       console.log("Image uploaded successfully:", response.data);
     } catch (error) {
-      console.error("Error uploading image:", error);
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error);
+      }
+      handleOpen();
     }
   };
 
@@ -113,6 +136,7 @@ export const ChangeAvatar = () => {
                   paddingTop: 1.5,
                   borderRadius: "6px",
                   mb: 2, // Margin bottom for spacing between buttons
+                  border: "25px solid #ffc107", // Add border with color and width
                 }}
               >
                 Click and Select a photo
@@ -120,6 +144,7 @@ export const ChangeAvatar = () => {
             </label>
 
             <Button
+              disabled={file ? false : true}
               type="submit"
               endIcon={<UploadIcon style={{ fontSize: 28 }} />}
               variant="contained"
@@ -144,10 +169,10 @@ export const ChangeAvatar = () => {
             display: "flex", // Ensure buttons are aligned horizontally
             justifyContent: "center", // Center buttons within the container
             gap: 1, // Add some space between the buttons
-            mt: 2, // Add some margin on top of the buttons for spacing
+            mt: 6, // Add some margin on top of the buttons for spacing
           }}
         >
-          <Button
+          {/* <Button
             type="submit"
             variant="contained"
             sx={{
@@ -162,7 +187,7 @@ export const ChangeAvatar = () => {
             }}
           >
             OK
-          </Button>
+          </Button> */}
           <Button
             variant="contained"
             sx={{
@@ -182,6 +207,13 @@ export const ChangeAvatar = () => {
             back
           </Button>
         </Box>
+        {openErrorCard && (
+          <ErrorMessageCard
+            error={error}
+            openErrorCard={openErrorCard}
+            handleClose={handleClose}
+          />
+        )}
       </Paper>
     </div>
   );
