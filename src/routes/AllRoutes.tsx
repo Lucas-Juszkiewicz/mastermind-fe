@@ -9,6 +9,8 @@ import {
   Users,
   UserDetail,
   PageNotFound,
+  ChangeAvatar,
+  ChangePassword,
 } from "../pages";
 import { PreStarter } from "../pages/PreStarter";
 import { EditDetails } from "../pages/EditDetails";
@@ -29,6 +31,8 @@ export const AllRoutes = () => {
         <Route path="/ranking" element={<Ranking />}></Route>
         <Route path="/users" element={<Users />}></Route>
         <Route path="/user" element={<UserDetail />}></Route>
+        <Route path="/changeAvatar" element={<ChangeAvatar />}></Route>
+        <Route path="/changePassword" element={<ChangePassword />}></Route>
         <Route path="/notfound" element={<PageNotFound />}></Route>
       </Routes>
     </>

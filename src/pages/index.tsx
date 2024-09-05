@@ -8,3 +8,5 @@ export { Register } from "./Register";
 export { Rules } from "./Rules";
 export { UserDetail } from "./UserDetail";
 export { Users } from "./Users";
+export { ChangePassword } from "./ChangePassword";
+export { ChangeAvatar } from "./ChangeAvatar";

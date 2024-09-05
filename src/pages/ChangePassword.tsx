@@ -1,7 +1,7 @@
 import React from "react";
 
-export const ChangePasswordCard = () => {
-  return <div>ChangePasswordCard</div>;
+export const ChangePassword = () => {
+  return <div>ChangePassword</div>;
 };
 
 // <TextField

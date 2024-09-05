@@ -91,7 +91,7 @@ export const UserDetail = () => {
       elevation={3}
       sx={{
         margin: "auto",
-        marginTop: { xs: "20px", sm: "50px" },
+        marginTop: { xs: "20px", sm: "30px" },
         marginBottom: { xs: "20px", sm: "20px" },
         p: { xs: "20px", sm: "20px", md: "40px" }, // Adjust padding to make space tighter
         maxWidth: "800px",
@@ -205,8 +205,8 @@ export const UserDetail = () => {
             variant="contained"
             startIcon={<ManageAccountsIcon />}
             sx={{
-              mt: 30, // Push the button to the bottom
-              alignSelf: { xs: "center", md: "flex-end" }, // Center the button on small screens, align right on larger
+              mt: 20, // Push the button to the bottom
+              alignSelf: { xs: "center" },
               backgroundColor: "#3f51b5",
               color: "#ffc107",
               "&:hover": {

@@ -52,10 +52,10 @@ export const EditDetails = () => {
             flexDirection: "column",
             alignItems: "center",
             margin: "auto", // Center the Paper with margin
-            marginTop: "30px",
+            marginTop: "20px",
             px: "50px",
             pt: "25px",
-            pb: "50px",
+            pb: "25px",
             maxWidth: "500px", // Set a maximum width for better readability
             backgroundColor: "#f3f4f6", // Light background color
             borderRadius: "6px", // Rounded corners
@@ -167,16 +167,35 @@ export const EditDetails = () => {
           <Button
             variant="contained"
             sx={{
-              fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
+              fontSize: { xs: "1.8rem", sm: "2rem", md: "2rem" },
               lineHeight: 1.5,
               width: "250px",
               height: "50px",
               color: "#ffc107",
               fontFamily: "teko, sans-serif",
               paddingTop: 1.5,
-              mt: 25,
+              mt: 18,
               borderRadius: "6px",
             }}
+            onClick={() => navigate("/changeAvatar")}
+          >
+            change avatar
+          </Button>
+          <Button
+            variant="contained"
+            sx={{
+              fontSize: { xs: "1.8rem", sm: "2rem", md: "2rem" },
+              lineHeight: 1.5,
+              width: "250px",
+              height: "50px",
+              color: "#ffc107",
+              fontFamily: "teko, sans-serif",
+              paddingTop: 1.5,
+              mt: 2,
+              borderRadius: "6px",
+              whiteSpace: "nowrap",
+            }}
+            onClick={() => navigate("/changePassword")}
           >
             change password
           </Button>
