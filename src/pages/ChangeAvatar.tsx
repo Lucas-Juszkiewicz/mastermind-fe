@@ -58,7 +58,15 @@ export const ChangeAvatar = () => {
         }
       );
 
-      setUserAuth(response.data);
+      setUserAuth({
+        userId: response.data.id, // Assuming `id` in `UserData` maps to `userId`
+        nick: response.data.nick,
+        email: response.data.email,
+        country: response.data.country || "", // Optional field
+        token: userAuth.token, // Keep the existing token
+        refreshToken: userAuth.refreshToken, // Keep the existing refresh token
+        tokenExp: userAuth.tokenExp, // Keep the existing token expiry
+      });
 
       console.log("Image uploaded successfully:", response.data);
     } catch (error) {

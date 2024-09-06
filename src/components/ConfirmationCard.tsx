@@ -20,8 +20,23 @@ interface ConfirmationCardProps {
   isConfirmationCardOpen: boolean;
   setIsConfirmationCardOpen: Function;
   setPostTrigger: Function;
-  inputs: Object;
+  inputs: Inputs;
 }
+
+interface Inputs {
+  country: string;
+  email: string;
+}
+
+// interface UserAuth {
+//   userId: string;
+//   nick: string;
+//   email: string;
+//   country: string;
+//   token: string;
+//   refreshToken: string;
+//   tokenExp: number;
+// }
 
 export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
   setIsConfirmationCardOpen,
@@ -32,13 +47,7 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
   }
-  const {
-    userAuth,
-    setUserAuth,
-    fetchGameInProgressAfterRecall,
-    checkIfGameInProgresExists,
-    checkUser,
-  } = userAuthContext;
+  const { userAuth, setUserAuth } = userAuthContext;
 
   const [error, setErrorMessage] = useState<AxiosError | null>(null);
 
@@ -51,10 +60,20 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
   };
 
   const sendSubmit = async () => {
+    console.log("Confirmation CARD: " + JSON.stringify(userAuth));
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: "Bearer " + userAuth.token,
+      },
+    };
+
     try {
       const response = await axios.put(
         `http://localhost:8081/users/update/${userAuth.userId}`,
-        inputs
+        inputs,
+        config
       );
       console.log(response.data);
       const userId = response.data.id;
@@ -83,7 +102,7 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
         mountOnEnter
         unmountOnExit
       >
-        <Card sx={{ maxWidth: 345, borderRadius: "6px", position: "relative" }}>
+        <Card sx={{ maxWidth: 500, borderRadius: "6px", position: "relative" }}>
           <CardMedia
             sx={{ height: 170, position: "relative" }}
             image={success_img}
@@ -107,7 +126,7 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
                 borderRadius: "6px",
                 fontSize: { xs: "1.8rem", sm: "1.8rem", md: "2.3rem" },
                 lineHeight: 1.2,
-                whiteSpace: "nowrap",
+                // whiteSpace: "nowrap",
                 letterSpacing: "0.15em",
               }}
             >
@@ -115,16 +134,57 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
             </Typography>
           </CardMedia>
           <CardContent>
-            <Typography variant="body1" align="center" paddingTop={2.5}>
-              You will change the following fields:
+            <Typography variant="body2" align="center" paddingTop={1} mb={2}>
+              You will change the following fields...
             </Typography>
 
-            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-              <Typography variant="body2" sx={{ mr: 1 }}>
-                <strong>Country:</strong>
-              </Typography>
-              <Typography variant="body2">{userAuth.country}</Typography>
-            </Box>
+            {inputs.country ? (
+              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Typography variant="body2" sx={{ mr: 1 }}>
+                  <strong>Country:</strong>
+                </Typography>
+                <Typography variant="body2">
+                  {userAuth.country} to {inputs.country}
+                </Typography>
+              </Box>
+            ) : null}
+            {inputs.email ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection:
+                    userAuth.email.length || inputs.email.length > 21
+                      ? "column"
+                      : "row",
+                  // alignItems:
+                  //   userAuth.email.length || inputs.email.length > 21
+                  //     ? "flex-start"
+                  //     : "center",
+                  alignItems: "center",
+                  mb: 1,
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{ mr: 1, alignSelf: "flex-start" }}
+                >
+                  <strong>Email:</strong>
+                </Typography>
+                <Typography variant="body2">
+                  {userAuth.email}
+                  {userAuth.email.length || inputs.email.length > 21 ? (
+                    <Box component="span" sx={{ my: 0.5 }}>
+                      <br />
+                      to
+                      <br />
+                    </Box>
+                  ) : (
+                    " to "
+                  )}
+                  {inputs.email}
+                </Typography>
+              </Box>
+            ) : null}
           </CardContent>
           <CardActions
             sx={{

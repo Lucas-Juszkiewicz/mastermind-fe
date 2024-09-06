@@ -24,6 +24,16 @@ interface UserData {
   numberOfGames: number;
 }
 
+interface UserAuth {
+  userId: string;
+  nick: string;
+  email: string;
+  country: string;
+  token: string;
+  refreshToken: string;
+  tokenExp: number;
+}
+
 export const UserDetail = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -31,7 +41,7 @@ export const UserDetail = () => {
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
   }
-  const { userAuth } = userAuthContext;
+  const { userAuth, setUserAuth } = userAuthContext;
 
   const config = {
     headers: {
@@ -44,13 +54,21 @@ export const UserDetail = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log(userAuth);
       try {
         const response = await axios.get(
           `http://localhost:8081/users/get/${userAuth.userId}`,
           config
         );
         setUserData(response.data);
+        setUserAuth({
+          userId: response.data.id, // Assuming `id` in `UserData` maps to `userId`
+          nick: response.data.nick,
+          email: response.data.email,
+          country: response.data.country || "", // Optional field
+          token: userAuth.token, // Keep the existing token
+          refreshToken: userAuth.refreshToken, // Keep the existing refresh token
+          tokenExp: userAuth.tokenExp, // Keep the existing token expiry
+        });
 
         if (response.data.imgAsString) {
           // Get the Base64 image string from the response
