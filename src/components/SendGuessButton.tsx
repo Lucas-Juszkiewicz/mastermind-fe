@@ -1,10 +1,12 @@
 import Button from "@mui/material/Button";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { UserAuthContext } from "../UserAuthProvider";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useGameData } from "../GameDataProvider";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { useNavigate } from "react-router-dom";
+import { ErrorMessageCard } from "./ErrorMessageCard";
+import { AutomaticLogoutCard } from "./AutomaticLogoutCard";
 
 interface SendGuessButtonProps {
   id: number;
@@ -52,6 +54,24 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   }
   const { userAuth } = userAuthContext;
 
+  const [error, setErrorMessage] = useState<AxiosError | null>(null);
+  const [openErrorCard, setOpenErrorCard] = useState(false);
+  const handleClose = () => {
+    setOpenErrorCard(false);
+  };
+  const handleOpen = () => {
+    setOpenErrorCard(true);
+  };
+
+  const [isAutomaticLogoutCardOpen, setIsAutomaticLogoutCardOpen] =
+    useState(false);
+  // const handleCloseALC = () => {
+  //   setIsAutomaticLogoutCardOpen(false);
+  // };
+  const handleOpenALC = () => {
+    setIsAutomaticLogoutCardOpen(true);
+  };
+
   const GameInProgressDTO = {
     id: id,
     guess: guess,
@@ -81,10 +101,17 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
       console.log("FINISH VICTORY: " + response.data.sequence);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // setErrorMessage(error);
-        console.log(error);
+        setErrorMessage(error);
+        if (error.response && error.response.status === 401) {
+          handleOpenALC();
+          logOut(true);
+          setTimeout(() => {
+            redirectToKeycloak();
+          }, 7000);
+        } else {
+          handleOpen();
+        }
       }
-      // handleOpen();
     }
   };
 
@@ -107,9 +134,17 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // setErrorMessage(error);
+        setErrorMessage(error);
+        if (error.response && error.response.status === 401) {
+          handleOpenALC();
+          logOut(true);
+          setTimeout(() => {
+            redirectToKeycloak();
+          }, 7000);
+        } else {
+          handleOpen();
+        }
       }
-      // handleOpen();
     }
   };
 
@@ -138,6 +173,20 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
       >
         Check
       </Button>
+      {openErrorCard && (
+        <ErrorMessageCard
+          error={error}
+          openErrorCard={openErrorCard}
+          handleClose={handleClose}
+        />
+      )}
+      {isAutomaticLogoutCardOpen && (
+        <AutomaticLogoutCard
+          isAutomaticLogoutCardOpen={isAutomaticLogoutCardOpen}
+          setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
+          nick={userAuth.nick}
+        />
+      )}
     </div>
   );
 };

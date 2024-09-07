@@ -6,10 +6,14 @@ import UploadIcon from "@mui/icons-material/Upload";
 import PhotoSizeSelectActualIcon from "@mui/icons-material/PhotoSizeSelectActual";
 import axios, { AxiosError } from "axios";
 import { UserAuthContext } from "../UserAuthProvider";
+import { useAuthMethods } from "../AuthMethodsProvider";
+import { AutomaticLogoutCard } from "../components/AutomaticLogoutCard";
 
 export const ChangeAvatar = () => {
-  const [error, setErrorMessage] = useState<AxiosError | null>(null);
+  const navigate = useNavigate();
 
+  //
+  const [error, setErrorMessage] = useState<AxiosError | null>(null);
   const [openErrorCard, setOpenErrorCard] = useState(false);
   const handleClose = () => {
     setOpenErrorCard(false);
@@ -18,7 +22,17 @@ export const ChangeAvatar = () => {
     setOpenErrorCard(true);
   };
 
-  const navigate = useNavigate();
+  const { redirectToKeycloak, logOut } = useAuthMethods();
+  const [isAutomaticLogoutCardOpen, setIsAutomaticLogoutCardOpen] =
+    useState(false);
+  // const handleCloseALC = () => {
+  //   setIsAutomaticLogoutCardOpen(false);
+  // };
+  const handleOpenALC = () => {
+    setIsAutomaticLogoutCardOpen(true);
+  };
+
+  //
   const userAuthContext = useContext(UserAuthContext);
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
@@ -69,11 +83,23 @@ export const ChangeAvatar = () => {
       });
 
       console.log("Image uploaded successfully:", response.data);
+
+      if (response.status === 202) {
+        navigate(`/user`);
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error);
+        if (error.response && error.response.status === 401) {
+          handleOpenALC();
+          logOut(true);
+          setTimeout(() => {
+            redirectToKeycloak();
+          }, 7000);
+        } else {
+          handleOpen();
+        }
       }
-      handleOpen();
     }
   };
 
@@ -220,6 +246,13 @@ export const ChangeAvatar = () => {
             error={error}
             openErrorCard={openErrorCard}
             handleClose={handleClose}
+          />
+        )}
+        {isAutomaticLogoutCardOpen && (
+          <AutomaticLogoutCard
+            isAutomaticLogoutCardOpen={isAutomaticLogoutCardOpen}
+            setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
+            nick={userAuth.nick}
           />
         )}
       </Paper>

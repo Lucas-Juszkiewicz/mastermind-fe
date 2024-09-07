@@ -67,7 +67,7 @@ export const AutomaticLogoutCard: React.FC<AutomaticLogoutCardProps> = ({
                 borderRadius: "6px",
                 fontSize: { xs: "1.8rem", sm: "1.8rem", md: "2.3rem" },
                 lineHeight: 1.2,
-                whiteSpace: "nowrap",
+                // whiteSpace: "nowrap",
                 letterSpacing: "0.15em",
               }}
             >
@@ -77,7 +77,12 @@ export const AutomaticLogoutCard: React.FC<AutomaticLogoutCardProps> = ({
             </Typography>
           </CardMedia>
           <CardContent>
-            <Typography variant="body1" align="center" paddingTop={2.5}>
+            <Typography
+              variant="body1"
+              align="center"
+              paddingTop={2.5}
+              sx={{ fontSize: { xs: "1.8rem", sm: "1.8rem", md: "2.3rem" } }}
+            >
               Hey {nick},
               <br />
               you have been automatically logged out because you were inactive.

@@ -15,6 +15,8 @@ import { UserAuthContext } from "../UserAuthProvider";
 import { useContext, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { ErrorMessageCard } from "./ErrorMessageCard";
+import { AutomaticLogoutCard } from "./AutomaticLogoutCard";
+import { useAuthMethods } from "../AuthMethodsProvider";
 
 interface ConfirmationCardProps {
   isConfirmationCardOpen: boolean;
@@ -48,6 +50,7 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
     throw new Error("useContext must be used within an AuthProvider");
   }
   const { userAuth, setUserAuth } = userAuthContext;
+  const { redirectToKeycloak, logOut } = useAuthMethods();
 
   const [error, setErrorMessage] = useState<AxiosError | null>(null);
 
@@ -57,6 +60,15 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
   };
   const handleOpen = () => {
     setOpenErrorCard(true);
+  };
+
+  const [isAutomaticLogoutCardOpen, setIsAutomaticLogoutCardOpen] =
+    useState(false);
+  // const handleCloseALC = () => {
+  //   setIsAutomaticLogoutCardOpen(false);
+  // };
+  const handleOpenALC = () => {
+    setIsAutomaticLogoutCardOpen(true);
   };
 
   const sendSubmit = async () => {
@@ -82,8 +94,16 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error);
+        if (error.response && error.response.status === 401) {
+          handleOpenALC();
+          logOut(true);
+          setTimeout(() => {
+            redirectToKeycloak();
+          }, 7000);
+        } else {
+          handleOpen();
+        }
       }
-      handleOpen();
     }
   };
 
@@ -208,7 +228,7 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
               sx={{
                 fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
                 lineHeight: 1.5,
-                width: "110px",
+                width: "150px",
                 height: "40px",
                 color: "#ffc107",
                 fontFamily: "teko, sans-serif",
@@ -230,7 +250,7 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
               sx={{
                 fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
                 lineHeight: 1.5,
-                width: "110px",
+                width: "150px",
                 height: "40px",
                 color: "#3f51b5",
                 backgroundColor: "#ffc107",
@@ -248,6 +268,13 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
               error={error}
               openErrorCard={openErrorCard}
               handleClose={handleClose}
+            />
+          )}
+          {isAutomaticLogoutCardOpen && (
+            <AutomaticLogoutCard
+              isAutomaticLogoutCardOpen={isAutomaticLogoutCardOpen}
+              setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
+              nick={userAuth.nick}
             />
           )}
         </Card>
