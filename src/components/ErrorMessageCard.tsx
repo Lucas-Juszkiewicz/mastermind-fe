@@ -15,6 +15,7 @@ interface ErrorMessageCardProps {
   error: any;
   openErrorCard: boolean;
   handleClose: any;
+  errorMessage?: string | null;
 }
 
 export const ErrorMessageCard: React.FC<ErrorMessageCardProps> = ({
@@ -38,9 +39,17 @@ export const ErrorMessageCard: React.FC<ErrorMessageCardProps> = ({
               setErrorMessage(
                 "Email is already registered. Please use a different email."
               );
+            } else {
+              if (error.response.data) {
+                setErrorMessage(error.response.data);
+              }
             }
           } else {
-            setErrorMessage(`An unexpected error occurred: ${error.message}`);
+            if (error.response.data) {
+              setErrorMessage(error.response.data);
+            } else {
+              setErrorMessage(`An unexpected error occurred: ${error.message}`);
+            }
           }
         }
       }

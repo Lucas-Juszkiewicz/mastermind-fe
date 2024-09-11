@@ -10,6 +10,7 @@ import { UserAuthContext } from "../UserAuthProvider";
 import Button from "@mui/material/Button";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { useNavigate } from "react-router-dom";
+import AccountBoxTwoToneIcon from "@mui/icons-material/AccountBoxTwoTone";
 
 interface UserData {
   id: number;
@@ -19,7 +20,7 @@ interface UserData {
   games?: number;
   total?: number;
   imgAsString?: String | null;
-  avatar: number;
+  avatar: number | null;
   registrationDate: string;
   numberOfGames: number;
 }
@@ -43,6 +44,22 @@ export const UserDetail = () => {
   }
   const { userAuth, setUserAuth } = userAuthContext;
 
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  // Update screen width on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -50,7 +67,7 @@ export const UserDetail = () => {
     },
   };
 
-  const [avatar, setAvatar] = useState<String>("");
+  const [avatar, setAvatar] = useState<String | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -154,7 +171,13 @@ export const UserDetail = () => {
             marginBottom: { xs: "20px", md: "0px" }, // Space between avatar and user data on small screens
           }}
         >
-          <AvatarImg avatar={avatar} />
+          {avatar ? (
+            <AvatarImg avatar={avatar} />
+          ) : (
+            <AccountBoxTwoToneIcon
+              sx={{ fontSize: 200, mb: screenWidth > 899 ? 50 : 2 }}
+            />
+          )}
         </Box>
 
         {/* User Data Column */}
