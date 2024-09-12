@@ -6,6 +6,7 @@ import axios, { AxiosError } from "axios";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { UserAuthContext } from "../UserAuthProvider";
 import { AutomaticLogoutCard } from "../components/AutomaticLogoutCard";
+import { OkMessageCard } from "../components/OkMessageCard";
 
 export const ChangePassword = () => {
   const [inputs, setInputs] = useState({
@@ -46,6 +47,13 @@ export const ChangePassword = () => {
   };
   const handleOpen = () => {
     setOpenErrorCard(true);
+  };
+
+  const [openOkCard, setOpenOkCard] = useState(false);
+  const [okMessage, setOkMessage] = useState<string | null>(null);
+  const handleCloseOKCard = () => {
+    setOpenOkCard(false);
+    navigate("/user");
   };
 
   const [isAutomaticLogoutCardOpen, setIsAutomaticLogoutCardOpen] =
@@ -114,6 +122,8 @@ export const ChangePassword = () => {
         config
       );
       if (response.status === 200) {
+        setOkMessage(response.data);
+        setOpenOkCard(true);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -271,6 +281,13 @@ export const ChangePassword = () => {
               back
             </Button>
           </Box>
+          {openOkCard && (
+            <OkMessageCard
+              openOkCard={openOkCard}
+              handleClose={handleCloseOKCard}
+              okMessage={okMessage}
+            />
+          )}
           {openErrorCard && (
             <ErrorMessageCard
               error={error}
