@@ -21,60 +21,116 @@ export const Podium = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        my: 10, // Margin bottom for spacing from the button
+        mt: 10,
+        mb: 5, // Margin bottom for spacing from the button
       }}
     >
       <Grid container spacing={2} sx={{ justifyContent: "center" }}>
         {/* First Row */}
-        <Grid item xs={4} sm={2}>
+        <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }}>
           <Paper
             sx={{
-              height: { xs: 70, md: 90 },
-              width: { xs: 70, md: 110 },
+              borderRadius: "60px",
+              border: "3px solid",
+              borderColor: "#3f51b5",
+              height: { xs: 80, md: 110 },
+              width: { xs: 80, md: 110 },
               backgroundColor: "#e5eafa",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+              "&:hover": {
+                transform: "scale(1.1)", // Slightly enlarge on hover
+                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)", // Add shadow on hover
+              },
             }}
           >
             <Typography
               sx={{
                 fontFamily: "Permanent Marker, sans-serif",
-                fontSize: { xs: 15, sm: 20 },
+                fontSize: { xs: 16, sm: 20 },
                 textAlign: "center",
+                mb: { xs: -13, md: -16 },
               }}
             >
               Lukas
             </Typography>
           </Paper>
         </Grid>
-        <Grid item xs={4} sm={2} mt={-7}>
+
+        <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }} mt={-7}>
           <Paper
             sx={{
-              height: { xs: 70, md: 90 },
-              width: { xs: 70, md: 110 },
+              borderRadius: "60px",
+              border: "3px solid",
+              borderColor: "#ffc107",
+              height: { xs: 80, md: 110 },
+              width: { xs: 80, md: 110 },
               backgroundColor: "#e5eafa",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.1)",
+                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+              },
             }}
-          />
+          >
+            <Typography
+              sx={{
+                fontFamily: "Permanent Marker, sans-serif",
+                fontSize: { xs: 16, sm: 20 },
+                textAlign: "center",
+                mb: { xs: -13, md: -16 },
+              }}
+            >
+              James
+            </Typography>
+          </Paper>
         </Grid>
-        <Grid item xs={4} sm={2}>
+
+        <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }}>
           <Paper
             sx={{
-              height: { xs: 70, md: 90 },
-              width: { xs: 70, md: 110 },
+              borderRadius: "60px",
+              border: "3px solid",
+              borderColor: "#3f51b5",
+              height: { xs: 80, md: 110 },
+              width: { xs: 80, md: 110 },
               backgroundColor: "#e5eafa",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.1)",
+                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+              },
             }}
-          />
+          >
+            <Typography
+              sx={{
+                fontFamily: "Permanent Marker, sans-serif",
+                fontSize: { xs: 16, sm: 20 },
+                textAlign: "center",
+                mb: { xs: -13, md: -16 },
+              }}
+            >
+              Wolfgang
+            </Typography>
+          </Paper>
         </Grid>
       </Grid>
 
       {/* Second Row */}
       <Grid container spacing={2} sx={{ mt: 0.5, justifyContent: "center" }}>
-        <Grid item xs={4} sm={2}>
+        <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }}>
           <Paper
             sx={{
-              height: { xs: 70, md: 90 },
-              width: { xs: 70, md: 110 },
+              height: { xs: 80, md: 90 },
+              width: { xs: 80, md: 110 },
               backgroundColor: "#e5eafa",
               display: "flex",
               justifyContent: "center",
@@ -83,7 +139,8 @@ export const Podium = () => {
           >
             <Typography
               sx={{
-                fontSize: { xs: 50, md: 70 },
+                pt: 1,
+                fontSize: { xs: 60, md: 70 },
                 textAlign: "center",
               }}
             >
@@ -91,11 +148,11 @@ export const Podium = () => {
             </Typography>
           </Paper>
         </Grid>
-        <Grid item xs={4} sm={2} mt={-7}>
+        <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }} mt={-7}>
           <Paper
             sx={{
-              height: { xs: 70, md: 90 },
-              width: { xs: 70, md: 110 },
+              height: { xs: 80, md: 90 },
+              width: { xs: 80, md: 110 },
               backgroundColor: "#e5eafa",
               display: "flex",
               justifyContent: "center",
@@ -104,7 +161,8 @@ export const Podium = () => {
           >
             <Typography
               sx={{
-                fontSize: { xs: 50, md: 70 },
+                pt: 1,
+                fontSize: { xs: 60, md: 70 },
                 textAlign: "center",
               }}
             >
@@ -112,11 +170,11 @@ export const Podium = () => {
             </Typography>
           </Paper>
         </Grid>
-        <Grid item xs={4} sm={2}>
+        <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }}>
           <Paper
             sx={{
-              height: { xs: 70, md: 90 },
-              width: { xs: 70, md: 110 },
+              height: { xs: 80, md: 90 },
+              width: { xs: 80, md: 110 },
               backgroundColor: "#e5eafa",
               display: "flex",
               justifyContent: "center",
@@ -125,7 +183,8 @@ export const Podium = () => {
           >
             <Typography
               sx={{
-                fontSize: { xs: 50, md: 70 },
+                pt: 1,
+                fontSize: { xs: 60, md: 70 },
                 textAlign: "center",
               }}
             >

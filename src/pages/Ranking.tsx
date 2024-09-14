@@ -153,7 +153,7 @@ export const Ranking = () => {
           display: "flex",
           flexDirection: { xs: "column", sm: "column" },
           minHeight: {
-            xs: "750px", // Minimum height for extra-small screens
+            xs: "400px", // Minimum height for extra-small screens
             sm: "450px", // Minimum height for small screens
           },
           height: {
@@ -172,40 +172,57 @@ export const Ranking = () => {
             flexDirection: "column",
             // justifyContent: "center",
             alignItems: "center",
-            marginBottom: { xs: "20px", md: "0px" }, // Space between avatar and user data on small screens
+            marginBottom: { xs: "5px", md: "5px" }, // Space between avatar and user data on small screens
           }}
         >
-          <Box
-            component="img"
-            src={RankingImg}
-            alt="rankingImg"
-            sx={{
-              alignSelf: {
-                xs: "center",
-                sm: "center",
-              },
-              marginLeft: {
-                xs: "0px",
-                sm: "0px",
-              },
-              marginTop: {
-                xs: "0px",
-                sm: "0px",
-              },
-              objectFit: "cover",
-              borderRadius: "10px",
-              width: {
-                xs: "330px",
-                sm: "400px",
-                lg: "700px",
-              },
-              height: {
-                xs: "120px",
-                sm: "150px",
-                lg: "170px",
-              },
-            }}
-          />
+          {false ? (
+            <Box
+              component="img"
+              src={RankingImg}
+              alt="rankingImg"
+              sx={{
+                alignSelf: {
+                  xs: "center",
+                  sm: "center",
+                },
+                marginLeft: {
+                  xs: "0px",
+                  sm: "0px",
+                },
+                marginTop: {
+                  xs: "0px",
+                  sm: "0px",
+                },
+                objectFit: "cover",
+                borderRadius: "10px",
+                width: {
+                  xs: "330px",
+                  sm: "400px",
+                  lg: "700px",
+                },
+                height: {
+                  xs: "120px",
+                  sm: "150px",
+                  lg: "170px",
+                },
+              }}
+            />
+          ) : (
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{
+                fontFamily: "Permanent Marker, sans-serif",
+                color: "#3f51b5",
+                fontSize: fontSize,
+                lineHeight: 1.2,
+                letterSpacing: "0.05em",
+                mb: 3, // Reduced margin-bottom for more compact spacing
+              }}
+            >
+              Ranking
+            </Typography>
+          )}
         </Box>
         <Podium />
 
@@ -213,7 +230,7 @@ export const Ranking = () => {
           variant="contained"
           startIcon={<EmojiEventsTwoToneIcon />}
           sx={{
-            mt: 10, // Push the button to the bottom
+            mt: 2, // Push the button to the bottom
             alignSelf: { xs: "center" },
             backgroundColor: "#3f51b5",
             color: "#ffc107",
