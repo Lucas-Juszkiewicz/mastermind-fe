@@ -75,6 +75,7 @@ export const Game = () => {
   const [finishVictory, setFinishVictory] = useState<Game | undefined>(
     undefined
   );
+  const [finishRounds, setFinishRounds] = useState<Game | undefined>(undefined);
   const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
@@ -190,14 +191,18 @@ export const Game = () => {
   }, [round, previousResponses]);
 
   useEffect(() => {
-    if (finishVictory != undefined || finishZeroResponse != null) {
+    if (
+      finishRounds != undefined ||
+      finishVictory != undefined ||
+      finishZeroResponse != null
+    ) {
       setIsClockFinish(true);
       setIsFinishCardOpen(true);
       localStorage.removeItem("isGameInProgress");
     }
     console.log("FinishVictory in game: " + finishVictory?.success);
     console.log("FinishZero in game: " + finishZeroResponse?.success);
-  }, [finishVictory, finishZeroResponse]);
+  }, [finishVictory, finishZeroResponse, finishRounds]);
 
   const renderRounds = () => {
     const rounds = [];
@@ -206,7 +211,7 @@ export const Game = () => {
         <Grid key={i}>
           <SingleRound
             active={
-              !finishVictory && !finishZero
+              !finishVictory && !finishZero && !finishRounds
                 ? gameData && i == (round - 11) * -1
                   ? true
                   : false
@@ -225,6 +230,7 @@ export const Game = () => {
             }
             finishZero={finishZero}
             setFinishVictory={setFinishVictory}
+            setFinishRounds={setFinishRounds}
           />
         </Grid>
       );
@@ -258,7 +264,13 @@ export const Game = () => {
         <FinishCard
           isFinishCardOpen={isFinishCardOpen}
           setIsFinishCardOpen={setIsFinishCardOpen}
-          finishGame={finishZeroResponse ? finishZeroResponse : finishVictory}
+          finishGame={
+            finishZeroResponse
+              ? finishZeroResponse
+              : finishVictory
+              ? finishVictory
+              : finishRounds
+          }
         />
         <AnswerAndClock
           isClockStart={isClockStart}
@@ -267,6 +279,7 @@ export const Game = () => {
           setIsFinishCardOpen={setIsFinishCardOpen}
           isClockFinish={isClockFinish}
           finishVictory={finishVictory}
+          finishRounds={finishRounds}
           setIsClockStart={setIsClockStart}
           renderRounds={renderRounds}
           setPreviousGuesses={setPreviousGuesses}

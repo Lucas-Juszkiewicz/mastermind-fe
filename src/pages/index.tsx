@@ -10,3 +10,4 @@ export { UserDetail } from "./UserDetail";
 export { Users } from "./Users";
 export { ChangePassword } from "./ChangePassword";
 export { ChangeAvatar } from "./ChangeAvatar";
+export { RankingFull } from "./RankingFull";

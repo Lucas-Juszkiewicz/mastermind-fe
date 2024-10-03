@@ -13,6 +13,7 @@ interface SendGuessButtonProps {
   guess: (number | undefined)[];
   round: Number;
   setFinishVictory: Function;
+  setFinishRounds: Function;
 }
 
 interface GameData {
@@ -36,6 +37,7 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
   guess,
   round,
   setFinishVictory,
+  setFinishRounds,
 }) => {
   const {
     redirectToKeycloak,
@@ -84,6 +86,13 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
     },
   };
 
+  const configFetchFinishRounds = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      authorization: "Bearer " + userAuth.token,
+    },
+  };
+
   const configSendGuess = {
     headers: {
       "Content-Type": "application/json",
@@ -115,6 +124,29 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
     }
   };
 
+  const fetchFinishRounds = async (gameId: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8081/game/finishrounds/${gameId}`,
+        configFetchFinishRounds
+      );
+      setFinishRounds(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error);
+        if (error.response && error.response.status === 401) {
+          handleOpenALC();
+          logOut(true);
+          setTimeout(() => {
+            redirectToKeycloak();
+          }, 6000);
+        } else {
+          handleOpen();
+        }
+      }
+    }
+  };
+
   const sendGuess = async () => {
     checkTokenValidity(userAuth.tokenExp);
     if (!isTokenValid(userAuth.tokenExp)) {
@@ -131,6 +163,8 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
       setGameData(response.data);
       if (response.data.finalMessage === "win") {
         fetchFinishVictory(id);
+      } else if (response.data.finalMessage === "defeat") {
+        fetchFinishRounds(id);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -140,7 +174,7 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
           logOut(true);
           setTimeout(() => {
             redirectToKeycloak();
-          }, 7000);
+          }, 6000);
         } else {
           handleOpen();
         }

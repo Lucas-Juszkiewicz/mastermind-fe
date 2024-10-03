@@ -62,6 +62,7 @@ interface AnswerAndClockProps {
   setIsFinishCardOpen: Function;
   isClockFinish: boolean;
   finishVictory: Game | undefined;
+  finishRounds: Game | undefined;
   renderRounds: Function;
   setPreviousGuesses: Function;
 }
@@ -73,6 +74,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   setIsFinishCardOpen,
   isClockFinish,
   finishVictory,
+  finishRounds,
   setIsClockStart,
   renderRounds,
   setPreviousGuesses,
@@ -198,11 +200,13 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   };
 
   useEffect(() => {
-    if (finishVictory) {
-      setShowAnswerNumber(finishVictory.sequence);
-      setShowAnswerColor(setColor(finishVictory.sequence));
+    if (finishRounds != undefined || finishVictory != undefined) {
+      const game: Game =
+        finishVictory !== undefined ? finishVictory : finishRounds!;
+      setShowAnswerNumber(game.sequence);
+      setShowAnswerColor(setColor(game.sequence));
     }
-  }, [finishVictory]);
+  }, [finishVictory, finishRounds]);
 
   return (
     <Box

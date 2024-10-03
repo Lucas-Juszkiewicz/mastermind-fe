@@ -19,14 +19,8 @@ import { Podium } from "../components/Podium";
 interface UserData {
   id: number;
   nick: string;
-  email: string;
   country?: string;
-  games?: number;
   total?: number;
-  imgAsString?: String | null;
-  avatar: number | null;
-  registrationDate: string;
-  numberOfGames: number;
 }
 
 interface UserAuth {
@@ -41,97 +35,45 @@ interface UserAuth {
 
 export const Ranking = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const userAuthContext = useContext(UserAuthContext);
-  if (!userAuthContext) {
-    throw new Error("useContext must be used within an AuthProvider");
-  }
-  const { userAuth, setUserAuth } = userAuthContext;
+  // const [userData, setUserData] = useState<UserData | null>(null);
 
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  // const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   // Update screen width on window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-    };
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setScreenWidth(window.innerWidth);
+  //   };
 
-    window.addEventListener("resize", handleResize);
+  //   window.addEventListener("resize", handleResize);
 
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  //   // Cleanup the event listener on component unmount
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
 
-  const config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      authorization: "Bearer " + userAuth.token,
-    },
-  };
+  // const isLongText = userData.nick.split(" ")[0].length > 8;
+  // const fontSize = isLongText
+  //   ? { xs: "1.5rem", sm: "2.8rem", md: "2.8rem" }
+  //   : { xs: "2.5rem", sm: "3.5rem", md: "3.5rem" };
 
-  const [avatar, setAvatar] = useState<String | null>(null);
+  // const formatDate = (dateString: string) => {
+  //   const date = new Date(dateString);
+  //   return format(date, "dd.MM.yyy");
+  // };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8081/users/get/${userAuth.userId}`,
-          config
-        );
-        setUserData(response.data);
-        setUserAuth({
-          userId: response.data.id, // Assuming `id` in `UserData` maps to `userId`
-          nick: response.data.nick,
-          email: response.data.email,
-          country: response.data.country || "", // Optional field
-          token: userAuth.token, // Keep the existing token
-          refreshToken: userAuth.refreshToken, // Keep the existing refresh token
-          tokenExp: userAuth.tokenExp, // Keep the existing token expiry
-        });
-
-        if (response.data.imgAsString) {
-          // Get the Base64 image string from the response
-          const imageUrl = `data:image/jpeg;base64,${response.data.imgAsString}`;
-
-          setAvatar(imageUrl);
-        }
-        console.log(response.data);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          // handle error
-        }
-      }
-    };
-    fetchUserData();
-  }, []);
-
-  if (!userData) {
-    return <LinearDeterminate />;
-  }
-
-  const isLongText = userData.nick.split(" ")[0].length > 8;
-  const fontSize = isLongText
-    ? { xs: "1.5rem", sm: "2.8rem", md: "2.8rem" }
-    : { xs: "2.5rem", sm: "3.5rem", md: "3.5rem" };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return format(date, "dd.MM.yyy");
-  };
-
-  let average;
-  if (userData.numberOfGames != null && userData.total != undefined) {
-    average = userData.total / userData.numberOfGames;
-    average.toFixed();
-  } else {
-    average = 0;
-  }
+  // let average;
+  // if (userData.numberOfGames != null && userData.total != undefined) {
+  //   average = userData.total / userData.numberOfGames;
+  //   average.toFixed();
+  // } else {
+  //   average = 0;
+  // }
 
   const handleEditDetails = () => {
-    localStorage.setItem("userData", JSON.stringify(userData));
-    navigate("/editDetails");
+    // localStorage.setItem("userData", JSON.stringify(userData));
+    navigate("/rankingfull");
   };
 
   return (
@@ -214,7 +156,7 @@ export const Ranking = () => {
               sx={{
                 fontFamily: "Permanent Marker, sans-serif",
                 color: "#3f51b5",
-                fontSize: fontSize,
+                // fontSize: fontSize,
                 lineHeight: 1.2,
                 letterSpacing: "0.05em",
                 mb: 3, // Reduced margin-bottom for more compact spacing
