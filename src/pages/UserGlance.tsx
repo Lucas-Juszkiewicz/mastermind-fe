@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Paper from "@mui/material/Paper";
-import { AvatarImg, LinearDeterminate } from "../components";
+import { AvatarImg, ErrorMessageCard, LinearDeterminate } from "../components";
 import Box from "@mui/material/Box";
 
 import Typography from "@mui/material/Typography";
@@ -9,8 +9,10 @@ import { format } from "date-fns";
 import { UserAuthContext } from "../UserAuthProvider";
 import Button from "@mui/material/Button";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AccountBoxTwoToneIcon from "@mui/icons-material/AccountBoxTwoTone";
+import { AutomaticLogoutCard } from "../components/AutomaticLogoutCard";
+import { useAuthMethods } from "../AuthMethodsProvider";
 
 interface UserData {
   id: number;
@@ -35,10 +37,34 @@ interface UserAuth {
   tokenExp: number;
 }
 
-export const UserDetail = () => {
+export const UserGlance = () => {
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    logOut,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state;
   const [userData, setUserData] = useState<UserData | null>(null);
   const userAuthContext = useContext(UserAuthContext);
+  const [error, setErrorMessage] = useState<AxiosError | null>(null);
+  const [openErrorCard, setOpenErrorCard] = useState(false);
+  const handleClose = () => {
+    setOpenErrorCard(false);
+  };
+  const handleOpen = () => {
+    setOpenErrorCard(true);
+  };
+  const [isAutomaticLogoutCardOpen, setIsAutomaticLogoutCardOpen] =
+    useState(false);
+  const handleOpenALC = () => {
+    setIsAutomaticLogoutCardOpen(true);
+  };
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
   }
@@ -70,22 +96,13 @@ export const UserDetail = () => {
   const [avatar, setAvatar] = useState<String | null>(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserData = async (id: number) => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/users/get/${userAuth.userId}`,
+          `http://localhost:8081/users/get/${id}`,
           config
         );
         setUserData(response.data);
-        setUserAuth({
-          userId: response.data.id,
-          nick: response.data.nick,
-          email: response.data.email,
-          country: response.data.country || "",
-          token: userAuth.token,
-          refreshToken: userAuth.refreshToken,
-          tokenExp: userAuth.tokenExp,
-        });
 
         if (response.data.imgAsString) {
           // Get the Base64 image string from the response
@@ -96,11 +113,22 @@ export const UserDetail = () => {
         console.log(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          // handle error
+          if (axios.isAxiosError(error)) {
+            setErrorMessage(error);
+            if (error.response && error.response.status === 401) {
+              handleOpenALC();
+              logOut(true);
+              setTimeout(() => {
+                redirectToKeycloak();
+              }, 6000);
+            } else {
+              handleOpen();
+            }
+          }
         }
       }
     };
-    fetchUserData();
+    fetchUserData(state.id);
   }, []);
 
   if (!userData) {
@@ -125,9 +153,9 @@ export const UserDetail = () => {
     average = 0;
   }
 
-  const handleEditDetails = () => {
-    localStorage.setItem("userData", JSON.stringify(userData));
-    navigate("/editDetails");
+  const handleBack = () => {
+    // localStorage.setItem("userData", JSON.stringify(userData));
+    navigate(-1);
   };
 
   return (
@@ -253,9 +281,8 @@ export const UserDetail = () => {
           </Box>
           <Button
             variant="contained"
-            startIcon={<ManageAccountsIcon />}
             sx={{
-              mt: 20, // Push the button to the bottom
+              mt: 10, // Push the button to the bottom
               alignSelf: { xs: "center" },
               backgroundColor: "#3f51b5",
               color: "#ffc107",
@@ -263,14 +290,28 @@ export const UserDetail = () => {
                 backgroundColor: "#3f52c6",
               },
             }}
-            onClick={handleEditDetails}
+            onClick={handleBack}
           >
-            Edit details
+            BACK
           </Button>
         </Box>
       </Box>
+      {openErrorCard && (
+        <ErrorMessageCard
+          error={error}
+          openErrorCard={openErrorCard}
+          handleClose={handleClose}
+        />
+      )}
+      {isAutomaticLogoutCardOpen && (
+        <AutomaticLogoutCard
+          isAutomaticLogoutCardOpen={isAutomaticLogoutCardOpen}
+          setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
+          nick={userAuth.nick}
+        />
+      )}
     </Paper>
   );
 };
 
-export default UserDetail;
+export default UserGlance;

@@ -12,6 +12,7 @@ import {
   ChangeAvatar,
   ChangePassword,
   RankingFull,
+  UserGlance,
 } from "../pages";
 import { PreStarter } from "../pages/PreStarter";
 import { EditDetails } from "../pages/EditDetails";
@@ -33,6 +34,7 @@ export const AllRoutes = () => {
         <Route path="/rankingfull" element={<RankingFull />}></Route>
         <Route path="/users" element={<Users />}></Route>
         <Route path="/user" element={<UserDetail />}></Route>
+        <Route path="/userglance" element={<UserGlance />}></Route>
         <Route path="/changeAvatar" element={<ChangeAvatar />}></Route>
         <Route path="/changePassword" element={<ChangePassword />}></Route>
         <Route path="/notfound" element={<PageNotFound />}></Route>

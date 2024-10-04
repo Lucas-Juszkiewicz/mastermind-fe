@@ -255,7 +255,7 @@ export const UserDetail = () => {
             variant="contained"
             startIcon={<ManageAccountsIcon />}
             sx={{
-              mt: 20, // Push the button to the bottom
+              mt: 10, // Push the button to the bottom
               alignSelf: { xs: "center" },
               backgroundColor: "#3f51b5",
               color: "#ffc107",

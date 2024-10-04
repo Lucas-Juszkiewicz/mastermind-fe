@@ -7,13 +7,16 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import Paper from "@mui/material/Paper";
 import { Avatar, Box, Typography } from "@mui/material";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useContext } from "react";
 import { UserAuthContext } from "../UserAuthProvider";
 import { AvatarImg } from "./AvatarImg";
 import AccountBoxTwoToneIcon from "@mui/icons-material/AccountBoxTwoTone";
 import { AvatarImgRanking } from "./AvatarImgRanking";
 import { useNavigate } from "react-router-dom";
+import { useAuthMethods } from "../AuthMethodsProvider";
+import { AutomaticLogoutCard } from "./AutomaticLogoutCard";
+import { ErrorMessageCard } from "./ErrorMessageCard";
 
 interface UserData {
   id: number;
@@ -33,11 +36,15 @@ interface UserAuth {
 }
 
 export const Podium = () => {
-  // const [spacing, setSpacing] = React.useState(2);
-
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSpacing(Number((event.target as HTMLInputElement).value));
-  // };
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    logOut,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
 
   const navigate = useNavigate();
   const userAuthContext = useContext(UserAuthContext);
@@ -45,6 +52,19 @@ export const Podium = () => {
     throw new Error("useContext must be used within an AuthProvider");
   }
   const { userAuth, setUserAuth } = userAuthContext;
+  const [error, setErrorMessage] = React.useState<AxiosError | null>(null);
+  const [openErrorCard, setOpenErrorCard] = React.useState(false);
+  const handleClose = () => {
+    setOpenErrorCard(false);
+  };
+  const handleOpen = () => {
+    setOpenErrorCard(true);
+  };
+  const [isAutomaticLogoutCardOpen, setIsAutomaticLogoutCardOpen] =
+    React.useState(false);
+  const handleOpenALC = () => {
+    setIsAutomaticLogoutCardOpen(true);
+  };
 
   const config = {
     headers: {
@@ -68,7 +88,6 @@ export const Podium = () => {
           `http://localhost:8081/ranking/thebestthree`,
           config
         );
-        const orderedResponse = response.data;
         setFirst({
           id: response.data.first.id,
           nick: response.data.first.nick,
@@ -106,7 +125,16 @@ export const Podium = () => {
         console.log(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          // handle error
+          setErrorMessage(error);
+          if (error.response && error.response.status === 401) {
+            handleOpenALC();
+            logOut(true);
+            setTimeout(() => {
+              redirectToKeycloak();
+            }, 7000);
+          } else {
+            handleOpen();
+          }
         }
       }
     };
@@ -114,7 +142,7 @@ export const Podium = () => {
   }, []);
 
   const clickHandler = (id: number) => {
-    navigate("/user");
+    navigate("/userglance", { state: { id } });
   };
 
   return (
@@ -132,7 +160,9 @@ export const Podium = () => {
         <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }}>
           <Paper
             onClick={() => {
-              clickHandler(second?.id);
+              if (second) {
+                clickHandler(second.id);
+              }
             }}
             sx={{
               borderRadius: "60px",
@@ -148,6 +178,7 @@ export const Podium = () => {
               "&:hover": {
                 transform: "scale(1.1)", // Slightly enlarge on hover
                 boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)", // Add shadow on hover
+                cursor: "pointer",
               },
             }}
           >
@@ -188,6 +219,11 @@ export const Podium = () => {
 
         <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }} mt={-7}>
           <Paper
+            onClick={() => {
+              if (first) {
+                clickHandler(first.id);
+              }
+            }}
             sx={{
               borderRadius: "60px",
               border: "3px solid",
@@ -202,6 +238,7 @@ export const Podium = () => {
               "&:hover": {
                 transform: "scale(1.1)",
                 boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                cursor: "pointer",
               },
             }}
           >
@@ -242,6 +279,11 @@ export const Podium = () => {
 
         <Grid item xs={2} sm={2} mr={{ xs: 6, md: 2 }}>
           <Paper
+            onClick={() => {
+              if (third) {
+                clickHandler(third.id);
+              }
+            }}
             sx={{
               borderRadius: "60px",
               border: "3px solid",
@@ -256,6 +298,7 @@ export const Podium = () => {
               "&:hover": {
                 transform: "scale(1.1)",
                 boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+                cursor: "pointer",
               },
             }}
           >
@@ -266,7 +309,7 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -2, md: -2.7 },
+                  ml: { xs: -3.4, md: -2.7 },
                 }}
               />
             ) : (
@@ -364,6 +407,20 @@ export const Podium = () => {
           </Paper>
         </Grid>
       </Grid>
+      {openErrorCard && (
+        <ErrorMessageCard
+          error={error}
+          openErrorCard={openErrorCard}
+          handleClose={handleClose}
+        />
+      )}
+      {isAutomaticLogoutCardOpen && (
+        <AutomaticLogoutCard
+          isAutomaticLogoutCardOpen={isAutomaticLogoutCardOpen}
+          setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
+          nick={userAuth.nick}
+        />
+      )}
     </Box>
   );
 };
