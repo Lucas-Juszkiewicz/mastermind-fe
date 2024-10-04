@@ -164,7 +164,7 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
                   <strong>Country:</strong>
                 </Typography>
                 <Typography variant="body2">
-                  {userAuth.country} to {inputs.country}
+                  {userAuth.country} {"->"} {inputs.country}
                 </Typography>
               </Box>
             ) : null}
@@ -190,12 +190,12 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
                 >
                   <strong>Email:</strong>
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ mt: -3.7 }}>
                   {userAuth.email}
                   {userAuth.email.length || inputs.email.length > 21 ? (
                     <Box component="span" sx={{ my: 0.5 }}>
                       <br />
-                      to
+                      {"->"}
                       <br />
                     </Box>
                   ) : (

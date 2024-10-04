@@ -309,7 +309,7 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -3.4, md: -2.7 },
+                  ml: { xs: -3.4, md: -4.3 },
                 }}
               />
             ) : (
