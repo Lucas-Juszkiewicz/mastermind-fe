@@ -6,7 +6,7 @@ import axios from "axios";
 import { GoodbyeCard } from "../components/GoodbyeCard";
 import { useTheme } from "@mui/material/styles";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AutomaticLogoutCard } from "../components/AutomaticLogoutCard";
 
 export const Home = () => {
@@ -101,11 +101,12 @@ export const Home = () => {
         setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
         nick={nick}
       />
-
+      {/* 
       <Box
         component="video"
         controls
         sx={{
+          borderRadius: "16px",
           width: "80%", // Default width
           maxWidth: "600px",
           height: "auto",
@@ -125,7 +126,7 @@ export const Home = () => {
           type="video/mp4"
         />
         Your browser does not support the video tag.
-      </Box>
+      </Box> */}
       <Typography
         variant="h5"
         gutterBottom
@@ -145,7 +146,7 @@ export const Home = () => {
         variant="body2"
         paragraph
         sx={{
-          my: "-10px",
+          mt: "-5px",
           mx: {
             xs: "0px",
             md: "80px",
@@ -159,7 +160,7 @@ export const Home = () => {
         variant="body2"
         paragraph
         sx={{
-          my: "10px",
+          mt: "-5px",
           mx: {
             xs: "0px",
             md: "80px",
@@ -167,7 +168,11 @@ export const Home = () => {
         }}
       >
         If you're new to Mastermind or need a quick refresher, don't worry! You
-        can check out the rules.
+        can check out the{" "}
+        <Link onClick={handleClick} to={"/rules"} className="hover-link">
+          rules
+        </Link>
+        .
       </Typography>
       <Button
         endIcon={<HowToRegOutlined style={{ fontSize: 28 }} />}
@@ -183,7 +188,7 @@ export const Home = () => {
           paddingTop: 1.5,
           margin: 1,
           mb: -1,
-          mt: 2,
+          mt: 4,
           borderRadius: "6px",
           ":hover": { backgroundColor: "#f9a825" },
         }}

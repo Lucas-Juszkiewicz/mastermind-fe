@@ -4,7 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { UserAuthContext } from "../UserAuthProvider";
 
-export const PreStarter = () => {
+interface PreStarterProps {
+  setFinishZeroResponse: Function;
+}
+
+export const PreStarter: React.FC<PreStarterProps> = ({
+  setFinishZeroResponse,
+}) => {
   const {
     redirectToKeycloak,
     getToken,

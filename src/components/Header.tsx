@@ -10,7 +10,30 @@ import { useContext, useEffect, useState } from "react";
 import { UserAuthContext } from "../UserAuthProvider";
 import { useAuthMethods } from "../AuthMethodsProvider";
 
-export const Header = () => {
+interface Game {
+  id: number;
+  user: {
+    id: number;
+  };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  success: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
+}
+
+interface HeaderProps {
+  finishZeroResponse: Game | undefined;
+  setFinishZeroResponse: Function;
+}
+export const Header: React.FC<HeaderProps> = ({
+  finishZeroResponse,
+  setFinishZeroResponse,
+}) => {
   const navigate = useNavigate();
   const {
     redirectToKeycloak,
@@ -79,7 +102,7 @@ export const Header = () => {
         }}
       >
         <Toolbar>
-          <Menu />
+          <Menu setFinishZeroResponse={setFinishZeroResponse} />
           <Typography
             variant="h6"
             component="div"

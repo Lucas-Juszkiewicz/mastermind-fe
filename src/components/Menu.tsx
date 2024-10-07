@@ -14,8 +14,15 @@ import Typography from "@mui/material/Typography";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { UserAuthContext } from "../UserAuthProvider";
 import { useContext, useEffect } from "react";
+import axios from "axios";
+import { config } from "process";
+import { AnswerAndClock } from "./AnswerAndClock";
 
-export const Menu = () => {
+interface MenuProps {
+  setFinishZeroResponse: Function;
+}
+
+export const Menu: React.FC<MenuProps> = ({ setFinishZeroResponse }) => {
   const [open, setOpen] = React.useState(false);
   const [shouldShowThisItem, setShouldShowThisItem] = React.useState(false);
   const [shouldShowNewGameButton, setShouldShowNewGameButton] =
@@ -86,17 +93,32 @@ export const Menu = () => {
   const userId = userAuth.userId;
 
   // const shouldShowThisItem = userId != "" ? true : false;
-  const handleOnClick = () => {
-    navigate("/preStarter");
+  const handleOnClickNewGame = () => {
+    // navigate("/preStarter");
     checkTokenValidity(userAuth.tokenExp);
     if (!isTokenValid(userAuth.tokenExp)) {
       logOut(true);
-      navigate("/preStarter");
+      // navigate("/preStarter");
       navigate("/home");
-    } else {
-      // console.log("Valid w chuj");
-      navigate("/preStarter");
     }
+    const endGameToStartNewGame = async () => {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + userAuth.token,
+        },
+      };
+      try {
+        const endGameResponse = await axios.get(
+          `http://localhost:8081/gameinprogress/endgame/${userAuth.userId}`,
+          config
+        );
+        setFinishZeroResponse(endGameResponse.data);
+        // localStorage.removeItem("isGameInProgress");
+        navigate("/preStarter");
+      } catch (error) {}
+    };
+    endGameToStartNewGame();
   };
 
   useEffect(() => {
@@ -202,7 +224,7 @@ export const Menu = () => {
                         // to="/game"
                         onClick={(event) => {
                           handleClose(event);
-                          handleOnClick();
+                          handleOnClickNewGame();
                         }}
                       >
                         New Game
@@ -227,10 +249,10 @@ export const Menu = () => {
                     </MenuItem>
                     <MenuItem
                       component={Link}
-                      to="/users"
+                      to="/about"
                       onClick={handleClose}
                     >
-                      Users
+                      Tech info
                     </MenuItem>
                     {shouldShowThisItem && (
                       <MenuItem

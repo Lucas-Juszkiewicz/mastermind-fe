@@ -88,24 +88,30 @@ export const Podium = () => {
           `http://localhost:8081/ranking/thebestthree`,
           config
         );
-        setFirst({
-          id: response.data.first.id,
-          nick: response.data.first.nick,
-          total: response.data.first.total,
-          country: response.data.first.country || "",
-        });
-        setSecond({
-          id: response.data.second.id,
-          nick: response.data.second.nick,
-          total: response.data.second.total,
-          country: response.data.second.country || "",
-        });
-        setThird({
-          id: response.data.third.id,
-          nick: response.data.third.nick,
-          total: response.data.third.total,
-          country: response.data.third.country || "",
-        });
+        if (response.data.first) {
+          setFirst({
+            id: response.data.first.id,
+            nick: response.data.first.nick,
+            total: response.data.first.total,
+            country: response.data.first.country || "",
+          });
+        }
+        if (response.data.second) {
+          setSecond({
+            id: response.data.second.id,
+            nick: response.data.second.nick,
+            total: response.data.second.total,
+            country: response.data.second.country || "",
+          });
+        }
+        if (response.data.third) {
+          setThird({
+            id: response.data.third.id,
+            nick: response.data.third.nick,
+            total: response.data.third.total,
+            country: response.data.third.country || "",
+          });
+        }
 
         if (response.data.first.imgAsString) {
           // Get the Base64 image string from the response
@@ -199,7 +205,7 @@ export const Podium = () => {
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -3.2, md: -3.5 },
+                  ml: second ? { xs: -3, md: -4 } : { xs: -7.8, md: -10 },
                 }}
               />
             )}
@@ -209,7 +215,7 @@ export const Podium = () => {
                 fontSize: { xs: 16, sm: 20 },
                 textAlign: "center",
                 mb: { xs: -13, md: -17 },
-                ml: { xs: -8, md: -9.5 },
+                ml: { xs: -8, md: -10 },
               }}
             >
               {second?.nick}
@@ -249,7 +255,7 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: 0.3, md: -1.3 },
+                  ml: { xs: -2.1, md: -2.7 },
                 }}
               />
             ) : (
@@ -259,7 +265,7 @@ export const Podium = () => {
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -3.2, md: -3.5 },
+                  ml: first ? { xs: -2.3, md: -3 } : { xs: -7.8, md: -11 },
                 }}
               />
             )}
@@ -269,7 +275,7 @@ export const Podium = () => {
                 fontSize: { xs: 16, sm: 20 },
                 textAlign: "center",
                 mb: { xs: -13, md: -16.5 },
-                ml: { xs: -8, md: -11.5 },
+                ml: { xs: -7.8, md: -10 },
               }}
             >
               {first?.nick}
@@ -309,7 +315,7 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -3.4, md: -4.3 },
+                  ml: { xs: 0, md: -0.3 },
                 }}
               />
             ) : (
@@ -319,7 +325,7 @@ export const Podium = () => {
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -3.2, md: -3.5 },
+                  ml: third ? { xs: 0, md: 0 } : { xs: -10, md: -13 },
                 }}
               />
             )}
@@ -329,7 +335,7 @@ export const Podium = () => {
                 fontSize: { xs: 16, sm: 20 },
                 textAlign: "center",
                 mb: { xs: -13, md: -16 },
-                ml: { xs: -8, md: -10 },
+                ml: { xs: -10, md: -13 },
               }}
             >
               {third?.nick}

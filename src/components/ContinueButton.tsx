@@ -29,11 +29,11 @@ export const ContinueButton = () => {
   } = userAuthContext;
 
   const handleOnClick = () => {
-    navigate("/preStarter");
+    // navigate("/preStarter");
     checkTokenValidity(userAuth.tokenExp);
     if (!isTokenValid(userAuth.tokenExp)) {
       logOut(true);
-      navigate("/preStarter");
+      // navigate("/preStarter");
       navigate("/home");
     } else {
       // console.log("Valid w chuj");

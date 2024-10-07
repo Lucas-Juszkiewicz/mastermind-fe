@@ -50,47 +50,71 @@ export const RankingFull = () => {
       </Box> */}
       <Typography
         variant="h5"
-        gutterBottom
+        align="center"
         sx={{
-          textAlign: "center",
-          mt: "30px",
-          mb: "20px",
-          mx: {
-            xs: "0px",
-            md: "40px",
-          },
+          fontFamily: "Permanent Marker, sans-serif",
+          color: "#3f51b5",
+          // fontSize: fontSize,
+          lineHeight: 1.2,
+          letterSpacing: "0.05em",
+          mb: 3, // Reduced margin-bottom for more compact spacing
         }}
       >
-        Welcome to Mastermind!
-      </Typography>
-      {/* <Typography
-        variant="body2"
-        paragraph
-        sx={{
-          my: "-10px",
-          mx: {
-            xs: "0px",
-            md: "80px",
-          },
-        }}
-      >
-        To get started, simply register with a username - no need to provide a
-        real email address.
+        Full Ranking
       </Typography>
       <Typography
         variant="body2"
         paragraph
         sx={{
-          my: "10px",
+          mt: "50px",
           mx: {
             xs: "0px",
             md: "80px",
           },
         }}
       >
-        If you're new to Mastermind or need a quick refresher, don't worry! You
-        can check out the rules.
-      </Typography> */}
+        A ranking of all players will be available.
+      </Typography>
+      <Typography
+        variant="body2"
+        paragraph
+        sx={{
+          mt: "-5px",
+          mx: {
+            xs: "0px",
+            md: "80px",
+          },
+        }}
+      >
+        You will be able to track each player's progress from the day of
+        registration to the present.
+      </Typography>
+      <Typography
+        variant="body2"
+        paragraph
+        sx={{
+          mt: "-5px",
+          mx: {
+            xs: "0px",
+            md: "80px",
+          },
+        }}
+      >
+        Their progress will also be displayed in graphs.
+      </Typography>
+      <Typography
+        variant="body2"
+        paragraph
+        sx={{
+          mt: "-5px",
+          mx: {
+            xs: "0px",
+            md: "80px",
+          },
+        }}
+      >
+        Work is currently in progress.
+      </Typography>
       <Button
         variant="contained"
         sx={{

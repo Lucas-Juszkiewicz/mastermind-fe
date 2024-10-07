@@ -16,15 +16,51 @@ import {
 } from "../pages";
 import { PreStarter } from "../pages/PreStarter";
 import { EditDetails } from "../pages/EditDetails";
+import { useState } from "react";
 
-export const AllRoutes = () => {
+interface Game {
+  id: number;
+  user: {
+    id: number;
+  };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  success: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
+}
+
+interface AllRoutesProps {
+  finishZeroResponse: Game | undefined;
+  setFinishZeroResponse: Function;
+}
+
+export const AllRoutes: React.FC<AllRoutesProps> = ({
+  finishZeroResponse,
+  setFinishZeroResponse,
+}) => {
   return (
     <>
       <Routes>
         <Route path="/" element={<Home />}></Route>
         {/* <Route path="/game/:userId" element={<Game />}></Route> */}
-        <Route path="/game" element={<Game />}></Route>
-        <Route path="/preStarter" element={<PreStarter />}></Route>
+        <Route
+          path="/game"
+          element={
+            <Game
+              finishZeroResponse={finishZeroResponse}
+              setFinishZeroResponse={setFinishZeroResponse}
+            />
+          }
+        ></Route>
+        <Route
+          path="/preStarter"
+          element={<PreStarter setFinishZeroResponse={setFinishZeroResponse} />}
+        ></Route>
         <Route path="/editDetails" element={<EditDetails />}></Route>
         <Route path="/home" element={<Home />}></Route>
         <Route path="/register" element={<Register />}></Route>

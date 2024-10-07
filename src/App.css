@@ -60,3 +60,14 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.hover-link {
+  font-size: 1.8rem;
+  color: #1a237e;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.hover-link:hover {
+  font-size: 2.2rem; /* Bigger on hover */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Shadow on hover */
+}

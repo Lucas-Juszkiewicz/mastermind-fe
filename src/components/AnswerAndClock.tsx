@@ -65,12 +65,14 @@ interface AnswerAndClockProps {
   finishRounds: Game | undefined;
   renderRounds: Function;
   setPreviousGuesses: Function;
+  finishZeroResponse: Game | undefined;
 }
 
 export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   isClockStart,
   setFinishZero,
   setFinishZeroResponse,
+  finishZeroResponse,
   setIsFinishCardOpen,
   isClockFinish,
   finishVictory,
@@ -207,6 +209,14 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
       setShowAnswerColor(setColor(game.sequence));
     }
   }, [finishVictory, finishRounds]);
+
+  useEffect(() => {
+    if (finishZeroResponse && countdown != 0) {
+      const game: Game = finishZeroResponse;
+      setShowAnswerNumber(game.sequence);
+      setShowAnswerColor(setColor(game.sequence));
+    }
+  }, [finishZeroResponse]);
 
   return (
     <Box

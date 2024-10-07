@@ -50,7 +50,15 @@ interface User {
   token: string;
 }
 
-export const Game = () => {
+interface GameProps {
+  finishZeroResponse: Game | undefined;
+  setFinishZeroResponse: Function;
+}
+
+export const Game: React.FC<GameProps> = ({
+  finishZeroResponse,
+  setFinishZeroResponse,
+}) => {
   const {
     redirectToKeycloak,
     getToken,
@@ -76,7 +84,7 @@ export const Game = () => {
     undefined
   );
   const [finishRounds, setFinishRounds] = useState<Game | undefined>(undefined);
-  const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
+  // const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
 
@@ -264,6 +272,7 @@ export const Game = () => {
         <FinishCard
           isFinishCardOpen={isFinishCardOpen}
           setIsFinishCardOpen={setIsFinishCardOpen}
+          setFinishZeroResponse={setFinishZeroResponse}
           finishGame={
             finishZeroResponse
               ? finishZeroResponse
@@ -276,6 +285,7 @@ export const Game = () => {
           isClockStart={isClockStart}
           setFinishZero={setFinishZero}
           setFinishZeroResponse={setFinishZeroResponse}
+          finishZeroResponse={finishZeroResponse}
           setIsFinishCardOpen={setIsFinishCardOpen}
           isClockFinish={isClockFinish}
           finishVictory={finishVictory}
