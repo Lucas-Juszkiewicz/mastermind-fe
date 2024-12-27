@@ -79,6 +79,12 @@ export const Game = () => {
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    if(gameData?.round == 12){
+      setIsFinishCardOpen(true);
+    }
+  }, [gameData])
+
   const userAuthContext = useContext(UserAuthContext);
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
