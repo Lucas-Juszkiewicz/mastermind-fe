@@ -1,12 +1,36 @@
 import { Paper } from "@mui/material";
-import { getToken, refreshAccessToken } from "../Keycloak";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthMethods } from "../AuthMethodsProvider";
+import { UserAuthContext } from "../UserAuthProvider";
 
-export const PreStarter = () => {
+interface PreStarterProps {
+  setFinishZeroResponse: Function;
+}
+
+export const PreStarter: React.FC<PreStarterProps> = ({
+  setFinishZeroResponse,
+}) => {
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
+
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+
+  const { userAuth } = userAuthContext;
   const navigate = useNavigate();
   useEffect(() => {
-    refreshAccessToken();
+    if (!isTokenValid(userAuth.tokenExp)) {
+      refreshAccessToken(userAuth.refreshToken);
+    }
     navigate("/game");
   }, []);
 

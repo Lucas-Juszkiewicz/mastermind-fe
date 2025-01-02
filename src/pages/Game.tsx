@@ -3,12 +3,13 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Unstable_Grid2";
 import { AnswerAndClock, SingleRound } from "../components";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { StartCard } from "../components/StartCard";
 import { FinishCard } from "../components/FinishCard";
-import { useKeycloak } from "@react-keycloak/web";
-import { user } from "../Keycloak";
+import { UserAuthContext } from "../UserAuthProvider";
+import { useAuthMethods } from "../AuthMethodsProvider";
+import { useGameData } from "../GameDataProvider";
 
 interface Game {
   id: number;
@@ -43,15 +44,30 @@ interface GameData {
 }
 
 interface User {
-  id: string;
+  userId: string;
   name: string;
   email: string;
   token: string;
 }
 
-export const Game = () => {
-  const { userId } = useParams();
-  const [gameData, setGameData] = useState<GameData | null>(null);
+interface GameProps {
+  finishZeroResponse: Game | undefined;
+  setFinishZeroResponse: Function;
+}
+
+export const Game: React.FC<GameProps> = ({
+  finishZeroResponse,
+  setFinishZeroResponse,
+}) => {
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
+  const { gameData, setGameData } = useGameData();
   const [round, setRound] = useState<number>(0);
   const [previousGuesses, setPreviousGuesses] = useState<number[][] | null>([]);
   const [previousResponses, setPreviousResponses] = useState<number[][] | null>(
@@ -61,38 +77,86 @@ export const Game = () => {
     useState<string[][]>([]);
 
   const [isClockStart, setIsClockStart] = useState<boolean>(false);
-  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true);
+  // const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(true && localStorage.getItem('isGameInProgress')==null);
+  const [isStartCardOpen, setIsStartCardOpen] = useState<boolean>(false);
   const [finishZero, setFinishZero] = useState<boolean>(false);
-  const [finishVictory, setFinishVictory] = useState<Game>();
-  const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
+  const [finishVictory, setFinishVictory] = useState<Game | undefined>(
+    undefined
+  );
+  const [finishRounds, setFinishRounds] = useState<Game | undefined>(undefined);
+  // const [finishZeroResponse, setFinishZeroResponse] = useState<Game>();
   const [isClockFinish, setIsClockFinish] = useState<boolean>(false);
   const [isFinishCardOpen, setIsFinishCardOpen] = useState<boolean>(false);
 
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+  const {
+    userAuth,
+    setUserAuth,
+    fetchGameInProgressAfterRecall,
+    checkIfGameInProgresExists,
+  } = userAuthContext;
+
+  useEffect(() => {
+    const isGameInProgress = localStorage.getItem("isGameInProgress");
+    if (isGameInProgress) {
+      fetchGameInProgressAfterRecall(userAuth.token);
+    } else {
+      console.log("isStartCardOpen: " + isStartCardOpen);
+
+      const checkGameExists = async () => {
+        const isGameInProgressExists = await checkIfGameInProgresExists(
+          userAuth.token
+        );
+        console.log("isGameInProgressExists: " + isGameInProgressExists);
+        setIsStartCardOpen(!isGameInProgressExists);
+        console.log("isStartCardOpen: " + isStartCardOpen);
+        if (isGameInProgressExists) {
+          const fetchGameDataHere = async () => {
+            await fetchGameInProgressAfterRecall(userAuth.token);
+            localStorage.setItem("isGameInProgress", "true");
+          };
+          fetchGameDataHere();
+        }
+      };
+      checkGameExists();
+    }
+  }, []);
+
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log("UserID: " + user.id);
-      console.log("Bearer " + user.token);
+      console.log("UserID: " + userAuth.userId);
+      console.log("Bearer " + userAuth.token);
 
+      if (!isTokenValid(userAuth.tokenExp)) {
+        refreshAccessToken(userAuth.refreshToken);
+        console.log("Refreshed " + userAuth.token);
+      }
       const config = {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          authorization: "Bearer " + user.token,
+          // "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
+          authorization: "Bearer " + userAuth.token,
         },
       };
-
-      try {
-        const response = await axios.get(
-          `http://localhost:8081/gameinprogress/start`,
-          config
-        );
-        setGameData(response.data);
-        setRound(response.data.round);
-      } catch (error) {
-        console.error("Failed to load user profile:", error);
+      if (userAuth.token) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8081/gameinprogress/start`,
+            config
+          );
+          setGameData(response.data);
+          setRound(response.data.round);
+          localStorage.setItem("isGameInProgress", "true");
+        } catch (error) {
+          console.error("Failed to load user profile:", error);
+        }
       }
     };
 
-    if (isClockStart) {
+    if (isClockStart && localStorage.getItem("isGameInProgress") == null) {
       fetchUserData();
     }
   }, [isClockStart]);
@@ -100,8 +164,11 @@ export const Game = () => {
   useEffect(() => {
     if (gameData) {
       setRound(gameData.round);
+      // console.log(gameData.round);
       setPreviousGuesses(gameData.previousGuesses);
+      // console.log(gameData.previousGuesses);
       setPreviousResponses(gameData.previousResponses);
+      // console.log(gameData.previousResponses);
     }
   }, [gameData]);
 
@@ -132,13 +199,18 @@ export const Game = () => {
   }, [round, previousResponses]);
 
   useEffect(() => {
-    if (finishVictory != undefined || finishZeroResponse != null) {
+    if (
+      finishRounds != undefined ||
+      finishVictory != undefined ||
+      finishZeroResponse != null
+    ) {
       setIsClockFinish(true);
       setIsFinishCardOpen(true);
+      localStorage.removeItem("isGameInProgress");
     }
     console.log("FinishVictory in game: " + finishVictory?.success);
     console.log("FinishZero in game: " + finishZeroResponse?.success);
-  }, [finishVictory, finishZeroResponse]);
+  }, [finishVictory, finishZeroResponse, finishRounds]);
 
   const renderRounds = () => {
     const rounds = [];
@@ -147,7 +219,7 @@ export const Game = () => {
         <Grid key={i}>
           <SingleRound
             active={
-              !finishVictory && !finishZero
+              !finishVictory && !finishZero && !finishRounds
                 ? gameData && i == (round - 11) * -1
                   ? true
                   : false
@@ -166,6 +238,7 @@ export const Game = () => {
             }
             finishZero={finishZero}
             setFinishVictory={setFinishVictory}
+            setFinishRounds={setFinishRounds}
           />
         </Grid>
       );
@@ -199,16 +272,27 @@ export const Game = () => {
         <FinishCard
           isFinishCardOpen={isFinishCardOpen}
           setIsFinishCardOpen={setIsFinishCardOpen}
-          finishGame={finishZeroResponse ? finishZeroResponse : finishVictory}
+          setFinishZeroResponse={setFinishZeroResponse}
+          finishGame={
+            finishZeroResponse
+              ? finishZeroResponse
+              : finishVictory
+              ? finishVictory
+              : finishRounds
+          }
         />
         <AnswerAndClock
           isClockStart={isClockStart}
           setFinishZero={setFinishZero}
-          gameData={gameData ? gameData : undefined}
-          setGameData={setGameData}
           setFinishZeroResponse={setFinishZeroResponse}
+          finishZeroResponse={finishZeroResponse}
           setIsFinishCardOpen={setIsFinishCardOpen}
           isClockFinish={isClockFinish}
+          finishVictory={finishVictory}
+          finishRounds={finishRounds}
+          setIsClockStart={setIsClockStart}
+          renderRounds={renderRounds}
+          setPreviousGuesses={setPreviousGuesses}
         />
         {renderRounds()}
       </Box>

@@ -9,16 +9,54 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
+import { useAuthMethods } from "../AuthMethodsProvider";
+import { UserAuthContext } from "../UserAuthProvider";
+import { useContext, useEffect } from "react";
+import axios from "axios";
+import { config } from "process";
+import { AnswerAndClock } from "./AnswerAndClock";
 
-export const Menu = () => {
+interface MenuProps {
+  setFinishZeroResponse: Function;
+}
+
+export const Menu: React.FC<MenuProps> = ({ setFinishZeroResponse }) => {
   const [open, setOpen] = React.useState(false);
+  const [shouldShowThisItem, setShouldShowThisItem] = React.useState(false);
+  const [shouldShowNewGameButton, setShouldShowNewGameButton] =
+    React.useState(false);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const { nick } = useAuthMethods();
+  const userAuthContext = useContext(UserAuthContext);
+  const navigate = useNavigate();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+    logOut,
+  } = useAuthMethods();
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+  const {
+    userAuth,
+    setUserAuth,
+    fetchGameInProgressAfterRecall,
+    checkIfGameInProgresExists,
+  } = userAuthContext;
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
+
+  const location = useLocation();
+
+  const isNotOnGamePage = location.pathname !== "/game";
 
   const handleClose = (event: Event | React.SyntheticEvent) => {
     if (
@@ -49,6 +87,56 @@ export const Menu = () => {
 
     prevOpen.current = open;
   }, [open]);
+
+  // zrobić useState do shouldShowThisItem i dodać zależność na podstawie byćia w trakcie gry. jeśli gra jest w trakcie to 'New game'
+
+  const userId = userAuth.userId;
+
+  // const shouldShowThisItem = userId != "" ? true : false;
+  const handleOnClickNewGame = () => {
+    // navigate("/preStarter");
+    checkTokenValidity(userAuth.tokenExp);
+    if (!isTokenValid(userAuth.tokenExp)) {
+      logOut(true);
+      // navigate("/preStarter");
+      navigate("/home");
+    }
+    const endGameToStartNewGame = async () => {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + userAuth.token,
+        },
+      };
+      try {
+        const endGameResponse = await axios.get(
+          `http://localhost:8081/gameinprogress/endgame/${userAuth.userId}`,
+          config
+        );
+        setFinishZeroResponse(endGameResponse.data);
+        // localStorage.removeItem("isGameInProgress");
+        navigate("/preStarter");
+      } catch (error) {}
+    };
+    endGameToStartNewGame();
+  };
+
+  useEffect(() => {
+    if (userId != "") {
+      setShouldShowThisItem(true);
+    } else {
+      setShouldShowThisItem(false);
+    }
+  }, [userAuth]);
+
+  useEffect(() => {
+    if (localStorage.getItem("isGameInProgress")) {
+      setShouldShowNewGameButton(true);
+    } else {
+      setShouldShowNewGameButton(false);
+    }
+  }, [open]);
+  const myAccountButtonText = nick.length < 1 || nick.length > 7 ? "Me" : nick;
 
   return (
     <Stack direction="row" spacing={2}>
@@ -121,9 +209,27 @@ export const Menu = () => {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem component={Link} to="/game" onClick={handleClose}>
-                      Game
-                    </MenuItem>
+                    {shouldShowThisItem && isNotOnGamePage ? (
+                      <MenuItem
+                        component={Link}
+                        to="/game"
+                        onClick={handleClose}
+                      >
+                        Game
+                      </MenuItem>
+                    ) : null}{" "}
+                    {shouldShowThisItem && shouldShowNewGameButton ? (
+                      <MenuItem
+                        // component={Link}
+                        // to="/game"
+                        onClick={(event) => {
+                          handleClose(event);
+                          handleOnClickNewGame();
+                        }}
+                      >
+                        New Game
+                      </MenuItem>
+                    ) : null}
                     <MenuItem component={Link} to="/home" onClick={handleClose}>
                       Home
                     </MenuItem>
@@ -143,18 +249,25 @@ export const Menu = () => {
                     </MenuItem>
                     <MenuItem
                       component={Link}
-                      to="/users"
+                      to="/about"
                       onClick={handleClose}
                     >
-                      Users
+                      Tech info
                     </MenuItem>
-                    <MenuItem
-                      component={Link}
-                      to="/logout"
-                      onClick={handleClose}
-                    >
-                      Logout
-                    </MenuItem>
+                    {shouldShowThisItem && (
+                      <MenuItem
+                        component={Link}
+                        to="/user"
+                        onClick={handleClose}
+                        sx={{
+                          fontFamily: "Permanent Marker, sans-serif",
+                          fontSize: 26,
+                          mt: -1,
+                        }}
+                      >
+                        {myAccountButtonText}
+                      </MenuItem>
+                    )}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

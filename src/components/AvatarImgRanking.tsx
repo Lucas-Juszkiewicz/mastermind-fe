@@ -1,11 +1,13 @@
 import Box from "@mui/material/Box";
 import React from "react";
 
-interface AvatarImgProps {
+interface AvatarImgRankingProps {
   avatar: any;
 }
 
-export const AvatarImg: React.FC<AvatarImgProps> = ({ avatar }) => {
+export const AvatarImgRanking: React.FC<AvatarImgRankingProps> = ({
+  avatar,
+}) => {
   return (
     <Box
       component="img"
@@ -22,32 +24,32 @@ export const AvatarImg: React.FC<AvatarImgProps> = ({ avatar }) => {
         marginLeft: {
           xs: "0px",
           sm: "0px",
-          md: "-25px",
-          lg: "-20px",
-          xl: "-25px",
+          md: "5px",
+          lg: "50px",
+          xl: "5px",
         },
         marginTop: {
           xs: "0px",
           sm: "8px",
-          md: "-15px",
-          lg: "-25px",
-          xl: "-25px",
+          md: "5px",
+          lg: "5px",
+          xl: "5px",
         },
         objectFit: "cover",
-        borderRadius: "10px",
+        borderRadius: "80%", // Makes the image circular
         width: {
-          xs: "300px",
-          sm: "500px",
-          md: "290px",
-          lg: "250px",
-          xl: "320px",
+          xs: "120px",
+          sm: "150px",
+          md: "120px",
+          lg: "100px",
+          xl: "120px",
         },
         height: {
-          xs: "280px",
-          sm: "180px",
-          md: "980px",
-          lg: "600px",
-          xl: "1000px",
+          xs: "120px", // Matching height to width for a perfect circle
+          sm: "150px",
+          md: "120px",
+          lg: "100px",
+          xl: "120px",
         },
       }}
     />

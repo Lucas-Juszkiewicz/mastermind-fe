@@ -1,14 +1,21 @@
 import { Typography, Box, TextField, Button, Paper } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
 import axios, { AxiosError } from "axios";
 import { ErrorMessageCard } from "../components";
 import { useNavigate } from "react-router-dom";
-import { redirectToKeycloak } from "../Keycloak";
+import { useAuthMethods } from "../AuthMethodsProvider";
 
 export const Register = () => {
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
   const [error, setErrorMessage] = useState<AxiosError | null>(null);
-
   const [openErrorCard, setOpenErrorCard] = React.useState(false);
   const handleClose = () => {
     setOpenErrorCard(false);
@@ -21,7 +28,7 @@ export const Register = () => {
     nick: "",
     email: "",
     password: "",
-    id: null,
+    userId: null,
   });
   const navigate = useNavigate();
 
@@ -32,16 +39,23 @@ export const Register = () => {
     }));
   };
 
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
       const response = await axios.post(
         "http://localhost:8081/users/save",
-        inputs
+        inputs,
+        config
       );
       console.log(response.data);
-      const userId = response.data.id;
+      const userId = response.data.userId;
       redirectToKeycloak();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -51,8 +65,11 @@ export const Register = () => {
     }
   };
 
-  const resetState = () => {
-    setInputs({ nick: "", email: "", password: "", id: null });
+  useEffect(() => {
+    setInputs({ nick: "", email: "", password: "", userId: null });
+  }, []);
+
+  const goToLogin = () => {
     redirectToKeycloak();
   };
 
@@ -156,7 +173,7 @@ export const Register = () => {
             style={{ display: "none" }}
             onChange={handleOnChange}
             name="id"
-            value={inputs.id}
+            value={inputs.userId}
           ></TextField>
           <Button
             type="submit"
@@ -192,7 +209,7 @@ export const Register = () => {
               borderRadius: "6px",
               ":hover": { backgroundColor: "#f9a825" },
             }}
-            onClick={resetState}
+            onClick={goToLogin}
           >
             Click to Login
           </Button>

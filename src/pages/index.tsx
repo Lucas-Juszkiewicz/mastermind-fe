@@ -1,10 +1,14 @@
 export { Home } from "./Home";
 export { About } from "./About";
 export { Game } from "./Game";
-export { Login } from "./Login";
+export { EditDetails } from "./EditDetails";
 export { PageNotFound } from "./PageNotFound";
 export { Ranking } from "./Ranking";
 export { Register } from "./Register";
 export { Rules } from "./Rules";
 export { UserDetail } from "./UserDetail";
 export { Users } from "./Users";
+export { ChangePassword } from "./ChangePassword";
+export { ChangeAvatar } from "./ChangeAvatar";
+export { RankingFull } from "./RankingFull";
+export { UserGlance } from "./UserGlance";

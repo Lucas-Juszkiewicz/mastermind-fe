@@ -6,12 +6,79 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Menu } from "./Menu";
 import "../App.css";
+import { useContext, useEffect, useState } from "react";
+import { UserAuthContext } from "../UserAuthProvider";
+import { useAuthMethods } from "../AuthMethodsProvider";
 
-export const Header = () => {
-  const navigate = useNavigate();
-  const handleLogin = () => {
-    navigate("/register");
+interface Game {
+  id: number;
+  user: {
+    id: number;
   };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  success: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
+}
+
+interface HeaderProps {
+  finishZeroResponse: Game | undefined;
+  setFinishZeroResponse: Function;
+}
+export const Header: React.FC<HeaderProps> = ({
+  finishZeroResponse,
+  setFinishZeroResponse,
+}) => {
+  const navigate = useNavigate();
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+    logOut,
+  } = useAuthMethods();
+
+  const handleLogin = () => {
+    if (signInButtonText == " Login") {
+      // navigate("/register");
+      redirectToKeycloak();
+    } else {
+      setUserAuth({
+        userId: "",
+        nick: "",
+        email: "",
+        country: "",
+        token: "",
+        refreshToken: "",
+        tokenExp: -1,
+      });
+      logOut(false);
+      navigate("/home");
+    }
+  };
+
+  const userAuthContext = useContext(UserAuthContext);
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+  const { userAuth, setUserAuth } = userAuthContext;
+
+  const [signInButtonText, setSignInButtonText] = useState("Login");
+
+  useEffect(() => {
+    if (userAuth.token !== "") {
+      setSignInButtonText("Logout");
+    } else {
+      setSignInButtonText(" Login");
+    }
+  }, [userAuth]);
 
   return (
     <Box
@@ -35,7 +102,7 @@ export const Header = () => {
         }}
       >
         <Toolbar>
-          <Menu />
+          <Menu setFinishZeroResponse={setFinishZeroResponse} />
           <Typography
             variant="h6"
             component="div"
@@ -63,7 +130,7 @@ export const Header = () => {
               fontFamily: "teko, sans-serif",
               color: "#ffca28",
               fontSize: {
-                xs: "1.55rem",
+                xs: "1.45rem",
                 sm: "1.5rem",
                 md: "2.8rem",
                 lg: "2rem",
@@ -79,7 +146,7 @@ export const Header = () => {
               },
             }}
           >
-            Login
+            {signInButtonText}
           </Button>
         </Toolbar>
       </AppBar>

@@ -7,6 +7,10 @@ import { ThemeProvider } from "@mui/material/styles";
 import Theme from "./Theme";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./Keycloak";
+import { UserAuthProvider } from "./UserAuthProvider";
+import { AuthMethodsProvider } from "./AuthMethodsProvider";
+import { GameDataProvider } from "./GameDataProvider";
+import FacebookSDK from "./components/FacebookSDK";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,12 +18,19 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <ReactKeycloakProvider authClient={keycloak}>
-    {/* <React.StrictMode> */}
-    <ThemeProvider theme={Theme}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeProvider>
-    {/* </React.StrictMode> */}
+    <GameDataProvider>
+      <UserAuthProvider>
+        <AuthMethodsProvider>
+          {/* <React.StrictMode> */}
+          <ThemeProvider theme={Theme}>
+            <BrowserRouter>
+              <FacebookSDK />
+              <App />
+            </BrowserRouter>
+          </ThemeProvider>
+          {/* </React.StrictMode> */}
+        </AuthMethodsProvider>
+      </UserAuthProvider>
+    </GameDataProvider>
   </ReactKeycloakProvider>
 );

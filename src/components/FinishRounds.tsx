@@ -8,39 +8,41 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
-import success_img from "../assets/success_img.png";
-import { useNavigate } from "react-router-dom";
+import defeatImg from "../assets/error_img.png";
+import React from "react";
 
-interface StartCardProps {
-  isStartCardOpen: boolean;
-  setIsStartCardOpen: Function;
-  setIsClockStart: Function;
-}
+export const FinishRounds = () => {
+  const [open, setOpen] = React.useState(true);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
-export const StartCard: React.FC<StartCardProps> = ({
-  setIsStartCardOpen,
-  isStartCardOpen,
-  setIsClockStart,
-}) => {
-  const navigate = useNavigate();
   return (
     <Backdrop
-      aria-hidden="false"
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={isStartCardOpen}
-      // onClick={handleClose}
+      open={open}
     >
       <Slide
         timeout={{ appear: 500, enter: 300, exit: 500 }}
         direction="up"
-        in={isStartCardOpen}
+        in={open}
         mountOnEnter
         unmountOnExit
       >
-        <Card sx={{ maxWidth: 345, borderRadius: "6px", position: "relative" }}>
+        <Card
+          sx={{
+            maxWidth: 345,
+            minWidth: 250,
+            borderRadius: "6px",
+            position: "relative",
+          }}
+        >
           <CardMedia
             sx={{ height: 170, position: "relative" }}
-            image={success_img}
+            image={defeatImg}
             title="error_img"
           >
             <Typography
@@ -65,30 +67,24 @@ export const StartCard: React.FC<StartCardProps> = ({
                 letterSpacing: "0.15em",
               }}
             >
-              Are you redy?
+              VICTORY
             </Typography>
           </CardMedia>
           <CardContent>
             <Typography variant="body1" align="center" paddingTop={2.5}>
-              When you click START, the countdown will begin. You have 20
-              minutes to break the code.
+              You have won!
             </Typography>
           </CardContent>
           <CardActions
             sx={{
               display: "flex",
-              flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center",
             }}
           >
             <Button
               variant="contained"
               size="medium"
-              onClick={() => {
-                setIsStartCardOpen(false);
-                setIsClockStart(true);
-              }}
+              onClick={handleClose}
               sx={{
                 fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
                 lineHeight: 1.5,
@@ -101,29 +97,7 @@ export const StartCard: React.FC<StartCardProps> = ({
                 borderRadius: "6px",
               }}
             >
-              START
-            </Button>
-            <Button
-              variant="contained"
-              size="medium"
-              onClick={() => {
-                setIsStartCardOpen(false);
-                navigate("/home");
-              }}
-              sx={{
-                fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
-                lineHeight: 1.5,
-                width: "110px",
-                height: "40px",
-                color: "#3f51b5",
-                backgroundColor: "#ffc107",
-                fontFamily: "teko, sans-serif",
-                paddingTop: 1.5,
-                margin: 1,
-                borderRadius: "6px",
-              }}
-            >
-              BACK
+              OK
             </Button>
           </CardActions>
         </Card>

@@ -32,12 +32,14 @@ interface FinishCardProps {
   isFinishCardOpen: boolean;
   setIsFinishCardOpen: Function;
   finishGame: Game | undefined;
+  setFinishZeroResponse: Function;
 }
 
 export const FinishCard: React.FC<FinishCardProps> = ({
   setIsFinishCardOpen,
   isFinishCardOpen,
   finishGame,
+  setFinishZeroResponse,
 }) => {
   const cardMessageVictory = "Good work. You have won! Check your staistics";
   const cardMessageFail = "You have faild. Keep trainig.";
@@ -56,7 +58,7 @@ export const FinishCard: React.FC<FinishCardProps> = ({
   const points = finishGame?.points ?? 0;
   const attempts = finishGame?.attempts ?? 0;
 
-  console.log("Finish card items: " + duration + success + points + attempts);
+  // console.log("Finish card items: " + duration + success + points + attempts);
 
   return (
     <Backdrop
@@ -244,6 +246,7 @@ export const FinishCard: React.FC<FinishCardProps> = ({
               size="medium"
               onClick={() => {
                 setIsFinishCardOpen(false);
+                setFinishZeroResponse(undefined);
               }}
               sx={{
                 fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },

@@ -1,12 +1,13 @@
 import Box from "@mui/material/Box";
 import { RoundedElement } from "./RoundedElement";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Typography } from "@mui/material";
 import axios from "axios";
-import { count } from "console";
+import { useAuthMethods } from "../AuthMethodsProvider";
 import { ContinueButton } from "./ContinueButton";
-import { user } from "../Keycloak";
+import { UserAuthContext } from "../UserAuthProvider";
+import { useGameData } from "../GameDataProvider";
 
 const numbers = [
   { number: 1, color: "#ffeb3b", hoverColor: "#ffe082" }, // yellow
@@ -37,32 +38,85 @@ interface GameData {
   finalMessage: string;
 }
 
+interface Game {
+  id: number;
+  user: {
+    id: number;
+  };
+  duration: number;
+  round: number;
+  attempts: number;
+  date: string;
+  points: number;
+  success: boolean;
+  sequence: number[];
+  guesses: number[][];
+  responses: number[][];
+}
+
 interface AnswerAndClockProps {
   isClockStart: boolean;
   setFinishZero: Function;
-  gameData: GameData | undefined;
-  setGameData: Function;
+  setIsClockStart: Function;
   setFinishZeroResponse: Function;
   setIsFinishCardOpen: Function;
   isClockFinish: boolean;
+  finishVictory: Game | undefined;
+  finishRounds: Game | undefined;
+  renderRounds: Function;
+  setPreviousGuesses: Function;
+  finishZeroResponse: Game | undefined;
 }
 
 export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   isClockStart,
   setFinishZero,
-  gameData,
-  setGameData,
   setFinishZeroResponse,
+  finishZeroResponse,
   setIsFinishCardOpen,
   isClockFinish,
+  finishVictory,
+  finishRounds,
+  setIsClockStart,
+  renderRounds,
+  setPreviousGuesses,
 }) => {
-  const [countdown, setCountdown] = useState(15); // Set initial countdown value
+  const userAuthContext = useContext(UserAuthContext);
+  const {
+    redirectToKeycloak,
+    getToken,
+    refreshAccessToken,
+    isTokenValid,
+    checkTokenValidity,
+    startCheckingIsTokenValid,
+  } = useAuthMethods();
+  if (!userAuthContext) {
+    throw new Error("useContext must be used within an AuthProvider");
+  }
+
+  const { gameData, setGameData } = useGameData();
+  const { userAuth } = userAuthContext;
+  const [countdown, setCountdown] = useState(1200); // Set initial countdown value
   const [showAnswerColor, setShowAnswerColor] = useState<string[]>(
     new Array(8).fill("#e8eaf6")
   );
   const [showAnswerNumber, setShowAnswerNumber] = useState<
     undefined | number[]
   >(new Array(7).fill(undefined));
+
+  useEffect(() => {
+    if (gameData?.startTime) {
+      const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+      const startTime = new Date(gameData.startTime.replace(" ", "T"));
+      const startTimeInSeconds = Math.floor(startTime.getTime() / 1000);
+      const countdownValue = 1200 - (currentTimeInSeconds - startTimeInSeconds);
+      setCountdown(countdownValue);
+      setIsClockStart(true);
+      // renderRounds();
+      console.log("Was thread here?");
+    }
+    console.log("Or there?" + gameData?.startTime);
+  }, [gameData]);
 
   useEffect(() => {
     if (!isClockStart) return; // Do nothing if clockStart is false
@@ -103,12 +157,16 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      authorization: "Bearer " + user.token,
+      authorization: "Bearer " + userAuth.token,
     },
   };
 
   useEffect(() => {
     if (countdown == 0) {
+      if (!isTokenValid(userAuth.tokenExp)) {
+        refreshAccessToken(userAuth.refreshToken);
+        console.log("Refreshed " + userAuth.token);
+      }
       const sendFinishZero = async () => {
         try {
           const finishZeroResponse = await axios.get(
@@ -142,6 +200,23 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
     });
     return answer;
   };
+
+  useEffect(() => {
+    if (finishRounds != undefined || finishVictory != undefined) {
+      const game: Game =
+        finishVictory !== undefined ? finishVictory : finishRounds!;
+      setShowAnswerNumber(game.sequence);
+      setShowAnswerColor(setColor(game.sequence));
+    }
+  }, [finishVictory, finishRounds]);
+
+  useEffect(() => {
+    if (finishZeroResponse && countdown != 0) {
+      const game: Game = finishZeroResponse;
+      setShowAnswerNumber(game.sequence);
+      setShowAnswerColor(setColor(game.sequence));
+    }
+  }, [finishZeroResponse]);
 
   return (
     <Box

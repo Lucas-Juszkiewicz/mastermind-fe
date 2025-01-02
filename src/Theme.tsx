@@ -41,6 +41,10 @@ const Theme = createTheme({
       color: "#ffc107",
       fontFamily: "Permanent Marker, sans-serif", // Custom font family
     },
+    h5: {
+      fontSize: "2.4rem",
+      lineHeight: 0.95,
+    },
     body1: {
       fontSize: "1.9rem",
       lineHeight: 1.2,
@@ -48,7 +52,8 @@ const Theme = createTheme({
     body2: {
       fontSize: "1.8rem",
       lineHeight: 1.2,
-      fontFamily: ".lato-regular",
+      // fontFamily: "lato",
+      fontFamily: "rubik, sans-serif",
       "@media (max-width:600px)": {
         fontSize: "1.5rem",
       },

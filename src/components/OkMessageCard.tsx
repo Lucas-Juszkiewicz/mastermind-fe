@@ -7,72 +7,44 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
-import errorImg from "../assets/error_img.png";
+import okImg from "../assets/success2_img.png";
 import Fade from "@mui/material/Fade";
 import { Slide } from "@mui/material";
 
-interface ErrorMessageCardProps {
-  error: any;
-  openErrorCard: boolean;
+interface OkMessageCardProps {
+  openOkCard: boolean;
   handleClose: any;
-  errorMessage?: string | null;
+  okMessage: string | null;
 }
 
-export const ErrorMessageCard: React.FC<ErrorMessageCardProps> = ({
-  error,
-  openErrorCard,
+export const OkMessageCard: React.FC<OkMessageCardProps> = ({
+  openOkCard,
   handleClose,
+  okMessage,
 }) => {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  //   const [okMessage, setOkMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (openErrorCard && error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          if (error.response.status === 409) {
-            const errorData = error.response.data as string;
-            if (errorData.startsWith("NICK_DUPLICATION")) {
-              setErrorMessage(
-                "Nick is already taken. Please choose a different nick."
-              );
-            } else if (errorData.startsWith("EMAIL_DUPLICATION")) {
-              setErrorMessage(
-                "Email is already registered. Please use a different email."
-              );
-            } else {
-              if (error.response.data) {
-                setErrorMessage(error.response.data);
-              }
-            }
-          } else {
-            if (error.response.data) {
-              setErrorMessage(error.response.data);
-            } else {
-              setErrorMessage(`An unexpected error occurred: ${error.message}`);
-            }
-          }
-        }
-      }
-    }
-  }, [openErrorCard, error]);
+  //   useEffect(() => {
+
+  //   }, [openOkCard]);
 
   return (
     <Backdrop
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={openErrorCard}
+      open={openOkCard}
       // onClick={handleClose}
     >
       <Slide
         timeout={{ appear: 500, enter: 300, exit: 500 }}
         direction="up"
-        in={openErrorCard}
+        in={openOkCard}
         mountOnEnter
         unmountOnExit
       >
         <Card sx={{ maxWidth: 345, borderRadius: "6px", position: "relative" }}>
           <CardMedia
             sx={{ height: 170, position: "relative" }}
-            image={errorImg}
+            image={okImg}
             title="error_img"
           >
             <Typography
@@ -97,12 +69,12 @@ export const ErrorMessageCard: React.FC<ErrorMessageCardProps> = ({
                 letterSpacing: "0.15em",
               }}
             >
-              ERROR
+              SUCCESS
             </Typography>
           </CardMedia>
           <CardContent>
             <Typography variant="body1" align="center" paddingTop={2.5}>
-              {errorMessage}
+              {okMessage}
             </Typography>
           </CardContent>
           <CardActions
