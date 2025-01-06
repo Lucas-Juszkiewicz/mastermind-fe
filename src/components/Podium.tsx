@@ -158,7 +158,7 @@ export const Podium = () => {
         flexDirection: "column",
         alignItems: "center",
         mt: 10,
-        mb: 5, // Margin bottom for spacing from the button
+        mb: 5,
       }}
     >
       <Grid container spacing={2} sx={{ justifyContent: "center" }}>
@@ -180,10 +180,10 @@ export const Podium = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease", // Smooth transition
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
               "&:hover": {
-                transform: "scale(1.1)", // Slightly enlarge on hover
-                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)", // Add shadow on hover
+                transform: "scale(1.1)",
+                boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
                 cursor: "pointer",
               },
             }}
@@ -195,17 +195,15 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -3.2, md: -3.5 },
+                  position: "fixed"
                 }}
               />
             ) : (
               <AccountBoxTwoToneIcon
                 sx={{
-                  // fontSize: 60,
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: second ? { xs: -3, md: -4 } : { xs: -7.8, md: -10 },
                 }}
               />
             )}
@@ -215,7 +213,6 @@ export const Podium = () => {
                 fontSize: { xs: 16, sm: 20 },
                 textAlign: "center",
                 mb: { xs: -13, md: -17 },
-                ml: { xs: -8, md: -10 },
               }}
             >
               {second?.nick}
@@ -255,17 +252,15 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: -2.1, md: -2.7 },
+                  position: "fixed"
                 }}
               />
             ) : (
               <AccountBoxTwoToneIcon
                 sx={{
-                  // fontSize: 60,
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: first ? { xs: -2.3, md: -3 } : { xs: -7.8, md: -11 },
                 }}
               />
             )}
@@ -275,7 +270,6 @@ export const Podium = () => {
                 fontSize: { xs: 16, sm: 20 },
                 textAlign: "center",
                 mb: { xs: -13, md: -16.5 },
-                ml: { xs: -7.8, md: -10 },
               }}
             >
               {first?.nick}
@@ -315,7 +309,7 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: { xs: 0, md: -0.3 },
+                  position: "fixed"
                 }}
               />
             ) : (
@@ -325,7 +319,6 @@ export const Podium = () => {
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  ml: third ? { xs: 0, md: 0 } : { xs: -10, md: -13 },
                 }}
               />
             )}
@@ -335,7 +328,6 @@ export const Podium = () => {
                 fontSize: { xs: 16, sm: 20 },
                 textAlign: "center",
                 mb: { xs: -13, md: -16 },
-                ml: { xs: -10, md: -13 },
               }}
             >
               {third?.nick}

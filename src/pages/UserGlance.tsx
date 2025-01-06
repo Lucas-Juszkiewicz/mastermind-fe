@@ -148,7 +148,7 @@ export const UserGlance = () => {
   let average;
   if (userData.numberOfGames != null && userData.total != undefined) {
     average = userData.total / userData.numberOfGames;
-    average.toFixed();
+    average = average.toFixed();
   } else {
     average = 0;
   }

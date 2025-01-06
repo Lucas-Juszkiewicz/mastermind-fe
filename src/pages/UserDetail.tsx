@@ -120,7 +120,7 @@ export const UserDetail = () => {
   let average;
   if (userData.numberOfGames != null && userData.total != undefined) {
     average = userData.total / userData.numberOfGames;
-    average.toFixed();
+    average = average.toFixed();
   } else {
     average = 0;
   }
@@ -198,7 +198,7 @@ export const UserDetail = () => {
               fontSize: fontSize,
               lineHeight: 1.2,
               letterSpacing: "0.05em",
-              mb: 3, // Reduced margin-bottom for more compact spacing
+              mb: 3,
             }}
           >
             {userData.nick}
@@ -234,7 +234,6 @@ export const UserDetail = () => {
               display: "flex",
               flexDirection: userData.email.length > 21 ? "column" : "row",
               alignItems: userData.email.length > 21 ? "flex-start" : "center",
-              // alignItems: "center",
               mb: 1,
             }}
           >
@@ -255,7 +254,7 @@ export const UserDetail = () => {
             variant="contained"
             startIcon={<ManageAccountsIcon />}
             sx={{
-              mt: 10, // Push the button to the bottom
+              mt: 10,
               alignSelf: { xs: "center" },
               backgroundColor: "#3f51b5",
               color: "#ffc107",
