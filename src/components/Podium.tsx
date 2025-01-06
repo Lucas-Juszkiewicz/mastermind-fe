@@ -195,7 +195,7 @@ export const Podium = () => {
                 sx={{
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
-                  position: "fixed"
+                  position: "fixed",
                 }}
               />
             ) : (
@@ -204,6 +204,7 @@ export const Podium = () => {
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
+                  position: "fixed",
                 }}
               />
             )}
@@ -261,6 +262,7 @@ export const Podium = () => {
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
+                  position: "fixed",
                 }}
               />
             )}
@@ -319,6 +321,7 @@ export const Podium = () => {
                   borderRadius: 40,
                   width: { xs: 75, md: 104 },
                   height: { xs: 75, md: 104 },
+                  position: "fixed",
                 }}
               />
             )}
