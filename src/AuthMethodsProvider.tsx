@@ -22,7 +22,6 @@ interface AuthMethodsContext {
   isAutomaticLogoutCardOpen: boolean;
   setIsAutomaticLogoutCardOpen: (arg0: boolean) => void;
   nick: string;
-  // getUserIdIfNotIncludedIInToken: (nick: string) => void;
 }
 export const AuthMethodsContext = createContext<AuthMethodsContext | undefined>(
   undefined
@@ -69,8 +68,6 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
   const [refreshToken, setRefreshToken] = useState("");
   const [userIdObtainedAlternatively, setUserIdObtainedAlternatively] =
     useState("-1");
-  const [responseWithId, setResponseWithId] =
-    useState<AxiosResponse<UserAuth>>();
 
   const getToken = async (authCode: string): Promise<string> => {
     const configForToken = {
@@ -81,7 +78,6 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
     const bodyForToken = {
       grant_type: "authorization_code",
       client_id: "mastermind",
-      // client_secret: "6FTAYhfizk346qspsVbkItw4ypXwgC93",
       code: authCode,
       redirect_uri: "http://localhost:3000/home",
       scope: "read_custom_scope",
@@ -106,7 +102,6 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
     const processToken = async () => {
       if (token !== "") {
         const { preferred_username, email, userId, exp } = jwtDecode(token);
-        console.log(exp);
         setNick(preferred_username);
         let userIdFromToken = userId;
 
@@ -124,52 +119,14 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
               refreshToken: refreshToken,
               tokenExp: exp,
             });
-
-            // If userId is still undefined, handle it here
-            // if (!userAuthObject.userId) {
-            //   getUserIdIfNotIncludedInToken(userAuthObject);
-            // }
           }
         }
 
         startCheckingIsTokenValid(refreshToken);
-        console.log(userAuth);
       }
     };
-
-    // Call the async function
     processToken();
   }, [token]);
-
-  // const getUserIdIfNotIncludedInToken = async (userAuthObject: UserAuth) => {
-  //   //get user by nick and get userId
-  //   const config = {
-  //     headers: {
-  //       // "Content-Type": "application/x-www-form-urlencoded",
-  //       "Content-Type": "application/json",
-  //       authorization: `Bearer ${userAuthObject.token}`,
-  //     },
-  //   };
-  //   console.log("userAuthObject token " + userAuthObject.token);
-  //   console.log("userAuthObject nick " + userAuthObject.nick);
-  //   console.log("userAuthObject userAuth " + JSON.stringify(userAuth));
-  //   try {
-  //     const responseWithId: AxiosResponse<UserAuth> = await axios.get(
-  //       `http://localhost:8081/users/${userAuthObject.nick}`,
-  //       config
-  //     );
-  //     setResponseWithId(responseWithId);
-  //   } catch (error) {
-  //     console.log("Failed to obtain ID alternatively: " + error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (responseWithId != undefined) {
-  //     setUserIdObtainedAlternatively(responseWithId.data.userId);
-  //     console.log("!!!!!!!!!!!!!!!!!!!!!!! " + responseWithId.data.userId);
-  //   }
-  // }, [responseWithId]);
 
   useEffect(() => {
     if (
@@ -181,13 +138,6 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
         userId: userIdObtainedAlternatively,
       };
       setUserAuth(userAuthUpdate);
-      console.log("userAuthUpdate with ID " + JSON.stringify(userAuthUpdate));
-      console.log(
-        "userIdObtainedAlternatively userAuth " + JSON.stringify(userAuth)
-      );
-      console.log(
-        "userIdObtainedAlternatively id " + userIdObtainedAlternatively
-      );
     }
   }, [userIdObtainedAlternatively]);
 
@@ -231,7 +181,6 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
       );
 
       const token = response.data.access_token;
-      console.log("obtainRefreshToken: " + token);
       const { preferred_username, email, exp } = jwtDecode(token);
       if (exp) {
         const userAuthUpdate: UserAuth = {
@@ -242,10 +191,7 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
           refreshToken: response.data.refresh_token,
           tokenExp: exp,
         };
-        // console.log(userAuth.tokenExp);
-        // console.log("Refresh token" + userAuth.refreshToken);
         setUserAuth(userAuthUpdate);
-        console.log("Refreshed UserAuth stored" + userAuthUpdate.tokenExp);
       } else {
         console.log("Refreshed UserAuth has not been stored");
       }
@@ -310,7 +256,6 @@ export const AuthMethodsProvider: React.FC<{ children: ReactNode }> = ({
         isAutomaticLogoutCardOpen,
         setIsAutomaticLogoutCardOpen,
         nick,
-        // getUserIdIfNotIncludedIInToken,
       }}
     >
       {children}

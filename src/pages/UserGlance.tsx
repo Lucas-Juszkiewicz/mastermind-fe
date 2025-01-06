@@ -110,7 +110,6 @@ export const UserGlance = () => {
 
           setAvatar(imageUrl);
         }
-        console.log(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (axios.isAxiosError(error)) {
@@ -154,7 +153,6 @@ export const UserGlance = () => {
   }
 
   const handleBack = () => {
-    // localStorage.setItem("userData", JSON.stringify(userData));
     navigate(-1);
   };
 

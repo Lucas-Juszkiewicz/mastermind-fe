@@ -128,7 +128,6 @@ export const Podium = () => {
           const imageUrl = `data:image/jpeg;base64,${response.data.third.imgAsString}`;
           setAvatarThird(imageUrl);
         }
-        console.log(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           setErrorMessage(error);

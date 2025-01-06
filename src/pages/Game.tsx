@@ -104,15 +104,12 @@ export const Game: React.FC<GameProps> = ({
     if (isGameInProgress) {
       fetchGameInProgressAfterRecall(userAuth.token);
     } else {
-      console.log("isStartCardOpen: " + isStartCardOpen);
 
       const checkGameExists = async () => {
         const isGameInProgressExists = await checkIfGameInProgresExists(
           userAuth.token
         );
-        console.log("isGameInProgressExists: " + isGameInProgressExists);
         setIsStartCardOpen(!isGameInProgressExists);
-        console.log("isStartCardOpen: " + isStartCardOpen);
         if (isGameInProgressExists) {
           const fetchGameDataHere = async () => {
             await fetchGameInProgressAfterRecall(userAuth.token);
@@ -127,12 +124,9 @@ export const Game: React.FC<GameProps> = ({
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log("UserID: " + userAuth.userId);
-      console.log("Bearer " + userAuth.token);
 
       if (!isTokenValid(userAuth.tokenExp)) {
         refreshAccessToken(userAuth.refreshToken);
-        console.log("Refreshed " + userAuth.token);
       }
       const config = {
         headers: {
@@ -164,11 +158,8 @@ export const Game: React.FC<GameProps> = ({
   useEffect(() => {
     if (gameData) {
       setRound(gameData.round);
-      // console.log(gameData.round);
       setPreviousGuesses(gameData.previousGuesses);
-      // console.log(gameData.previousGuesses);
       setPreviousResponses(gameData.previousResponses);
-      // console.log(gameData.previousResponses);
     }
   }, [gameData]);
 
@@ -208,8 +199,6 @@ export const Game: React.FC<GameProps> = ({
       setIsFinishCardOpen(true);
       localStorage.removeItem("isGameInProgress");
     }
-    console.log("FinishVictory in game: " + finishVictory?.success);
-    console.log("FinishZero in game: " + finishZeroResponse?.success);
   }, [finishVictory, finishZeroResponse, finishRounds]);
 
   const renderRounds = () => {

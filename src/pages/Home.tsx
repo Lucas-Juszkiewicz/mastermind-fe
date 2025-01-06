@@ -1,30 +1,21 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Button, Paper, Typography } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useAuthMethods } from "../AuthMethodsProvider";
 import { UserAuthContext } from "../UserAuthProvider";
-import axios from "axios";
 import { GoodbyeCard } from "../components/GoodbyeCard";
-import { useTheme } from "@mui/material/styles";
-import { HowToRegOutlined, LoginOutlined } from "@mui/icons-material";
+import { HowToRegOutlined } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { AutomaticLogoutCard } from "../components/AutomaticLogoutCard";
 
 export const Home = () => {
   const {
-    redirectToKeycloak,
     getToken,
-    refreshAccessToken,
-    isTokenValid,
-    checkTokenValidity,
-    startCheckingIsTokenValid,
     isGoodbyCardOpen,
     setIsGoodbyCardOpen,
     isAutomaticLogoutCardOpen,
     setIsAutomaticLogoutCardOpen,
-    // getUserIdIfNotIncludedIInToken,
     nick,
   } = useAuthMethods();
-  const theme = useTheme();
   const [authCode, setAuthCode] = useState<string>("");
   const userAuthContext = useContext(UserAuthContext);
   const navigate = useNavigate();
@@ -36,13 +27,6 @@ export const Home = () => {
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
   }
-  const {
-    userAuth,
-    setUserAuth,
-    fetchGameInProgressAfterRecall,
-    checkIfGameInProgresExists,
-    checkUser,
-  } = userAuthContext;
 
   const [tokenHere, setTokenHere] = useState("");
 
@@ -63,16 +47,13 @@ export const Home = () => {
 
         try {
           const token = await getToken(authCode);
-
           setTokenHere(token);
-          // Now that you have the token, proceed to check the user
         } catch (tokenError) {
           console.error("Error retrieving token:", tokenError);
         }
       }
     };
     fetchTokenAndCheckUser();
-    // getUserIdIfNotIncludedIInToken(userAuth.nick);
   }, []);
 
   return (
@@ -101,32 +82,6 @@ export const Home = () => {
         setIsAutomaticLogoutCardOpen={setIsAutomaticLogoutCardOpen}
         nick={nick}
       />
-      {/* 
-      <Box
-        component="video"
-        controls
-        sx={{
-          borderRadius: "16px",
-          width: "80%", // Default width
-          maxWidth: "600px",
-          height: "auto",
-          [theme.breakpoints.down("md")]: {
-            width: "90%", // Adjust for medium screens
-          },
-          [theme.breakpoints.down("sm")]: {
-            width: "100%", // Adjust for small screens
-          },
-          [theme.breakpoints.up("lg")]: {
-            width: "60%", // Adjust for large screens
-          },
-        }}
-      >
-        <source
-          src={`${process.env.PUBLIC_URL}/Video/MastermindHomeVideo.mp4`}
-          type="video/mp4"
-        />
-        Your browser does not support the video tag.
-      </Box> */}
       <Typography
         variant="h5"
         gutterBottom

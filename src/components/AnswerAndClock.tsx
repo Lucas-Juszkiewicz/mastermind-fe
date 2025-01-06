@@ -73,22 +73,15 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   setFinishZero,
   setFinishZeroResponse,
   finishZeroResponse,
-  setIsFinishCardOpen,
   isClockFinish,
   finishVictory,
   finishRounds,
   setIsClockStart,
-  renderRounds,
-  setPreviousGuesses,
 }) => {
   const userAuthContext = useContext(UserAuthContext);
   const {
-    redirectToKeycloak,
-    getToken,
     refreshAccessToken,
     isTokenValid,
-    checkTokenValidity,
-    startCheckingIsTokenValid,
   } = useAuthMethods();
   if (!userAuthContext) {
     throw new Error("useContext must be used within an AuthProvider");
@@ -112,10 +105,7 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
       const countdownValue = 1200 - (currentTimeInSeconds - startTimeInSeconds);
       setCountdown(countdownValue);
       setIsClockStart(true);
-      // renderRounds();
-      console.log("Was thread here?");
     }
-    console.log("Or there?" + gameData?.startTime);
   }, [gameData]);
 
   useEffect(() => {
@@ -151,7 +141,6 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
   const isMediumScreen = useMediaQuery((theme: any) =>
     theme.breakpoints.between("sm", "md")
   );
-  // Set sizes based on screen size
   const blueSize = isSmallScreen ? 27 : isMediumScreen ? 25 : 30;
 
   const config = {
@@ -165,7 +154,6 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
     if (countdown == 0) {
       if (!isTokenValid(userAuth.tokenExp)) {
         refreshAccessToken(userAuth.refreshToken);
-        console.log("Refreshed " + userAuth.token);
       }
       const sendFinishZero = async () => {
         try {
@@ -180,7 +168,6 @@ export const AnswerAndClock: React.FC<AnswerAndClockProps> = ({
           if (axios.isAxiosError(error)) {
             // setErrorMessage(error);
           }
-          // handleOpen();
         }
       };
       sendFinishZero();

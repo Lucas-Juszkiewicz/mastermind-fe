@@ -2,7 +2,6 @@ import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
 import { RoundedElement, SendGuessButton } from "../components";
 import { useMediaQuery } from "@mui/material";
-import { green } from "@mui/material/colors";
 
 interface SingleRoundProps {
   active?: boolean;
@@ -22,8 +21,6 @@ export const SingleRound: React.FC<SingleRoundProps> = ({
   round,
   previousGuesses,
   greenYellowProviderForSingleRound,
-  setGameData,
-  finishZero,
   setFinishVictory,
   setFinishRounds,
 }) => {

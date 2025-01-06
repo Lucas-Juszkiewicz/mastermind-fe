@@ -28,7 +28,7 @@ export const StartCard: React.FC<StartCardProps> = ({
       aria-hidden="false"
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       open={isStartCardOpen}
-      // onClick={handleClose}
+
     >
       <Slide
         timeout={{ appear: 500, enter: 300, exit: 500 }}
@@ -55,7 +55,6 @@ export const StartCard: React.FC<StartCardProps> = ({
                 transform: "translate(-50%, -50%)",
                 background:
                   "radial-gradient(circle, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1))",
-                // padding: "30px",
                 px: "60px",
                 py: "20px",
                 borderRadius: "6px",

@@ -93,7 +93,6 @@ export const UserDetail = () => {
 
           setAvatar(imageUrl);
         }
-        console.log(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           // handle error

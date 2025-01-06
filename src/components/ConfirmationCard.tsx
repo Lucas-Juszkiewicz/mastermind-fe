@@ -30,16 +30,6 @@ interface Inputs {
   email: string;
 }
 
-// interface UserAuth {
-//   userId: string;
-//   nick: string;
-//   email: string;
-//   country: string;
-//   token: string;
-//   refreshToken: string;
-//   tokenExp: number;
-// }
-
 export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
   setIsConfirmationCardOpen,
   isConfirmationCardOpen,
@@ -72,8 +62,6 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
   };
 
   const sendSubmit = async () => {
-    console.log("Confirmation CARD: " + JSON.stringify(userAuth));
-
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -87,7 +75,6 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
         inputs,
         config
       );
-      console.log(response.data);
       const userId = response.data.id;
       navigate(`/user`);
       //   navigate("/editDetails");
@@ -113,7 +100,6 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
       aria-hidden="false"
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       open={isConfirmationCardOpen}
-      // onClick={handleClose}
     >
       <Slide
         timeout={{ appear: 500, enter: 300, exit: 500 }}
@@ -140,13 +126,11 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
                 transform: "translate(-50%, -50%)",
                 background:
                   "radial-gradient(circle, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1))",
-                // padding: "30px",
                 px: "60px",
                 py: "20px",
                 borderRadius: "6px",
                 fontSize: { xs: "1.8rem", sm: "1.8rem", md: "2.3rem" },
                 lineHeight: 1.2,
-                // whiteSpace: "nowrap",
                 letterSpacing: "0.15em",
               }}
             >
@@ -176,10 +160,6 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
                     userAuth.email.length || inputs.email.length > 21
                       ? "column"
                       : "row",
-                  // alignItems:
-                  //   userAuth.email.length || inputs.email.length > 21
-                  //     ? "flex-start"
-                  //     : "center",
                   alignItems: "center",
                   mb: 1,
                 }}
@@ -222,8 +202,6 @@ export const ConfirmationCard: React.FC<ConfirmationCardProps> = ({
                 sendSubmit();
                 setIsConfirmationCardOpen(false);
                 localStorage.removeItem("userData");
-                // navigate("/user");
-                // navigate("/editDetails");
               }}
               sx={{
                 fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },

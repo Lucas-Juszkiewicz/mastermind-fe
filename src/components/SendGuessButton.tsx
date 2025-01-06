@@ -107,7 +107,6 @@ export const SendGuessButton: React.FC<SendGuessButtonProps> = ({
         configFetchFinishVictory
       );
       setFinishVictory(response.data);
-      console.log("FINISH VICTORY: " + response.data.sequence);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error);
